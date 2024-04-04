@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* 구글 폰트 불러오기 */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
+    
+    /* 전체 폰트 설정 */
+    *{
+        font-family: "Noto Sans KR", sans-serif;
+    }
+
+    .navbar-menu-left li {
+        font-weight: bolder;
+        font-size: 14px;
+        color: white;
+    }
+
+    .navbar-menu-right {
+        font-weight: bolder;
+        font-size: 14px;
+        color: white;
+    }
+
+    /*input 입력 시 테두리 스타리*/
+    .search-bar-input{
+        border-radius: 5px;
+        border: 2px solid white;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        font-weight: bolder;
+        color: white;
+    }
+
+    /* input 요소의 플레이스홀더 스타일 */
+    .search-bar input::placeholder {
+        font-size: 14px;
+        font-weight: bolder;
+        color: white;
+    }  
+
+    /* 네비게이션 바 스타일 */
+    .navbar-wrapper{
+        display: flex;
+    }
+    .navbar-body {
+        display: flex;
+        align-items: center;
+        margin: auto;
+        justify-content: space-between;
+        width: 1000px;
+        min-width: 640px;
+    }
+
+    .navbar-wrapper{
+        background: linear-gradient(90deg, rgb(39, 8, 39), rgb(0, 0, 22));
+    }
+
+    /* 네비게이션 바 내부 요소 스타일 */
+    .navbar-menu-left,
+    .navbar-menu-right {
+        display: flex;
+        list-style: none; 
+        align-items: center;
+    }
+
+    .navbar-menu-left{
+        flex-grow: 1;
+        margin-right : auto;
+        margin-left: 30px;
+        padding: 0;
+    }
+    .navbar-menu-right{
+        margin-left : auto;
+    }
+
+    .navbar-menu-left li,
+    .navbar-menu-right li {
+        margin-right: 15px; 
+        caret-color: transparent;
+    }
+
+    .navbar-menu-left li,
+    .navbar-menu-right li:hover{
+        cursor: pointer;
+    }
+
+    /* 로고 이미지 스타일 */
+    .nav-logo{
+        margin-left: 20px;   
+    }
+    .nav-logo img {
+        background-color: white; 
+        border-radius: 90%; 
+        height: 30px;
+        width: 30px;
+    }
+
+    /* 검색 폼 스타일 */
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: white; 
+        border-radius: 5px; 
+        padding: 5px;
+        margin-left: 30px;
+        width: 100%;
+        flex-grow: 1;
+        background-color: #11010e;
+        
+    }
+
+    /* 검색 입력 필드 스타일 */
+    .search-bar > input {
+        padding: 5px; 
+        outline: none;
+        width: 90%;
+        box-sizing: border-box;
+        border: none;
+        background-color: #000000;
+        caret-color: white;
+    }
+    .search-bar i{
+        width: 10%;
+        box-sizing: border-box;
+        border: none;
+    }
+    .search-bar-focus{
+        border: 2px solid white;
+    }
+
+
+    /* 드롭다운 메뉴 스타일 */
+    .dropdown-menu {
+        display: none;
+        position: absolute; 
+        border-radius: 5px;
+        background-color: rgb(29, 0, 22); 
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+        z-index: 1; 
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 5px;
+        border: 1px solid grey;
+    }
+
+    .dropdown-line{
+        width: 100%;
+        height: 1px; 
+        background-color: grey; 
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    /* 드롭다운 메뉴 아이템 스타일 */
+    .dropdown-menu a {
+            display: block;
+            padding: 10px 20px 10px 20px;
+            text-decoration: none;
+            color: white;
+    }
+
+    .dropdown-menu a:hover {
+        background-color: rgb(65, 0, 57);
+    }
+
+    /* 드롭다운 메뉴클릭 시 .show 클래스 이름 부여*/
+    .show {
+        display: block;
+    }
+
+</style>
+<body>
+    <!--fontawesome icon cdn 연동-->
+    <script src="https://kit.fontawesome.com/22698b3d17.js" crossorigin="anonymous"></script>
+
+    <!-- 네비게이션 바 -->
+    <div class="navbar-wrapper">
+        <nav class="navbar-body">
+            
+            <a class="nav-logo" href="">
+                <img src="" alt="">
+            </a>
+    
+            <ul class="navbar-menu-left">
+                <li> 구독 게임 <i class="fa-solid fa-angle-down"></i>
+                    <div class="dropdown-menu">
+                        <a class="main-sub">구독중인게임</a>
+                        <div class="dropdown-line"></div>
+                        <a>리그오브레전드</a>
+                        <a>배틀그라운드</a>
+                        <a>오버워치</a>
+                    </div>
+                </li>
+                <li> 게시판 <i class="fa-solid fa-angle-down"></i>
+                    <div class="dropdown-menu">
+                        <a>자유게시판</a>
+                        <a>공지게시판</a>
+                        <a>건의게시판</a>
+                    </div>
+                </li>
+                <li>
+                    <form>
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" placeholder="찾기" aria-label="Search">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+
+            <ul class="navbar-menu-right">
+                <li>로그인</li>
+                <li>회원가입</li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <script>
+        
+        //드롭다운 메뉴 스크립트 
+        document.querySelectorAll('.navbar-menu-left > li').forEach(function(item){
+            item.addEventListener('click', function(){
+                item.querySelector('.dropdown-menu').classList.toggle('show');
+            });
+        });
+
+        // input 메뉴 스크립트
+        document.querySelector('.search-bar input').addEventListener('focus', function(){
+            document.querySelector('.search-bar').classList.toggle('search-bar-focus');
+        });
+
+        // 드롭다운 메뉴와 input foucs 이벤트 종료 스크립트
+        document.addEventListener('click', function(e){
+            if(!e.target.closest('.navbar-menu-left > li') || e.target.classList.contains('show')){
+                document.querySelectorAll('.dropdown-menu').forEach(function(item){
+                    item.classList.remove('show');
+                });
+            }
+            
+            
+            if(!e.target.closest('.search-bar input')){
+                document.querySelector('.search-bar').classList.remove('search-bar-focus');
+            }
+        });
+
+
+    </script>
+    
+</body>
+</html>
