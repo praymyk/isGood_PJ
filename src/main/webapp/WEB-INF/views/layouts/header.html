@@ -6,12 +6,14 @@
     <title>Document</title>
 </head>
 <style>
+
     /* 구글 폰트 불러오기 */
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
     
     /* 전체 폰트 설정 */
     *{
         font-family: "Noto Sans KR", sans-serif;
+        box-sizing: border-box;
     }
 
     .navbar-menu-left li {
@@ -48,18 +50,20 @@
     /* 네비게이션 바 스타일 */
     .navbar-wrapper{
         display: flex;
+        height: 55px;
     }
     .navbar-body {
         display: flex;
         align-items: center;
         margin: auto;
         justify-content: space-between;
-        width: 1000px;
-        min-width: 640px;
+        height: 100%;
+        width: 1200px;
+        min-width: 720px;
     }
 
     .navbar-wrapper{
-        background: linear-gradient(90deg, rgb(39, 8, 39), rgb(0, 0, 22));
+        background: linear-gradient(90deg, rgb(51, 11, 51), rgb(0, 0, 32));
     }
 
     /* 네비게이션 바 내부 요소 스타일 */
@@ -73,7 +77,7 @@
     .navbar-menu-left{
         flex-grow: 1;
         margin-right : auto;
-        margin-left: 30px;
+        margin-left: 10px;
         padding: 0;
     }
     .navbar-menu-right{
@@ -82,7 +86,7 @@
 
     .navbar-menu-left li,
     .navbar-menu-right li {
-        margin-right: 15px; 
+        margin-right: 30px; 
         caret-color: transparent;
     }
 
@@ -93,8 +97,12 @@
 
     /* 로고 이미지 스타일 */
     .nav-logo{
-        margin-left: 20px;   
+        display: flex;
+        align-items: center;
+        margin-left: 20px; 
+        margin-right: 20px;  
     }
+
     .nav-logo img {
         background-color: white; 
         border-radius: 90%; 
@@ -110,10 +118,9 @@
         border-radius: 5px; 
         padding: 5px;
         margin-left: 30px;
-        width: 100%;
-        flex-grow: 1;
         background-color: #11010e;
-        
+        border: 2px solid black;
+        height: 20px;
     }
 
     /* 검색 입력 필드 스타일 */
@@ -225,10 +232,28 @@
 
     <script>
         
-        //드롭다운 메뉴 스크립트 
-        document.querySelectorAll('.navbar-menu-left > li').forEach(function(item){
-            item.addEventListener('click', function(){
-                item.querySelector('.dropdown-menu').classList.toggle('show');
+        // 드롭다운 메뉴 스크립트  (1 ~ 4)
+        // 1. 네비게이션 바 메뉴 요소 찾기
+        const navMenu = document.querySelectorAll('.navbar-menu-left > li');
+
+        // 2. 각 메뉴 요소 클릭시 dropdown-menu 보이기
+        navMenu.forEach(function(item){
+            
+            item.addEventListener('click', function(event){
+                // 현재 클릭된 li 요소 찾기 -> currentDropdownMenu 변수에 저장
+                const currentDropdownMenu = event.currentTarget.querySelector('.dropdown-menu');
+                // 클릭된 메뉴에 대해서만 show 클래스 토글
+                if(currentDropdownMenu) {
+                    currentDropdownMenu.classList.toggle('show');
+                }
+            
+                // 3. 메뉴 클릭 시 클릭되지 않은 메뉴는 드랍다운 메뉴 감추기
+                document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                    // 클릭된 li 요소가 아니라면 show 클래스 제거
+                    if(menu !== currentDropdownMenu) {
+                            menu.classList.remove('show');
+                    }
+                });       
             });
         });
 
@@ -238,13 +263,13 @@
         });
 
         // 드롭다운 메뉴와 input foucs 이벤트 종료 스크립트
+        // 4. 드랍다운 메뉴외의 영역 클릭시 닫기
         document.addEventListener('click', function(e){
-            if(!e.target.closest('.navbar-menu-left > li') || e.target.classList.contains('show')){
+            if(!e.target.closest('.navbar-menu-left > li')){
                 document.querySelectorAll('.dropdown-menu').forEach(function(item){
                     item.classList.remove('show');
                 });
             }
-            
             
             if(!e.target.closest('.search-bar input')){
                 document.querySelector('.search-bar').classList.remove('search-bar-focus');
