@@ -205,9 +205,9 @@
 
     </style>
 </head>
+<!-- jQuery 라이브러리 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <body>
-    <!-- jQuery 라이브러리 -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <div class="mypage-wrapper">
 
@@ -271,17 +271,17 @@
                 </div>
                 <div class="table-body" draggable="true">
                     <div class="table-num">1</div>
-                    <div class="table-title">냠냠 쩝쩝</div>
+                    <div class="table-title">냠냠</div>
                     <div class="table-cancle cancle-btn">취소</div>
                 </div>
                 <div class="table-body" draggable="true">
                     <div class="table-num">2</div>
-                    <div class="table-title">냠냠 쩝쩝</div>
+                    <div class="table-title">쩝쩝</div>
                     <div class="table-cancle cancle-btn">취소</div>
                 </div>
                 <div class="table-body" draggable="true">
                     <div class="table-num">3</div>
-                    <div class="table-title">냠냠 쩝쩝</div>
+                    <div class="table-title">늄늄</div>
                     <div class="table-cancle cancle-btn">취소</div>
                 </div>
             </div>
@@ -306,22 +306,83 @@
 
     <!-- 구독 게임 순번 드래그&드랍 이벤트 스크립트 -->
     <script>
-        $(function(){
+        (()=>{
             /*
             * @param
+            * @$: document.querySelectorAll -> jquery의 $와 같은 역할 수행
             * @containers: 구독 게임 리스트를 담고있는 div
-            * @draggables: 구독 게임 리스트 한개 div
+            * @draggables: 구독 게임 리스트 div(이동 대상)
             */
+            const $ = (select) => document.querySelectorAll(select);
             const containers = $(".subscribe-table");
             const draggables = $(".table-body");
 
-            draggables.on("dragstart", () => {
-                $(this).addClass("dragging");
+            // 드래그 시작 이벤트
+            // 드래그 상태 표기 > dragging 클래스 부여
+            draggables.forEach(el => {
+                el.addEventListener("dragstart", () => {
+                    el.classList.add("dragging");
+                });
+                el.addEventListener("dragend", () => {
+                    el.classList.remove("dragging");
+                });
+            });
+            
+            // dragging 요소를 다른 요소들 사이에 삽입하고자 할 때, 어느 위치에 삽입할지 결정 하는 용도 함수
+            function getDragAfterElement(container, y){
+                // 드래그 중인 요소를 제외한 나머지 요소 선택
+                const draggableElements = [...container.querySelectorAll(".table-body:not(.dragging)")];
+
+                // 드래그 중인 요소와 마우스 포인터의 y좌표를 비교하여 가장 가까운 요소를 반환
+                return draggableElements.reduce((closest, child) => {
+                    // 요소의 위치와 크기 정보 변수
+                    const box = child.getBoundingClientRect();
+                    // 마우스 포인터와 중간 지점 사이의 거리 계산 값
+                    const offset = y - box.top - box.height / 2;
+
+                    // 가장 마우스 포인터에 가까운 아래 위치한 요소 반환
+                    if(offset < 0 && offset > closest.offset){
+                        return {offset: offset, element: child}; 
+                    }else{
+                        return closest;
+                    }
+                }, {offset: Number.NEGATIVE_INFINITY}).element;
+            };
+
+            // 드롭 이벤트
+            containers.forEach(container => {
+                container.addEventListener("dragover", e => {
+                    e.preventDefault();
+                    // 마우스 포인터의 y좌표를 기준으로 드래그 중인 요소를 삽입할 위치
+                    const afterElement = getDragAfterElement(container, e.clientY);
+                    // 드래그중인 요소 선택
+                    const draggable = document.querySelector(".dragging");
+
+                    container.insertBefore(draggable, afterElement);
+
+                    // 변경된 순서를 DB에 업데이트
+                    updateNumber(container);
+                });
             });
 
+            // 변경된 순서 DB에 업데이트 함수
+            function updateNumber(container){
+                // 변경된 순서를 담을 배열
+                const subscribeItems = [];
+      
+                container.querySelectorAll(".table-body").forEach((el, idx) => {
+                    
+                   subscribeItems.push({
+                        subscribeNo: idx + 1,
+                        title: el.querySelector(".table-title").textContent
+                    });
 
+                });
 
-        });
+                console.log(subscribeItems);
+            };
+
+        })();
 
     </script>
 </body>
