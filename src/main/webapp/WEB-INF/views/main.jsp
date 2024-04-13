@@ -379,6 +379,7 @@
         mousewheel: true,
         keyboard: true,
     });
+
 </script>
 
 

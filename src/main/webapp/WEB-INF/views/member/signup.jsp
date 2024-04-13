@@ -17,28 +17,43 @@
     /*컨텐츠 기본 스타일*/
     * {
         font-family: "Noto Sans KR", sans-serif;
+        font-weight: bold;
         box-sizing: border-box;
         user-select: none;
     }
 
 
-    body {
+    .enroll-body {
         display: flex;
         justify-content: center;
         height: 100vh;
         overflow: auto;
+        margin: 0px;
+        background: rgb(46, 46, 46);
     }
 
     .signup-wrapper {
-        width: 500px;
         margin: auto;
         padding: 20px;
+        background: rgb(46, 46, 46);
+    }
+    .signup-wrapper h2 {
+        color: white;
+        margin-bottom: 30px;
     }
 
-    input, select{
+    .signup-input, .signup-select{
         border: 0px solid gray;
         appearance:none;
         padding: 10px;
+        background-color: rgb(46, 46, 46);
+    }
+    .signup-input{
+        color: white;
+    }
+
+    .signup-input-unlock{
+        color: white;
     }
 
     .icon{
@@ -48,11 +63,25 @@
         align-items: center;
         justify-content: center;
         border: 0px;
+        color: grey;
+
+    }
+    #emailAT{
+        background-color: rgb(107, 107, 107);
+        border: 0px;
+        color: white;
+        font-size: 18px;
+        font-weight: bolder;
+        position: absolute;
+        top: 50%;
+        right: 30%;
+        transform: translateY(-50%);
     }
 
-    input, select:focus{
+    .signup-input, .signup-select:focus{
         outline: none;
     }
+
 
     /*회원가입 폼 스타일 (상단 박스)*/
     .signup-box1, .signup-box2 {
@@ -61,15 +90,15 @@
         margin-bottom: 10px;
         width: 100%;
         border-collapse: collapse;
-
     }
+
 
     .form-group {
         display: table-row;
-        padding: 0px;
         width: 100% ;
-        height: 52px;
+        height: 50px;
         border: 1px solid gray;
+        position: relative;
     }
 
     .form-group>div{
@@ -78,19 +107,53 @@
 
     /*회원가입 폼 스타일 (상단 박스 - 이메일)*/
     .form-group input{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
         height: 48px;
     }
+
     #email_id{
         width: 230px;
     }
+
     .signup-email-domain, #email_domain{
         width: 125px;
         height: 48px;
+        position: absolute;
+        top: 50%;
+        right: 0px;
+        transform: translateY(-50%);
+    }
+
+    .domain-input{
+        width: 125px;
+        height: 48px;
+        background-color: rgb(107, 107, 107);
+        color: white;
+        border: 0px;
+        padding: 10px;
+        display: none;
+    }
+
+    .domain-input-open{
+        width: 125px;
+        height: 48px;
+        background-color: rgb(107, 107, 107);
+        color: white;
+        border: 0px;
+        padding: 10px;
     }
 
     /*비밀번호 입력란 스타일 */
     #password, #password-chk{
         width: 355px;
+    }
+    .pass-visibility-on{
+        position: absolute;
+        top: 50%;
+        right: 0px;
+        transform: translateY(-50%);
     }
 
     .pass-visibility-on:hover{
@@ -126,18 +189,20 @@
         display: none;
     }
 
-    .gender-btns label{
+    .gender{
         display: flex;
         justify-content: center;
         align-items: center;
         width: 146px;
         height: 30px;
         cursor: pointer;
+        color: gray;
     }
 
     .gender-clicked{
-        border: 2px solid rgb(53, 11, 40);
+        border: 2px solid white;
         border-radius: 5px;
+        color: white;
     }
 
 
@@ -150,7 +215,7 @@
         color: white;
         border: none;
         border-radius: 5px;
-        background-color: rgb(53, 11, 40);
+        background-color: rgb(153, 44, 144);
     }
 
     /*테두리 */
@@ -174,8 +239,9 @@
         font-size: 12px;
     }
 
+
 </style>
-<body>
+<body class="enroll-body">
 <!--구글 아이콘 불러오기-->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -187,7 +253,6 @@
     <h2>회원가입</h2>
 
     <form action="enroll.me" method="post">
-
         <!-- 회원가입 폼 스타일 (상단 박스) -->
         <div class="signup-box1">
 
@@ -198,24 +263,59 @@
                             person
                         </span>
                 </div>
-                <div>
-                    <input type="text" id="email_id" name="email" placeholder="이메일" required>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="text" id="email_id" name="email_id" placeholder="이메일" required>
+                    <input type="hidden" name="email" id="real_email">
                 </div>
-                <div class="input-group-text icon">
+                <div class="input-group-text icon" id="emailAT">
                     @
                 </div>
                 <div class="signup-email-domain">
-                    <select name="email_domain" id="email_domain">
-                        <option value="naver.com">naver.com</option>
-                        <option value="gmail.com">gmail.com</option>
-                        <option value="daum.net">daum.net</option>
-                        <option value="nate.com">nate.com</option>
-                        <option value="hotmail.com">hotmail.com</option>
-                        <option value="yahoo.com">yahoo.com</option>
-                        <option value="직접입력">직접입력</option>
+                    <select class="signup-select" name="email_domain" id="email_domain" disabled>
+                        <option value="">선택해주세요</option>
+                        <option value="@naver.com">naver.com</option>
+                        <option value="@gmail.com">gmail.com</option>
+                        <option value="@daum.net">daum.net</option>
+                        <option value="@nate.com">nate.com</option>
+                        <option value="@hotmail.com">hotmail.com</option>
+                        <option value="@yahoo.com">yahoo.com</option>
+                        <option value="self">직접입력</option>
                     </select>
+                    <input class="domain-input" type="hidden" placeholder="직접입력">
                 </div>
             </div>
+
+            <!-- 이메일 + 도메인 합치기 -->
+            <script>
+                //1. 이메일 입력 후 도메인 선택 잠금 해제
+                $("#email_id").on("keyup", function(){
+                    if($("#email_id").val() != ""){
+                        $("#email_domain").removeAttr("disabled");
+                        $("#email_domain").addClass("signup-input-unlock");
+                    } else {
+                        $("#email_domain").attr("disabled", "disabled");
+                        $("#email_domain").removeClass("signup-input-unlock");
+                    }
+                });
+
+                // 2. 이메일, 도메인 변경시 실시간으로 합치기
+                $("#email_id").on("change", ()=>{
+                   $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                });
+                $("#email_domain").on("change", ()=>{
+                    $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                });
+
+                // 3. 도메인>직접 입력 선택시 도메인 값 input으로 변경
+                $("#email_domain").on("change", function(){
+                    if($("#email_domain").val() == "self"){
+                        $(".domain-input").addClass("domain-input-open");
+                        $(".domain-input").removeClass("domain-input-open");
+                        $("#email_domain").css("display", "none");
+                    }
+                });
+            </script>
+
             <!-- 비밀번호 입력 -->
             <div class="form-group" id="pass-wrap">
                 <div class="icon">
@@ -223,8 +323,8 @@
                             lock
                         </span>
                 </div>
-                <div>
-                    <input type="password" id="password" name="userPwd" placeholder="비밀번호" required>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="password" id="password" name="userPwd" placeholder="비밀번호" required>
                 </div>
                 <div class="pass-visibility-on icon">
                         <span class="material-symbols-outlined">
@@ -239,8 +339,8 @@
                             enhanced_encryption
                         </span>
                 </div>
-                <div>
-                    <input type="password" id="password-chk" name="password-chk" placeholder="비밀번호 확인" required>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="password" id="password-chk" name="password-chk" placeholder="비밀번호 확인" required>
                 </div>
                 <div class="pass-visibility-on icon">
                         <span class="material-symbols-outlined">
@@ -257,70 +357,67 @@
 
         <!-- 회원가입 폼 스타일 (하단 박스) -->
         <div class="signup-box2">
-            <!-- 이름 입력 -->
-            <div class="form-group" id="name-wrap"">
-            <div class="icon">
-                        <span class="material-symbols-outlined">
-                            person
-                        </span>
+            <!-- 닉네임 입력 -->
+            <div class="form-group" id="name-wrap">
+                <div class="icon">
+                            <span class="material-symbols-outlined">
+                                person
+                            </span>
+                </div>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="text" id="username" name="nickName" placeholder="닉네임" required>
+                </div>
             </div>
-            <div>
-                <input type="text" id="username" name="nickName" placeholder="닉네임" required>
+            <!-- 생년월일 입력 -->
+            <div class="form-group" id="birth-wrap">
+                <div class="icon">
+                            <span class="material-symbols-outlined">
+                                calendar_month
+                            </span>
+                </div>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="text" id="birthday" name="birthday" maxlength="8" placeholder="생녈월일 8자리" required>
+                </div>
+            </div>
+            <!-- 성별 입력 -->
+            <div class="form-group">
+                <div class="gender-btns">
+                    <ul>
+                        <li>
+                            <label class="gender" for="gender1">남</label>
+                            <input type="radio" id="gender1" name="gender" value="M">
+                        </li>
+                        <li>
+                            <label class="gender" for="gender2">여</label>
+                            <input type="radio" id="gender2" name="gender" value="F">
+                        </li>
+                        <li>
+                            <label class="gender gender-clicked" for="gender3">선택안함</label>
+                            <input type="radio" id="gender3" name="gender" value="O" checked="checked">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 휴대번호 입력 -->
+            <div class="form-group" id="phone-wrap">
+                <div class="icon">
+                            <span class="material-symbols-outlined">
+                                smartphone
+                            </span>
+                </div>
+                <div class="signup-inputBox">
+                    <input class="signup-input" type="text" id="phone" name="phone" placeholder="휴대전화번호 ( -제외 )" required>
+                </div>
+            </div>
+            <div class="check2">
+                유효성 검사 2
+            </div>
+
+            <div class="form-group submit-btn">
+                <button type="submit">가입하기</button>
             </div>
         </div>
-
-        <!-- 생년월일 입력 -->
-        <div class="form-group" id="birth-wrap">
-            <div class="icon">
-                        <span class="material-symbols-outlined">
-                            calendar_month
-                        </span>
-            </div>
-            <div>
-                <input type="text" id="birthday" name="birthday" maxlength="8" placeholder="생녈월일 8자리" required>
-            </div>
-        </div>
-
-        <!-- 성별 입력 -->
-        <div class="form-group">
-            <div class="gender-btns">
-                <ul>
-                    <li>
-                        <label class="gender1" for="gender1">남</label>
-                        <input type="radio" id="gender1" name="gender" value="M">
-                    </li>
-                    <li>
-                        <label class="gender2" for="gender2">여</label>
-                        <input type="radio" id="gender2" name="gender" value="F">
-                    </li>
-                    <li>
-                        <label class="gender3 gender-clicked" for="gender3">선택안함</label>
-                        <input type="radio" id="gender3" name="gender" value="O" checked="checked">
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 휴대번호 입력 -->
-        <div class="form-group" id="phone-wrap">
-            <div class="icon">
-                        <span class="material-symbols-outlined">
-                            smartphone
-                        </span>
-            </div>
-            <div>
-                <input type="text" id="phone" name="phone" placeholder="휴대전화번호 ( -제외 )" required>
-            </div>
-        </div>
-
-        <div class="check2">
-            유효성 검사 2
-        </div>
-
-    <div class="form-group submit-btn">
-        <button type="submit">가입하기</button>
-    </div>
-</form>
+    </form>
 </div>
 
 <script>
@@ -442,10 +539,10 @@
             updateCheckMsg();
         });
 
-        // 유효성 검사  - 이름(한글, 영문, 숫자, 2~10자리)
+        // 유효성 검사  - 이름(한글, 영문, 2~10자리)
         $("#username").on("keyup", function(){
             var name = $("#username").val();
-            var regExp = /^[가-힣a-zA-Z0-9]{2,10}$/;
+            var regExp = /^[가-힣a-zA-Z]{2,10}$/;
 
             if(regExp.test(name)){
                 passResult = true;

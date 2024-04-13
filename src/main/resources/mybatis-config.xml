@@ -8,4 +8,17 @@
         <setting name="jdbcTypeForNull" value="NULL" />
     </settings>
 
+    <!--mapper에서 매칭할 VO 별칭-->
+    <typeAliases>
+        <typeAlias type="com.ys.isGood.model.vo.Member" alias="member"/>
+    </typeAliases>
+
+
+    <!--매퍼 경로 등록-->
+    <mappers>
+        <mapper resource="mappers/member-Mapper.xml"/>
+    </mappers>
+
+
+
 </configuration>

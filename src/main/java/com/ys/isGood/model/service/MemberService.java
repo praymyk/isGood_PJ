@@ -6,5 +6,4 @@ public interface MemberService {
 
     // 회원가입 처리 메소드
     int memberEnrollEnd(Member member);
-
 }

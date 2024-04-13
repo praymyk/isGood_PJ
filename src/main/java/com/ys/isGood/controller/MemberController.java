@@ -5,6 +5,7 @@ import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,19 @@ public class MemberController {
     // 회원가입 처리 메소드
     // @param member : 회원가입 정보를 담은 객체
     @PostMapping("/enroll.me" )
-    public String memberEnrollEnd(Member member){
+    public String memberEnrollEnd(Member member, Model model){
+
+        log.info("회원가입 정보 : " + member);
 
         int result = memberService.memberEnrollEnd(member);
+
+        log.info("회원 가입 결과 : " + result);
+
+        if(result > 0) {
+            model.addAttribute("msg", "회원가입 성공");
+        } else {
+            model.addAttribute("msg", "회원가입 실패");
+        }
 
         return "redirect:/";
     }

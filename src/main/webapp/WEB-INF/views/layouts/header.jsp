@@ -242,10 +242,10 @@
     </nav>
 </div>
 
-
 <script>
 
-    // 드롭다운 메뉴 스크립트  (1 ~ 4)
+
+    // @ 드롭다운 메뉴 스크립트  (1 ~ 4)
     // 1. 네비게이션 바 메뉴 요소 찾기
     const navMenu = document.querySelectorAll('.navbar-menu-left > li');
 
