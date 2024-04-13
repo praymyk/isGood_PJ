@@ -10,23 +10,18 @@
 <head>
     <title>Title</title>
 </head>
-<body>
+<style>
+    .index-body{
+        background-color: rgb(7, 6, 7);
+        margin:0px;
+    }
+</style>
+<body class="index-body">
 <!-- header -->
 <jsp:include page="layouts/header.jsp"/>
 
 <!-- content -->
-<div>
-    소메뉴 구현
-</div>
-
-<div>핫 이슈 및 추천 게임</div>
-<div>
-    <img src="">
-</div>
-
-<div></div>
-
-
+<jsp:include page="content.jsp"/>
 
 <!-- footer -->
 <jsp:include page="layouts/footer.jsp"/>

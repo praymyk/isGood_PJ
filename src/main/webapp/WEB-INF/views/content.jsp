@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+<%--
+  Created by IntelliJ IDEA.
+  User: Myks
+  Date: 2024-04-12
+  Time: 오후 3:26
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    
-    <!--부트 스트랩 연동 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 </head>
 <style>
 
@@ -18,22 +23,22 @@
     .content-wrapper{
         display: flex;
         justify-content: center;
-        height: 100vh;
         padding: 20px;
-        background-color: rgb(7, 6, 7);;
-        overflow: auto;
+        background-color: rgb(7, 6, 7);
     }
 
     .content-box{
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 2000px;
+        width: 1000px;
         min-width: 1000px;
         background-color: rgb(31, 29, 31);;
         border: 1px solid gray;
         margin-right: 10px;
         color: white;
+        height: auto;
+        overflow: hidden;
     }
 
     /*사이드바 스타일*/
@@ -46,7 +51,16 @@
         margin-top: 5px;
         position: sticky;
         top: 5px;
+        display: block;
     }
+
+    /* 가로 길이에 따라 사이드바 숨기기 */
+    @media (max-width: 1250px){
+        .side-box{
+            display: none;
+        }
+    }
+
     .banner{
         display: flex;
         justify-content: center;
@@ -85,36 +99,31 @@
 
 </style>
 <body>
-    <!-- header -->
+<!-- content -->
+<div class="content-wrapper">
 
-    <!-- content -->
-    <div class="content-wrapper">
-        
-        <div class="content-box">
-            
-            페이지의 메인 컨테츠 주입 부분
+    <div class="content-box">
 
-        </div>
+        <jsp:include page="main.jsp"/>
 
-        <div class="side-box">
-            <div class="banner">
-                <img src="">
-            </div>
-            <div class="issue">
-                <h5>핫 이슈</h5>
-                <ul>
-                    <li>게임1</li>
-                    <li>게임2</li>
-                    <li>게임3</li>
-                    <li>게임4</li>
-                    <li>게임5</li>
-                </ul>
-            </div>
-        </div>
-    
     </div>
-    
-    <!-- footer -->
 
+    <div class="side-box">
+        <div class="banner">
+            <img src="">
+        </div>
+        <div class="issue">
+            <h5>핫 이슈</h5>
+            <ul>
+                <li>게임1</li>
+                <li>게임2</li>
+                <li>게임3</li>
+                <li>게임4</li>
+                <li>게임5</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</script>
 </body>
 </html>

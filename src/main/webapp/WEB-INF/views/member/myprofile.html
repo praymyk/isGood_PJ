@@ -4,207 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mypage</title>
-    <style>
-        /* 구글 폰트 불러오기 */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
-        
-        /*컨텐츠 기본 스타일*/
-        * {
-            font-family: "Noto Sans KR", sans-serif;
-            box-sizing: border-box;
-            user-select: none;
-        }
-        
-        .subscripe, .profile-card-wrapper, .pass-acount-wrapper{
-            display: flex;
-            flex-direction: column;
-            margin: 20px;
-        }
-
-        /* 마이페이지 구분자 */
-        .line{
-            height: 1px;
-            width: 100%;
-            border: 0px;
-            background-color: silver;
-            margin: 40px 20px 40px 20px;
-        }
-        /*
-            프로필 카드 스타일
-        */
-        .profile-card{
-            display: flex;
-            flex-direction: column;
-            border: 1px solid gray;
-            border-radius: 5px;
-            background-color: rgb(32, 32, 32);
-            padding: 15px;
-        }
-
-        .profile-img{
-            display: flex;  
-            justify-content: center;
-            align-items: center;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: white;
-        }
-        .profile-img img{
-            border-radius: 50%;
-            width: 140px;
-            height: 140px;
-        }
-
-        .profile-card-title{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-        }
-        .profile-card-title button{
-            border: 0px;
-            border-radius: 3px;
-            background-color: rgb(95, 95, 238);
-            color: white;
-            font-weight: bold;
-            margin: auto 10px 10px auto;
-            width: 130px;
-            height: 40px;
-        }
-
-        .profile-card-content{
-            border: 1px solid darkgray;
-            border-radius: 5px;
-            background-color: rgb(70, 70, 70);
-            margin: 20px;
-        }
-
-        .profile-list{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .profile-card-name{
-            font-size: 25px;
-            font-weight: bolder;
-            color: white;
-            margin: auto auto 10px 20px;
-        }
-        .profile-list-title{
-            font-size: 12px;
-            font-weight: bold;
-            color: rgba(245, 245, 245, 0.712);
-        }
-        .profile-list input{
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-
-            padding: 0px;
-            margin-top: 5px;
-            border: 0px;
-            background-color: rgb(70, 70, 70);
-        }
-        .profile-list button{
-            border: 0px;
-            border-radius: 2px;
-            background-color: dimgrey;
-            color: white;
-            font-weight: bold;
-            margin: 5px;
-            width: 60px;
-            height: 35px;
-        }
-
-        /*
-            구독 게임 관리 테이블 스타일
-        */
-        .subscribe{
-            display: flex;
-            flex-direction: column;
-            margin: 20px;}
-
-        .subscribe-table{
-            display: flex;
-            flex-direction: column;
-        }
-
-        .subscribe-save{
-            border: 0px;
-            border-radius: 3px;
-            background-color: rgb(95, 95, 238);
-            color: white;
-            font-weight: bold;
-            width: 60px;
-            height: 40px;
-            margin: 20px 0px 0px auto;
-        }
-        
-        .table-header{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 10px;
-            border-bottom: 2px solid gray;
-        }
-
-        .table-body{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 10px;
-            border-bottom: 1px solid silver;
-        }
-
-        .table-num{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            width: 50px;
-        }
-        .table-title{
-            margin-left: 10px;
-            margin-right: auto;
-            align-items: center;
-        }
-        .table-cancle{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100px;
-            height: 30px;
-        }
-        .cancle-btn{
-            color: red;
-        }
-
-        /*
-            비밀번호 변경 / 회원탈퇴 스타일
-        */
-        .pass-acount-wrapper > button{
-            border: 0px;
-            border-radius: 3px;
-            color: white;
-            font-weight: bold;
-            width: 200px;
-            height: 40px;
-        }
-
-        .change-pass-btn{
-            background-color: rgb(95, 95, 238);
-        }
-        .account-stop-btn{
-            background-color: rgb(241, 53, 53);
-        }
-
-    </style>
 </head>
+<style>
+    /* 구글 폰트 불러오기 */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
+
+    /*컨텐츠 기본 스타일*/
+    * {
+        font-family: "Noto Sans KR", sans-serif;
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    .subscripe, .profile-card-wrapper, .pass-acount-wrapper{
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    /* 마이페이지 구분자 */
+    .line{
+        height: 1px;
+        width: 100%;
+        border: 0px;
+        background-color: silver;
+        margin: 40px 20px 40px 20px;
+    }
+    /*
+        프로필 카드 스타일
+    */
+    .profile-card{
+        display: flex;
+        flex-direction: column;
+        border: 1px solid gray;
+        border-radius: 5px;
+        background-color: rgb(32, 32, 32);
+        padding: 15px;
+    }
+
+    .profile-img{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: white;
+    }
+    .profile-img img{
+        border-radius: 50%;
+        width: 140px;
+        height: 140px;
+    }
+
+    .profile-card-title{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    .profile-card-title button{
+        border: 0px;
+        border-radius: 3px;
+        background-color: rgb(95, 95, 238);
+        color: white;
+        font-weight: bold;
+        margin: auto 10px 10px auto;
+        width: 130px;
+        height: 40px;
+    }
+
+    .profile-card-content{
+        border: 1px solid darkgray;
+        border-radius: 5px;
+        background-color: rgb(70, 70, 70);
+        margin: 20px;
+    }
+
+    .profile-list{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .profile-card-name{
+        font-size: 25px;
+        font-weight: bolder;
+        color: white;
+        margin: auto auto 10px 20px;
+    }
+    .profile-list-title{
+        font-size: 12px;
+        font-weight: bold;
+        color: rgba(245, 245, 245, 0.712);
+    }
+    .profile-list input{
+        font-size: 15px;
+        font-weight: bold;
+        color: white;
+
+        padding: 0px;
+        margin-top: 5px;
+        border: 0px;
+        background-color: rgb(70, 70, 70);
+    }
+    .profile-list button{
+        border: 0px;
+        border-radius: 2px;
+        background-color: dimgrey;
+        color: white;
+        font-weight: bold;
+        margin: 5px;
+        width: 60px;
+        height: 35px;
+    }
+
+    /*
+        구독 게임 관리 테이블 스타일
+    */
+    .subscribe{
+        display: flex;
+        flex-direction: column;
+        margin: 20px;}
+
+    .subscribe-table{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .subscribe-save{
+        border: 0px;
+        border-radius: 3px;
+        background-color: rgb(95, 95, 238);
+        color: white;
+        font-weight: bold;
+        width: 60px;
+        height: 40px;
+        margin: 20px 0px 0px auto;
+    }
+
+    .table-header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px;
+        border-bottom: 2px solid gray;
+    }
+
+    .table-body{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px;
+        border-bottom: 1px solid silver;
+    }
+
+    .table-num{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        width: 50px;
+    }
+    .table-title{
+        margin-left: 10px;
+        margin-right: auto;
+        align-items: center;
+    }
+    .table-cancle{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 30px;
+    }
+    .cancle-btn{
+        color: red;
+    }
+
+    /*
+        비밀번호 변경 / 회원탈퇴 스타일
+    */
+    .pass-acount-wrapper > button{
+        border: 0px;
+        border-radius: 3px;
+        color: white;
+        font-weight: bold;
+        width: 200px;
+        height: 40px;
+    }
+
+    .change-pass-btn{
+        background-color: rgb(95, 95, 238);
+    }
+    .account-stop-btn{
+        background-color: rgb(241, 53, 53);
+    }
+
+</style>
 <!-- jQuery 라이브러리 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <body>
