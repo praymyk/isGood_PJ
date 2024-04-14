@@ -186,19 +186,19 @@
                 <div class="login-sub-label"> 로그인 </div>
             </div>
 
-            <form class="login-form">
+            <form class="login-form" action="login.me" method="post">
                 <div class="login-form">
                     <div class="login-form-group">
                         <label for="login-id">아이디</label>
-                        <input type="email" name="login-email" class="login-email">
+                        <input type="email" name="email" class="login-email">
                         <label for="login-id">비밀번호</label>
-                        <input type="password" name="login-pass" class="login-pass">
+                        <input type="password" name="userPwd" class="login-pass">
                     </div>
 
                     <div class="login-form-group2">
-                        <a href=""><span>계정 만들기</span></a>
+                        <a href="enrollForm.me"><span>계정 만들기</span></a>
                         <a href=""><span>아이디/비밀번호 찾기</span></a>
-                        <button type="button" class="login-button">로그인</button>
+                        <button type="submit" class="login-button">로그인</button>
                     </div>
 
                 </div>

@@ -117,7 +117,7 @@
         width: 230px;
     }
 
-    .signup-email-domain, #email_domain{
+    .signup-email-domain, .domain-input{
         width: 125px;
         height: 48px;
         position: absolute;
@@ -125,30 +125,24 @@
         right: 0px;
         transform: translateY(-50%);
     }
-
     .domain-input{
-        width: 125px;
-        height: 48px;
-        background-color: rgb(107, 107, 107);
+        background-color: rgb(46, 46, 46);
         color: white;
         border: 0px;
-        padding: 10px;
-        display: none;
     }
-
-    .domain-input-open{
-        width: 125px;
-        height: 48px;
-        background-color: rgb(107, 107, 107);
+    .domain-input::placeholder{
         color: white;
-        border: 0px;
-        padding: 10px;
+    }
+    .domain-input:focus{
+        outline: none;
+        color: white;
     }
 
     /*비밀번호 입력란 스타일 */
     #password, #password-chk{
         width: 355px;
     }
+
     .pass-visibility-on{
         position: absolute;
         top: 50%;
@@ -205,7 +199,6 @@
         color: white;
     }
 
-
     /*가입 버튼 */
     .submit-btn button{
         width: 460px;
@@ -242,6 +235,14 @@
 
 </style>
 <body class="enroll-body">
+<!--회원가입 페이지 뒤로가기 막기-->
+<script type="text/javascript">
+    history.pushState(null, null, location.href);
+    window.onpopstate = function (event) {
+        history.forward();
+    };
+</script>
+
 <!--구글 아이콘 불러오기-->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -281,39 +282,54 @@
                         <option value="@yahoo.com">yahoo.com</option>
                         <option value="self">직접입력</option>
                     </select>
-                    <input class="domain-input" type="hidden" placeholder="직접입력">
+                    <input class="domain-input" type="text" placeholder="클릭 후 직접입력">
                 </div>
             </div>
 
             <!-- 이메일 + 도메인 합치기 -->
             <script>
+                // 도메인 직접입력 inputBox 숨겨놓기
+                $(function(){
+                    $(".domain-input").hide();
+                });
+
                 //1. 이메일 입력 후 도메인 선택 잠금 해제
                 $("#email_id").on("keyup", function(){
                     if($("#email_id").val() != ""){
                         $("#email_domain").removeAttr("disabled");
                         $("#email_domain").addClass("signup-input-unlock");
-                    } else {
-                        $("#email_domain").attr("disabled", "disabled");
-                        $("#email_domain").removeClass("signup-input-unlock");
                     }
                 });
 
-                // 2. 이메일, 도메인 변경시 실시간으로 합치기
+                // 2. 이메일, 도메인 변경시 실시간으로 합치기 (직접 입력 상황 제외)
+                //    뒤로가기로 도메인이 직접 입력 상태라면 emain_id 입력 시 실시간으로 합치기
                 $("#email_id").on("change", ()=>{
-                   $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                    if($("#email_domain").val() != "self"){
+                        $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                    } else {
+                        $("#real_email").val($("#email_id").val()+"@"+$(".domain-input").val());
+                    }
                 });
                 $("#email_domain").on("change", ()=>{
-                    $("#real_email").val($("#email_id").val() + $("#email_domain").val());
-                });
-
-                // 3. 도메인>직접 입력 선택시 도메인 값 input으로 변경
-                $("#email_domain").on("change", function(){
-                    if($("#email_domain").val() == "self"){
-                        $(".domain-input").addClass("domain-input-open");
-                        $(".domain-input").removeClass("domain-input-open");
-                        $("#email_domain").css("display", "none");
+                    if($("#email_domain").val() != "self"){
+                        $("#real_email").val($("#email_id").val() + $("#email_domain").val());
                     }
                 });
+
+                // 3. 직접 입력 선택 > inputBox 보이기
+                $("#email_domain").on("change", function(){
+                    if($("#email_domain").val() == "self"){
+                        $(".domain-input").show();
+                        $("#email_domain").hide();
+                    }
+                });
+
+                // 4. 직접 입력 후 합치기
+                $(".domain-input").on("change", function(){
+                    $("#real_email").val($("#email_id").val()+"@"+$(".domain-input").val());
+                });
+
+
             </script>
 
             <!-- 비밀번호 입력 -->
@@ -542,7 +558,7 @@
         // 유효성 검사  - 이름(한글, 영문, 2~10자리)
         $("#username").on("keyup", function(){
             var name = $("#username").val();
-            var regExp = /^[가-힣a-zA-Z]{2,10}$/;
+            var regExp = /^[가-힣a-zA-Z0-9]{2,10}$/;
 
             if(regExp.test(name)){
                 passResult = true;

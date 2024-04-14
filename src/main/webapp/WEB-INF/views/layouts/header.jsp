@@ -243,8 +243,17 @@
 </div>
 
 <script>
+    // @ 로그인 한 경우 로그인 메뉴바 변경
+    if('${loginUser}' != ''){
 
+        document.querySelector('.navbar-menu-right').innerHTML
+            = '<li><a href="mypage.me">마이페이지</a></li>' +
+            '<li><a href="logout.me">로그아웃</a></li>';
+    }
 
+</script>
+
+<script>
     // @ 드롭다운 메뉴 스크립트  (1 ~ 4)
     // 1. 네비게이션 바 메뉴 요소 찾기
     const navMenu = document.querySelectorAll('.navbar-menu-left > li');

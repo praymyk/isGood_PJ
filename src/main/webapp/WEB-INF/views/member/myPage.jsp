@@ -18,15 +18,13 @@
 </style>
 <body class="index-body">
 <!-- header -->
-<jsp:include page="layouts/header.jsp"/>
+<jsp:include page="../layouts/header.jsp"/>
 
 <!-- content -->
-<jsp:include page="content.jsp"/>
+<jsp:include page="myPageContent.jsp"/>
 
 <!-- footer -->
-<jsp:include page="layouts/footer.jsp"/>
+<jsp:include page="../layouts/footer.jsp"/>
 </body>
-
-
 
 </html>

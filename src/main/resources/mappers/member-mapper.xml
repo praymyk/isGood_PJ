@@ -19,6 +19,12 @@
         <result column="STATUS" property="status" />
     </resultMap>
 
+    <resultMap type="subscribe" id="subscribeResltMap">
+        <result column="USER_NO" property="userNo" />
+        <result column="GAME_NO" property="gameNo" />
+        <result column="SUB_NO" property="subNo"/>
+    </resultMap>
+    <!--회원가입-->
     <select id="memberEnrollEnd" parameterType="member">
         INSERT INTO MEMBER(
                             USER_NO,
@@ -39,6 +45,14 @@
                             #{phone}
                             )
     </select>
-
-
+    <!--로그인-->
+    <select id="memberLogin" parameterType="member" resultType="member">
+        SELECT * FROM MEMBER
+                WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
+    </select>
+    <!--구독채널 리스트-->
+    <select id="subscribeList" parameterType="member" resultType="subscribe">
+        SELECT * FROM SUBSCRIBE
+                WHERE USER_NO = #{userNo}
+    </select>
 </mapper>

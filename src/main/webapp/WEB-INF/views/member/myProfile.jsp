@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: Myks
-  Date: 2024-04-12
-  Time: 오후 11:39
+  Date: 2024-04-14
+  Time: 오후 5:56
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -21,19 +21,22 @@
         user-select: none;
     }
 
+    .mypage-wrapper{
+        width: 100%;
+    }
+
     .subscripe, .profile-card-wrapper, .pass-acount-wrapper{
         display: flex;
         flex-direction: column;
-        margin: 20px;
+        margin: 20px 20px 40px 20px;
     }
 
     /* 마이페이지 구분자 */
-    .line{
-        height: 1px;
-        width: 100%;
+    .mypage-line{
+        height: 2px;
         border: 0px;
         background-color: silver;
-        margin: 40px 20px 40px 20px;
+        margin: 60px 20px 60px 20px;
     }
     /*
         프로필 카드 스타일
@@ -224,35 +227,35 @@
                 <div class="profile-img">
                     <img src="https://via.placeholder.com/150" alt="profile">
                 </div>
-                <div class="profile-card-name">Myks</div>
+                <div class="profile-card-name">${sessionScope.loginUser.nickName}</div>
                 <button>프로필 사진 변경</button>
             </div>
             <div class="profile-card-content">
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">별명</div>
-                        <input value="Myks">
+                        <input value="${sessionScope.loginUser.nickName}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">이메일</div>
-                        <input value="praymyk@gmail.com">
+                        <input value="${sessionScope.loginUser.email}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">연락처</div>
-                        <input value="010-4795-0025">
+                        <input value="${sessionScope.loginUser.phone}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">성별</div>
-                        <input value="남">
+                        <input value="${sessionScope.loginUser.gender}">
                     </div>
                     <button>수정</button>
                 </div>
@@ -260,7 +263,7 @@
         </div>
     </div>
 
-    <div class="line"></div>
+    <div class="mypage-line"></div>
 
     <!-- 구독 게임 관리 구간-->
 
@@ -295,7 +298,7 @@
     </form>
 
 
-    <div class="line"></div>
+    <div class="mypage-line"></div>
 
     <!-- 비밀번호 변경 / 회원탈퇴 구간-->
     <div class="pass-acount-wrapper">
@@ -308,6 +311,25 @@
     </div>
 
 </div>
+<!-- 구독 게임 리스트 ajax 통신으로 불러오기 -->
+<script>
+    $(function(){
+        console.log("구독 게임 리스트 불러오기 ajax 작동");
+        console.log("${userNo}")
+        console.log("${sessionScope.loginUser.userNo}");
+        $.ajax({
+            type: "GET",
+            url: "subList.me/${sessionScope.loginUser.userNo}",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+            },
+            error: function(){
+                console.log("ajax 통신 실패");
+            }
+        })
+    });
+</script>
 
 <!-- 구독 게임 순번 드래그&드랍 이벤트 스크립트 -->
 <script>
@@ -384,7 +406,6 @@
 
             });
 
-            console.log(subscribeItems);
         };
 
     })();
