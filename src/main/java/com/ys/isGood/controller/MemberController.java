@@ -97,7 +97,8 @@ public class MemberController {
     public ArrayList<Subscribe> memberSubList(@PathVariable String userNo){
 
         log.info("구독 리스트(ajax) 받은 userNo : " + userNo);
-
+        ArrayList<Subscribe> test = memberService.memberSubList(userNo);
+        log.info("구독 리스트(ajax) 출력 : " + test);
         return memberService.memberSubList(userNo);
     }
 

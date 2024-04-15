@@ -38,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
     // 구독 게임 리스트 조회용 메소드
     @Override
     public ArrayList<Subscribe> memberSubList(String userNo) {
-        return memberDao.membersubList(userNo, sqlSession);
+        return memberDao.memberSubList(userNo, sqlSession);
     }
 
 }

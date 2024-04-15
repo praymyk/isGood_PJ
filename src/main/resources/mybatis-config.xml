@@ -11,6 +11,7 @@
     <!--mapper에서 매칭할 VO 별칭-->
     <typeAliases>
         <typeAlias type="com.ys.isGood.model.vo.Member" alias="member"/>
+        <typeAlias type="com.ys.isGood.model.vo.Subscribe" alias="subscribe"/>
     </typeAliases>
 
     <!--매퍼 경로 등록-->

@@ -20,7 +20,7 @@ public class MemberDao {
         return sqlSession.selectOne("memberMapper.memberLogin", member);
     }
 
-    public ArrayList<Subscribe> membersubList(String userNo, SqlSessionTemplate sqlSession) {
+    public ArrayList<Subscribe> memberSubList(String userNo, SqlSessionTemplate sqlSession) {
         return (ArrayList)sqlSession.selectList("memberMapper.memberSubList", userNo);
     }
 }
