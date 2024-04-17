@@ -346,7 +346,6 @@
                     * @param gameNo : 구독 게임의 번호(Games 테이블 tag값)
                     * @param userNo : 구독 게임을 구독한 유저의 번호
                     */
-                    //
                     let subNoUp = [];
                     let subNo = [];
                     let gameNo = [];
@@ -357,15 +356,13 @@
                         subNo[j] = $(".subNo").eq(j).val();
                         gameNo[j] = $(".gameNo").eq(j).val();
                         userNo[j] = $(".userNo").eq(j).val();
-
-                        console.log("변경된 순서 어디감" + subNoUp[j]);
                     }
 
                     $.ajax({
                         type: "POST",
                         url: "updateSublist",
 
-                        data: { // 데이터를 JSON 문자열로 변환하여 전송
+                        data: {
                             subNoUp: subNoUp,
                             subNo: subNo,
                             gameNo: gameNo,

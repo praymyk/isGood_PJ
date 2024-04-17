@@ -111,10 +111,6 @@ public class MemberController {
 
         // 변경된 순서 정보를 받아 순차적으로 업데이트
         for(int i = 0; i < userNo.length; i++){
-            log.info("구독 리스트 저장 받을 userNo : " + userNo[i]);
-            log.info("구독 리스트 저장 받을 subNoUp : " + subNoUp[i]);
-            log.info("구독 리스트 저장 받을 subNo : " + subNo[i]);
-            log.info("구독 리스트 저장 받을 gameNo : " + gameNo[i]);
 
             Subscribe subscribe = new Subscribe(userNo[i], gameNo[i], subNo[i], subNoUp[i]);
 
