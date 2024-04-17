@@ -15,11 +15,11 @@ html의 공백 열에는 해당 div의 Y축 값이 들어있습니다.
  
 Y축 값으로 각 구독 게임의 리스트의 순번을 정합니다. ( 공백 열의 숫자가 DB에 저장돼있던 각 리스트의 Y축 값 )
 각 구독게임 리스트에는 input type="hidden" 값에 화면상의 Y축 값이 저장되며, 
-DB 컬럼의 상의 Y축 값을 업데이트 하는 방법으로 리스트 순서 기능을 구현했습니다.
+DB 컬럼의 상의 Y축 값을 업데이트 하는 방법으로 리스트 순서 기능을 구현함!
   
  ajax를 통해 배열 형태로 jsp의 구독게임리스트 정보를 controller로 넘길필요가 있었지만
- ajax data : 에 작성된 "userNo" 배열 객체를 @RequestParam String[] userNo로 받고자하면 배열로 인식하지 못해 구현에 어려움이 있었습니다.
- 배열은 @RequestParam(value="userNo[]") String[] userNo 형태로 value 값을 작성해야 인지함을 알수 있는 구현 파트였습니다.
+ ajax data : 에 작성된 "userNo" 배열 객체를 @RequestParam String[] userNo로 받고자하면 배열로 인식하지 못해 구현에 어려움이 있었다...
+ 배열은 @RequestParam(value="userNo[]") String[] userNo 형태로 value 값을 작성해야 인지함을 알수 있는 구현 파트.
  </pre>
 
 <img src="https://github.com/praymyk/isGood_PJ/blob/main/readmeIMG/changeListCode.png"> 
