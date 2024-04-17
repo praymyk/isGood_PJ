@@ -20,6 +20,11 @@ DB 컬럼의 상의 Y축 값을 업데이트 하는 방법으로 리스트 순�
  ajax를 통해 배열 형태로 jsp의 구독게임리스트 정보를 controller로 넘길필요가 있었지만
  ajax data : 에 작성된 "userNo" 배열 객체를 @RequestParam String[] userNo로 받고자하면 배열로 인식하지 못해 구현에 어려움이 있었다...
  배열은 @RequestParam(value="userNo[]") String[] userNo 형태로 value 값을 작성해야 인지함을 알수 있는 구현 파트.
+
+ㅁ 정리
+ - ajax로 배열을 보낼 경우@RequestParam(value="arr[]" String[] arr)
+ - get 또는 post로 보낼 경우@RequestParam(value="arr" String[] arr)
+
  </pre>
 
 <img src="https://github.com/praymyk/isGood_PJ/blob/main/readmeIMG/changeListCode.png"> 
