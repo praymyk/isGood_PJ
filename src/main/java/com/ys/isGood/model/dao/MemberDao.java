@@ -2,6 +2,7 @@ package com.ys.isGood.model.dao;
 
 import com.ys.isGood.model.vo.Member;
 import com.ys.isGood.model.vo.Subscribe;
+import com.ys.isGood.model.vo.SubscribeList;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +21,13 @@ public class MemberDao {
         return sqlSession.selectOne("memberMapper.memberLogin", member);
     }
 
-    public ArrayList<Subscribe> memberSubList(String userNo, SqlSessionTemplate sqlSession) {
+    // 마이페이지 구독게임 리스트 조회 메소드
+    public ArrayList<SubscribeList> memberSubList(String userNo, SqlSessionTemplate sqlSession) {
         return (ArrayList)sqlSession.selectList("memberMapper.memberSubList", userNo);
+    }
+
+    // 마이페이지 구독게임 리스트 순번 저장 메소드
+    public int memberSubListSave(Subscribe subscribe, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("memberMapper.memberSubListUpdate", subscribe);
     }
 }

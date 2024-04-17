@@ -3,6 +3,7 @@ package com.ys.isGood.model.service;
 import com.ys.isGood.model.dao.MemberDao;
 import com.ys.isGood.model.vo.Member;
 import com.ys.isGood.model.vo.Subscribe;
+import com.ys.isGood.model.vo.SubscribeList;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,13 @@ public class MemberServiceImpl implements MemberService {
 
     // 구독 게임 리스트 조회용 메소드
     @Override
-    public ArrayList<Subscribe> memberSubList(String userNo) {
+    public ArrayList<SubscribeList> memberSubList(String userNo) {
         return memberDao.memberSubList(userNo, sqlSession);
+    }
+
+    @Override
+    public int memberSubListSave(Subscribe subscribe) {
+        return memberDao.memberSubListSave(subscribe, sqlSession);
     }
 
 }

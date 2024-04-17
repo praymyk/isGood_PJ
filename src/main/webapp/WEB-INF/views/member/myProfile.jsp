@@ -267,7 +267,7 @@
 
     <!-- 구독 게임 관리 구간-->
 
-    <form>
+
         <div class="subscribe">
             <h3> 구독 게임 관리</h3>
             <h5> 구독 게임 순서를 변경하거나, 구독을 취소할 수 있습니다.</h5>
@@ -278,24 +278,12 @@
                     <div class="table-cancle">구독 취소</div>
                 </div>
                 <div class="table-body" draggable="true">
-                    <div class="table-num">1</div>
-                    <div class="table-title">냠냠</div>
-                    <div class="table-cancle cancle-btn">취소</div>
-                </div>
-                <div class="table-body" draggable="true">
-                    <div class="table-num">2</div>
-                    <div class="table-title">쩝쩝</div>
-                    <div class="table-cancle cancle-btn">취소</div>
-                </div>
-                <div class="table-body" draggable="true">
-                    <div class="table-num">3</div>
-                    <div class="table-title">늄늄</div>
-                    <div class="table-cancle cancle-btn">취소</div>
+                   <div> 구독 게임이 존재하지 않습니다. </div>
                 </div>
             </div>
             <button class="subscribe-save">저장</button>
         </div>
-    </form>
+
 
 
     <div class="mypage-line"></div>
@@ -313,27 +301,98 @@
 </div>
 <!-- 구독 게임 리스트 ajax 통신으로 불러오기 -->
 <script>
+    /*
+    * @param subListHead : 구독 리스트의 리스트명
+    * @param subList : 구독 리스트
+    * @param yValue : 변경된 구독리스트의 순번을 파악하기 위한 y 좌표 값 ( y죄표 기준으로 순서 변경 )
+    *               : 시작 997 부터 51씩 증가 => SUB_NO 컬럼값 업데이트 해주기
+    */
     $(function(){
-        console.log("구독 게임 리스트 불러오기 ajax 작동");
-        console.log("${userNo}")
-        console.log("${sessionScope.loginUser.userNo}");
+        let subListHead = '<div class="table-header">'+
+                            '<div class="table-num">공백</div>' +
+                            '<div class="table-title">게임 이름</div>' +
+                            '<div class="table-cancle">구독 취소</div>' +
+                          '</div>';
+        let subList = "";
+
         $.ajax({
             type: "GET",
             url: "subList.me/${sessionScope.loginUser.userNo}",
             dataType: "json",
             success: function(data){
-                console.log(data);
+
+                $.each(data, function (i) {
+                    subList += '<div class="table-body" draggable="true">' +
+                                    `<input type="hidden" value=${sessionScope.loginUser.userNo} name="userNo" class="userNo">` +
+                                    '<input type="hidden" value= name="subNoUp" class="subNoUp">' +
+                                    '<input type="hidden" value="'+data[i].subNo+'" name="subNo" class="subNo">' +
+                                    '<input type="hidden" value="'+data[i].gameNo+'" name="gameNo" class="gameNo">' +
+                                    '<div class="table-num">'+data[i].subNo+'</div>' +
+                                    '<div class="table-title">'+data[i].gameTitle+'</div>' +
+                                    '<div class="table-cancle cancle-btn">취소</div>' +
+                                '</div>';
+                });
+                $(".subscribe-table").html(subListHead + subList);
+                // ajax 이벤트 완료후 드래그&드랍 이벤트 바인딩
+                bindDragEvents();
+
+                // 구독 순서 변경 저장 이벤트 ( 배열형태로 저장 후 보내기 )
+                // 리스트 목록 출력 후 순번 저장이 가능하도록 ajax 이벤트 내 작성
+                $(".subscribe-save").on("click", function(){
+
+                    /*
+                    * @param subNoUp : 화면에서의 리스트의 순서(고정값/저장할 값) (updateNumber() 함수에서 구하고 있음)
+                    * @param subNo : DB에서 가져온 순서값
+                    * @param gameNo : 구독 게임의 번호(Games 테이블 tag값)
+                    * @param userNo : 구독 게임을 구독한 유저의 번호
+                    */
+                    //
+                    let subNoUp = [];
+                    let subNo = [];
+                    let gameNo = [];
+                    let userNo = [];
+
+                    for(let j = 0; j < data.length; j++){
+                        subNoUp[j] = $(".subNoUp").eq(j).val();
+                        subNo[j] = $(".subNo").eq(j).val();
+                        gameNo[j] = $(".gameNo").eq(j).val();
+                        userNo[j] = $(".userNo").eq(j).val();
+
+                        console.log("변경된 순서 어디감" + subNoUp[j]);
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "updateSublist",
+
+                        data: { // 데이터를 JSON 문자열로 변환하여 전송
+                            subNoUp: subNoUp,
+                            subNo: subNo,
+                            gameNo: gameNo,
+                            userNo: userNo
+                        },
+                        success: function(data){
+                            console.log("순서 저장 성공 : " + data);
+                            window.alert("구독 게임 순서를 변경했습니다.");
+                        },
+                        error: function(){
+                            console.log("순서 변경 저장 실패");
+                        }
+                    });
+
+                });
+
+                console.log("구독 리스트 ajax 통신 결과:" + data);
             },
-            error: function(){
+            error: function () {
                 console.log("ajax 통신 실패");
             }
         })
     });
-</script>
 
-<!-- 구독 게임 순번 드래그&드랍 이벤트 스크립트 -->
-<script>
-    (()=>{
+    <!-- 구독 게임 순번 드래그&드랍 이벤트 스크립트 -->
+    function bindDragEvents(){
+
         /*
         * @param
         * @$: document.querySelectorAll -> jquery의 $와 같은 역할 수행
@@ -386,29 +445,26 @@
                 const draggable = document.querySelector(".dragging");
 
                 container.insertBefore(draggable, afterElement);
-
                 // 변경된 순서를 DB에 업데이트
                 updateNumber(container);
             });
         });
 
-        // 변경된 순서 DB에 업데이트 함수
+        // 순서가 변경된 경우 Index 순번을 변경할 용도 함수
         function updateNumber(container){
-            // 변경된 순서를 담을 배열
-            const subscribeItems = [];
+            // 구독 게임 리스트 변수
+            const tableBodies = document.querySelectorAll('.table-body');
 
-            container.querySelectorAll(".table-body").forEach((el, idx) => {
-
-                subscribeItems.push({
-                    subscribeNo: idx + 1,
-                    title: el.querySelector(".table-title").textContent
-                });
-
+            // 구독 게임 리스트 각각의 y좌표를 구하여  input에 담기(y좌표 = 순번)
+            tableBodies.forEach(tableBody => {
+                const yPosition = tableBody.offsetTop;
+                const tableBodyInput = tableBody.querySelector('input[type="hidden"]:nth-child(2)');
+                tableBodyInput.value= yPosition;
             });
 
         };
 
-    })();
+    }
 
 </script>
 </body>

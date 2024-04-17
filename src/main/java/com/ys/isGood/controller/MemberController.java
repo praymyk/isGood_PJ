@@ -1,9 +1,9 @@
 package com.ys.isGood.controller;
 
-import com.ys.isGood.model.service.MemberService;
 import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.Member;
 import com.ys.isGood.model.vo.Subscribe;
+import com.ys.isGood.model.vo.SubscribeList;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -94,12 +94,34 @@ public class MemberController {
     // 마이페이지 - 구독 게임 리스트 조회용 메소드
     @GetMapping("/subList.me/{userNo}")
     @ResponseBody
-    public ArrayList<Subscribe> memberSubList(@PathVariable String userNo){
+    public ArrayList<SubscribeList> memberSubList(@PathVariable String userNo){
 
-        log.info("구독 리스트(ajax) 받은 userNo : " + userNo);
-        ArrayList<Subscribe> test = memberService.memberSubList(userNo);
-        log.info("구독 리스트(ajax) 출력 : " + test);
+        //log.info("구독 리스트(ajax) 출력 : " + test);
         return memberService.memberSubList(userNo);
+    }
+
+    // 마이페이지 - 구독 게임 저장용 메소드
+    @PostMapping("updateSublist")
+    @ResponseBody
+    public String memberSubListSave(@RequestParam(value="userNo[]") String[] userNo,
+                                    @RequestParam(value="subNoUp[]")int[] subNoUp,
+                                    @RequestParam(value="subNo[]")int[] subNo,
+                                    @RequestParam(value="gameNo[]")String[] gameNo
+                                    ){
+
+        // 변경된 순서 정보를 받아 순차적으로 업데이트
+        for(int i = 0; i < userNo.length; i++){
+            log.info("구독 리스트 저장 받을 userNo : " + userNo[i]);
+            log.info("구독 리스트 저장 받을 subNoUp : " + subNoUp[i]);
+            log.info("구독 리스트 저장 받을 subNo : " + subNo[i]);
+            log.info("구독 리스트 저장 받을 gameNo : " + gameNo[i]);
+
+            Subscribe subscribe = new Subscribe(userNo[i], gameNo[i], subNo[i], subNoUp[i]);
+
+            int result = memberService.memberSubListSave(subscribe);
+        }
+
+        return "Ajax 테스트";
     }
 
 }

@@ -2,6 +2,7 @@ package com.ys.isGood.model.service;
 
 import com.ys.isGood.model.vo.Member;
 import com.ys.isGood.model.vo.Subscribe;
+import com.ys.isGood.model.vo.SubscribeList;
 
 import java.util.ArrayList;
 
@@ -17,5 +18,9 @@ public interface MemberService {
     String memberIdCheck(String email);
 
     // 구독 게임 리스트 조회용 메소드
-    ArrayList<Subscribe> memberSubList(String userNo);
+    ArrayList<SubscribeList> memberSubList(String userNo);
+
+    // 구독 게임 리스트 순번 저장용 메소드
+    int memberSubListSave(Subscribe subscribe);
+
 }

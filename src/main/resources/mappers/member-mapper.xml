@@ -24,6 +24,22 @@
         <result column="GAME_NO" property="gameNo" />
         <result column="SUB_NO" property="subNo"/>
     </resultMap>
+
+    <!--구독 게임 리스트 조회 시 GameTable과 조인 내용-->
+    <resultMap type="subscribeList" id="subScribeListResultMap" >
+        <result column="User_no" property="userNo" />
+        <result column="GAME_NO" property="gameNo" />
+        <result column="SUB_NO" property="subNo"/>
+        <result column="GAME_Title" property="gameTitle"/>
+        <result column="GAME_CONTENT" property="gameContent"/>
+        <result column="GAME_PRICE" property="gamePrice"/>
+        <result column="GAME_SALE" property="gameSale"/>
+        <result column="GAME_TAG" property="gameTag"/>
+        <result column="GAME_ENROLL_DATE" property="gameEnrollDate"/>
+        <result column="GAME_MODIFY_DATE" property="gameModifyDate"/>
+        <result column="GAME_STATUS" property="gameStatus"/>
+    </resultMap>
+
     <!--회원가입-->
     <select id="memberEnrollEnd" parameterType="member">
         INSERT INTO MEMBER(
@@ -50,10 +66,20 @@
         SELECT * FROM MEMBER
                 WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
     </select>
-    <!--구독채널 리스트-->
-    <select id="memberSubList" parameterType="member" resultMap="subscribeResltMap">
+    <!--구독 게임 리스트-->
+    <select id="memberSubList" parameterType="member" resultMap="subScribeListResultMap">
         SELECT * FROM SUBSCRIBE
+          INNER JOIN GAMES ON SUBSCRIBE.GAME_NO = GAMES.GAME_NO
                 WHERE USER_NO = #{userNo}
+             ORDER BY SUB_NO ASC
     </select>
+
+    <!-- 구독게임 리스트 순번 저장 -->
+    <update id="memberSubListUpdate" parameterType="subscribe">
+        UPDATE SUBSCRIBE
+           SET SUB_NO = #{subNoUp}
+         WHERE USER_NO = #{userNo} AND GAME_NO = #{gameNo}
+    </update>
+
 
 </mapper>
