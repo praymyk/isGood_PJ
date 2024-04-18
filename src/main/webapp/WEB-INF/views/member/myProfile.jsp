@@ -59,10 +59,19 @@
         border-radius: 50%;
         background-color: white;
     }
+    .profile-img:hover{
+        cursor: pointer;
+        background-color: #415aff;
+    }
     .profile-img img{
         border-radius: 50%;
         width: 140px;
         height: 140px;
+    }
+
+    #pImgBtn:hover{
+        cursor: pointer;
+        background-color: #415aff;
     }
 
     .profile-card-title{
@@ -223,13 +232,19 @@
     <div class="profile-card-wrapper">
         <h2>내 계정</h2>
         <div class="profile-card">
+            <form action="profileImgUpdate" method="post" id="profileImgForm" enctype="multipart/form-data">
             <div class="profile-card-title">
                 <div class="profile-img">
-                    <img src="https://via.placeholder.com/150" alt="profile">
+                    <img src="https://via.placeholder.com/150" alt="profile" >
                 </div>
                 <div class="profile-card-name">${sessionScope.loginUser.nickName}</div>
-                <button>프로필 사진 변경</button>
+                <input type="hidden" value="${sessionScope.loginUser.userNo}" name="userNo">
+                <input type="hidden" value="" name="originName">
+                <input type="hidden" value="" name="changeName">
+                <input type="file" id="pImgFileUp" name="file" style="display: none;">
+                <button id="pImgBtn" type="submit">프로필 사진 저장</button>
             </div>
+            </form>
             <div class="profile-card-content">
                 <div class="profile-list">
                     <div>
@@ -266,8 +281,6 @@
     <div class="mypage-line"></div>
 
     <!-- 구독 게임 관리 구간-->
-
-
         <div class="subscribe">
             <h3> 구독 게임 관리</h3>
             <h5> 구독 게임 순서를 변경하거나, 구독을 취소할 수 있습니다.</h5>
@@ -284,8 +297,6 @@
             <button class="subscribe-save">저장</button>
         </div>
 
-
-
     <div class="mypage-line"></div>
 
     <!-- 비밀번호 변경 / 회원탈퇴 구간-->
@@ -299,6 +310,19 @@
     </div>
 
 </div>
+
+
+<!-- 프로필 이미지 변경 스크립트 -->
+<script>
+    $(".profile-img").click(function(){
+        $("#pImgFileUp").click();
+        console.log("첨부된 파일 정보 : " +$("#pImgFileUp"));
+
+    });
+
+</script>
+
+
 <!-- 구독 게임 리스트 ajax 통신으로 불러오기 -->
 <script>
     /*

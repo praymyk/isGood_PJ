@@ -42,9 +42,11 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.memberSubList(userNo, sqlSession);
     }
 
+    // 구독 게임 리스트 순번 저장용 메소드
     @Override
     public int memberSubListSave(Subscribe subscribe) {
         return memberDao.memberSubListSave(subscribe, sqlSession);
     }
+
 
 }

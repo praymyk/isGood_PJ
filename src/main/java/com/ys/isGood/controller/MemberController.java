@@ -2,14 +2,18 @@ package com.ys.isGood.controller;
 
 import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.Member;
+import com.ys.isGood.model.vo.ProfileImg;
 import com.ys.isGood.model.vo.Subscribe;
 import com.ys.isGood.model.vo.SubscribeList;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -89,6 +93,17 @@ public class MemberController {
     @GetMapping("/mypage.me")
     public String memberMyPage(){
         return "member/myPage";
+    }
+
+    // 마이페이지 프로필 이미지 저장용 메소드 (작성중)
+    @PostMapping("/profileImgUpdate")
+    public String updateProfileImg(@RequestParam("file") MultipartFile file, ProfileImg profileImg){
+
+        log.info("프로필 이미지 정보 : " + profileImg);
+        log.info("멀티파트 파일 : " + file);
+
+
+        return "redirect:/mypage.me";
     }
 
     // 마이페이지 - 구독 게임 리스트 조회용 메소드
