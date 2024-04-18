@@ -1,4 +1,4 @@
-<h1 align="center"> IsGood 프로젝트(진행중)/h1>
+<h1 align="center"> IsGood 프로젝트(진행중)</h1>
 
 <h2>IsGood은 신작게임을 소개하고 게임별 게시판을 이용할수 있는 커뮤니티 사이트입니다. </h3> 
 <pre>
@@ -30,7 +30,7 @@ DB 컬럼의 상의 Y축 값을 업데이트 하는 방법으로 리스트 순�
 <img src="https://github.com/praymyk/isGood_PJ/blob/main/readmeIMG/changeListCode.png"> 
 
 <h2> 🟪 구현 화면/코드 : 회원 가입 기능</h3>
-<img src="https://github.com/praymyk/isGood_PJ/blob/main/readmeIMG/updateList.gif">
+<img src="https://github.com/praymyk/isGood_PJ/blob/main/readmeIMG/signUp.gif">
 <pre>
 
 
