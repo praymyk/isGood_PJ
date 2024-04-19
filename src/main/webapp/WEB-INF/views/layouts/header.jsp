@@ -244,8 +244,7 @@
 
 <script>
     // @ 로그인 한 경우 로그인 메뉴바 변경
-    if('${loginUser}' != ''){
-
+    if("${sessionScope.loginUser.userNo}" != ""){
         document.querySelector('.navbar-menu-right').innerHTML
             = '<li><a href="mypage.me">마이페이지</a></li>' +
             '<li><a href="logout.me">로그아웃</a></li>';

@@ -5,9 +5,9 @@
 
 <mapper namespace="memberMapper">
 
+    <!-- 회원 정보 VO -->
     <resultMap type="member" id="memberResultMap">
         <id column="USER_NO" property="userNo" />
-        <result column="PROFILE_IMG" property="profileImg" />
         <result column="EMAIL" property="email" />
         <result column="USER_PWD" property="userPwd"/>
         <result column="NICKNAME" property="nickName"/>
@@ -18,7 +18,28 @@
         <result column="MODIFY_DATE" property="modifyDate" />
         <result column="STATUS" property="status" />
     </resultMap>
+    <!-- 로그인한 회원정 VO(프로필 이미지 포함) -->
+    <resultMap type="loginMember" id="loginMemberResultMap">
+        <id column="USER_NO" property="userNo" />
+        <result column="EMAIL" property="email" />
+        <result column="USER_PWD" property="userPwd"/>
+        <result column="NICKNAME" property="nickName"/>
+        <result column="BIRTHDAY" property="birthday"/>
+        <result column="GENDER" property="gender"/>
+        <result column="PHONE" property="phone" />
+        <result column="ENROLL_DATE" property="enrollDate" />
+        <result column="MODIFY_DATE" property="modifyDate" />
+        <result column="STATUS" property="status" />
 
+        <result column="PIMG_NO" property="pimgNo" />
+        <result column="PIMG_PATH" property="pimgPath" />
+        <result column="ORIGIN_NAME" property="originName" />
+        <result column="CHANGE_NAME" property="changeName" />
+        <result column="IMG_TYPE" property="imgType" />
+        <result column="IMG_SIZE" property="imgSize" />
+    </resultMap>
+
+    <!-- 구독 게임 VO -->
     <resultMap type="subscribe" id="subscribeResltMap">
         <result column="USER_NO" property="userNo" />
         <result column="GAME_NO" property="gameNo" />
@@ -40,8 +61,19 @@
         <result column="GAME_STATUS" property="gameStatus"/>
     </resultMap>
 
+    <!-- 프로필 이미지 VO -->
+    <resultMap type="profileImg" id="profileImgResultMap">
+        <result column="PIMG_NO" property="pimgNo" />
+        <result column="PIMG_PATH" property="pimgPath" />
+        <result column="ORIGIN_NAME" property="originName" />
+        <result column="CHANGE_NAME" property="changeName" />
+        <result column="USER_NO" property="userNo" />
+        <result column="IMG_TYPE" property="imgType" />
+        <result column="IMG_SIZE" property="imgSize" />
+    </resultMap>
+
     <!--회원가입-->
-    <select id="memberEnrollEnd" parameterType="member">
+    <select parameterType="member" id="memberEnrollEnd">
         INSERT INTO MEMBER(
                             USER_NO,
                             EMAIL,
@@ -62,9 +94,11 @@
                             )
     </select>
     <!--로그인-->
-    <select id="memberLogin" parameterType="member" resultMap="memberResultMap">
-        SELECT * FROM MEMBER
-                WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
+    <select id="memberLogin" parameterType="member" resultMap="loginMemberResultMap">
+        SELECT *
+          FROM MEMBER
+          LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+          WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
     </select>
     <!--구독 게임 리스트-->
     <select id="memberSubList" parameterType="member" resultMap="subScribeListResultMap">
@@ -81,5 +115,16 @@
          WHERE USER_NO = #{userNo} AND GAME_NO = #{gameNo}
     </update>
 
+    <!-- 프로필 이미지 등록용 -->
+    <insert id="insertProfileImg" parameterType="profileImg">
+        INSERT INTO PROFILEIMG
+             VALUES (PIMG_SEQ.NEXTVAL,
+                     #{userNo},
+                     #{pimgPath},
+                     #{originName},
+                     #{changeName},
+                     #{imgType},
+                     #{imgSize})
+    </insert>
 
 </mapper>

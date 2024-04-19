@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Title</title>
@@ -56,17 +57,18 @@
         align-items: center;
         width: 150px;
         height: 150px;
+        overflow: hidden;
         border-radius: 50%;
         background-color: white;
     }
     .profile-img:hover{
         cursor: pointer;
-        background-color: #415aff;
+        border: 5px solid #415aff;
     }
-    .profile-img img{
+    .profileImg{
         border-radius: 50%;
-        width: 140px;
-        height: 140px;
+        width: 200px;
+        height: auto;
     }
 
     #pImgBtn:hover{
@@ -235,13 +237,14 @@
             <form action="profileImgUpdate" method="post" id="profileImgForm" enctype="multipart/form-data">
             <div class="profile-card-title">
                 <div class="profile-img">
-                    <img src="https://via.placeholder.com/150" alt="profile" >
+                    <img class="profileImg" src="" alt="왜안나옴" >
                 </div>
                 <div class="profile-card-name">${sessionScope.loginUser.nickName}</div>
                 <input type="hidden" value="${sessionScope.loginUser.userNo}" name="userNo">
-                <input type="hidden" value="" name="originName">
+                <input type="hidden" value="${sessionScope.loginUser.originName}" name="originName">
                 <input type="hidden" value="" name="changeName">
-                <input type="file" id="pImgFileUp" name="file" style="display: none;">
+                <input type="file" id="pImgFileUp" accept = "image/gif, image/png, image/jpeg"
+                       name="uploadFile" style="display: none;">
                 <button id="pImgBtn" type="submit">프로필 사진 저장</button>
             </div>
             </form>
@@ -314,12 +317,54 @@
 
 <!-- 프로필 이미지 변경 스크립트 -->
 <script>
-    $(".profile-img").click(function(){
-        $("#pImgFileUp").click();
-        console.log("첨부된 파일 정보 : " +$("#pImgFileUp"));
+    $(function(){
+
+        // # 프로필 이미지 변경 이벤트
+        //   1. 프로필 이미지 클릭 시 input file 업로드 창 띄우기
+        $(".profile-img").click(function(){
+            $("#pImgFileUp").click();
+        });
+
+        // 2. 이미지 업로드한경우 프로필 이미지 미리보기
+        // @param photo_path : 원래 이미지를 답을 변수
+        // @param my_photo : 업로드르할 이미지를 담을 변수
+        let photo_path = "";
+        let my_photo;
+
+        $("#pImgFileUp").change(function(){
+            my_photo = this.files[0];
+            console.log("첨부된 파일 정보 : ", my_photo);
+
+            // 이미지 미리보기 처리
+            //FileReader 객체 생성
+            let reader = new FileReader();
+            //readAsDataURL에 Input 태그로 읽은 파일 넘겨주기
+            reader.readAsDataURL(my_photo);
+
+            //파일읽기 로딩 완료 시
+            reader.onload = function(){
+                //result 꺼내서 src 속성에 담아주기
+                $('.profileImg').attr('src', reader.result);
+                console.log("URL:"+reader.result);
+            };
+        });
+
+        //3. 업로드된 프로필 이미지 불러오기/보이기
+        $.ajax({
+            type: "GET",
+            url: "mypage.me/${sessionScope.loginUser.userNo}/displyProfileImg",
+            dataType: "json",
+            success: function(data){
+                photo_path = data;
+                $(".profileImg").attr("src", photo_path);
+                console.log("프로필 이미지 불러오기 성공");
+            },
+            error: function(){
+                console.log("프로필 이미지 불러오기 실패");
+            }
+        });
 
     });
-
 </script>
 
 
@@ -402,8 +447,6 @@
                     });
 
                 });
-
-                console.log("구독 리스트 ajax 통신 결과:" + data);
             },
             error: function () {
                 console.log("ajax 통신 실패");

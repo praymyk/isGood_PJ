@@ -1,8 +1,6 @@
 package com.ys.isGood.model.dao;
 
-import com.ys.isGood.model.vo.Member;
-import com.ys.isGood.model.vo.Subscribe;
-import com.ys.isGood.model.vo.SubscribeList;
+import com.ys.isGood.model.vo.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +15,7 @@ public class MemberDao {
     }
 
     // 로그인 처리 메소드
-    public Member memberLogin(Member member, SqlSessionTemplate sqlSession) {
+    public LoginMember memberLogin(Member member, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("memberMapper.memberLogin", member);
     }
 
@@ -29,5 +27,9 @@ public class MemberDao {
     // 마이페이지 구독게임 리스트 순번 저장 메소드
     public int memberSubListSave(Subscribe subscribe, SqlSessionTemplate sqlSession) {
         return sqlSession.update("memberMapper.memberSubListUpdate", subscribe);
+    }
+
+    public int updateProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
+        return sqlSession.insert("memberMapper.insertProfileImg", profileImg);
     }
 }

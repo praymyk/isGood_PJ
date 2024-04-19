@@ -1,9 +1,7 @@
 package com.ys.isGood.model.service;
 
 import com.ys.isGood.model.dao.MemberDao;
-import com.ys.isGood.model.vo.Member;
-import com.ys.isGood.model.vo.Subscribe;
-import com.ys.isGood.model.vo.SubscribeList;
+import com.ys.isGood.model.vo.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 로그인 처리 메소드
     @Override
-    public Member memberLogin(Member member) {
+    public LoginMember memberLogin(Member member) {
         return memberDao.memberLogin(member, sqlSession);
     }
 
@@ -46,6 +44,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int memberSubListSave(Subscribe subscribe) {
         return memberDao.memberSubListSave(subscribe, sqlSession);
+    }
+
+    // 마이페이지 프로필 이미지 업데이트용 메소드
+    @Override
+    public int updateProfileImg(ProfileImg profileImg) {
+        return memberDao.updateProfileImg(profileImg, sqlSession);
     }
 
 

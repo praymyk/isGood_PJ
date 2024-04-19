@@ -15,7 +15,7 @@ class MemberServiceImplTest {
     @Autowired private SqlSessionTemplate sqlSession;
     @Test
     void memberEnrollEnd() {
-        Member member = new Member("userNo", "profileImg", "email.com", "1212","nickName", "1212", "M", "1111111", "DEFAULT","DEFAULT", "Y");      //    USER_NO	NUMBER
+        Member member = new Member("userNo", "email.com", "1212","nickName", "1212", "M", "1111111", "DEFAULT","DEFAULT", "Y");      //    USER_NO	NUMBER
         //예상
         int expected = 0;
 

@@ -11,8 +11,11 @@
     <!--mapper에서 매칭할 VO 별칭-->
     <typeAliases>
         <typeAlias type="com.ys.isGood.model.vo.Member" alias="member"/>
+        <typeAlias type="com.ys.isGood.model.vo.LoginMember" alias="loginMember"/>
         <typeAlias type="com.ys.isGood.model.vo.Subscribe" alias="subscribe"/>
         <typeAlias type="com.ys.isGood.model.vo.SubscribeList" alias="subscribeList"/>
+        <typeAlias type="com.ys.isGood.model.vo.ProfileImg" alias="profileImg"/>
+
     </typeAliases>
 
     <!--매퍼 경로 등록-->

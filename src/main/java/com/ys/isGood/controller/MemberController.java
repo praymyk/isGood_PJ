@@ -1,21 +1,15 @@
 package com.ys.isGood.controller;
 
 import com.ys.isGood.model.service.MemberServiceImpl;
-import com.ys.isGood.model.vo.Member;
-import com.ys.isGood.model.vo.ProfileImg;
-import com.ys.isGood.model.vo.Subscribe;
-import com.ys.isGood.model.vo.SubscribeList;
-import jakarta.servlet.MultipartConfigElement;
+import com.ys.isGood.model.vo.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
 
 @Controller
 @Slf4j
@@ -61,23 +55,24 @@ public class MemberController {
     @PostMapping("/login.me")
     public String memberLogin(Member member, HttpSession session){
 
-        log.info("로그인 정보 입력: " + member);
-        Member loginUser = memberService.memberLogin(member);
-        log.info("로그인 정보 출력: " + loginUser);
-
-        //session.setAttribute("loginUser", loginUser);
 
         //테스트용 맴버 생성
+
         Member testMember = new Member("2",
-                "testProfileImg",
-                "testEmail",
-                "testPwd",
+                "test@naver.com",
+                "1234",
                 "testNickName",
                 "testBirthday",
                 "testGender",
-                "testPhone", "testEnrollDate", "testModifyDate", "testStatus");
+                "testPhone",
+                "testEnrollDate",
+                "testModifyDate",
+                "testStatus");
 
-        session.setAttribute("loginUser", testMember);
+        // 매개변수 수정 필요
+        LoginMember loginUser = memberService.memberLogin(testMember);
+        log.info("로그인 정보(테스트용 맴버를 로그인 메서드에서 생성중): " + loginUser);
+        session.setAttribute("loginUser", loginUser);
 
         return "redirect:/";
     }
@@ -95,16 +90,19 @@ public class MemberController {
         return "member/myPage";
     }
 
-    // 마이페이지 프로필 이미지 저장용 메소드 (작성중)
-    @PostMapping("/profileImgUpdate")
-    public String updateProfileImg(@RequestParam("file") MultipartFile file, ProfileImg profileImg){
+    // 마이페이지 프로필 이미지 불러오기
+    @GetMapping("mypage.me/{userNo}/displyProfileImg")
+    @ResponseBody
+    public ProfileImg displayProfileImg(@PathVariable String userNo){
+
+        // 프로필 이미지 불러오기 단계에서 작업 중단
+        ProfileImg profileImg = memberService.displayProfileImg(userNo);
 
         log.info("프로필 이미지 정보 : " + profileImg);
-        log.info("멀티파트 파일 : " + file);
 
-
-        return "redirect:/mypage.me";
+        return profileImg;
     }
+
 
     // 마이페이지 - 구독 게임 리스트 조회용 메소드
     @GetMapping("/subList.me/{userNo}")
