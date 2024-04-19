@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Slf4j
@@ -30,7 +28,7 @@ public class UploadController {
 
     // 마이페이지 프로필 이미지 저장용 메소드 (작성중)
     @PostMapping("/profileImgUpdate")
-    public String updateProfileImg(@RequestParam("uploadFile") MultipartFile uploadFile,
+    public String insertProfileImg(@RequestParam("uploadFile") MultipartFile uploadFile,
                                    ProfileImg profileImg,
                                    Model model){
 
@@ -53,7 +51,7 @@ public class UploadController {
         log.info("fileName : " +fileName);
 
         // 2. 폴더 구분
-        String folderPath = makeFolder();
+        String folderPath = makeFolder(profileImg.getUserNo());
         String uuid = UUID.randomUUID().toString();
 
         // 3. 서버에 저장할 파일경로+이름 작성 ( 업로드 경로 + 폴더 경로[년/월/일/] + UUID + 파일명 )
@@ -76,7 +74,7 @@ public class UploadController {
         log.info("DB 저장 프로필 이미지 정보 : " + profileImg);
 
         // 6. DB에 저장
-        int result = memberService.updateProfileImg(profileImg);
+        int result = memberService.insertProfileImg(profileImg);
 
         if(result > 0){
             model.addAttribute("msg", "프로필 이미지 업데이트 성공");
@@ -89,11 +87,9 @@ public class UploadController {
         return "redirect:/mypage.me";
     }
 
-    // 이미지 저장 시 폴더 생성용(년/월/일 형식) 메소드
-    private String makeFolder(){
-        String str = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-
-        String folderPath = str.replace("//", File.separator);
+    // 이미지 저장 시 폴더 생성용(userNo명칭) 메소드
+    private String makeFolder(String userNo){
+        String folderPath = userNo;
 
         File uploadPathFolder = new File(uploadPath, folderPath);
 

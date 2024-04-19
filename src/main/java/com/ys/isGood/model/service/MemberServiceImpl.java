@@ -46,10 +46,16 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.memberSubListSave(subscribe, sqlSession);
     }
 
-    // 마이페이지 프로필 이미지 업데이트용 메소드
+    // 마이페이지 프로필 이미지 등록용 메소드
     @Override
-    public int updateProfileImg(ProfileImg profileImg) {
-        return memberDao.updateProfileImg(profileImg, sqlSession);
+    public int insertProfileImg(ProfileImg profileImg) {
+        return memberDao.insertProfileImg(profileImg, sqlSession);
+    }
+
+    // 마이페이지 프로필 이미지 출력용 메소드
+    @Override
+    public ProfileImg displayProfileImg(String userNo) {
+        return memberDao.displayProfileImg(userNo, sqlSession);
     }
 
 

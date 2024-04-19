@@ -29,7 +29,13 @@ public class MemberDao {
         return sqlSession.update("memberMapper.memberSubListUpdate", subscribe);
     }
 
-    public int updateProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
+    // 마이페이지 프로필이미지 등록용 메소드(insert)
+    public int insertProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
         return sqlSession.insert("memberMapper.insertProfileImg", profileImg);
+    }
+
+    // 마이페이지 프로필 이미지 출력용 메소드
+    public ProfileImg displayProfileImg(String userNo, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.displayProfileImg", userNo);
     }
 }

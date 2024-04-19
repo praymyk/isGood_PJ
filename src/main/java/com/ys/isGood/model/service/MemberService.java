@@ -22,5 +22,8 @@ public interface MemberService {
     int memberSubListSave(Subscribe subscribe);
 
     // 마이페이지 프로필 이미지 업데이트용 메소드
-    int updateProfileImg(ProfileImg profileImg);
+    int insertProfileImg(ProfileImg profileImg);
+
+    // 마이페이지 프로필 이미지 출력용 메소드
+    ProfileImg displayProfileImg(String userNo);
 }

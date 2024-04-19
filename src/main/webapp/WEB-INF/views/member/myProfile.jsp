@@ -236,8 +236,14 @@
         <div class="profile-card">
             <form action="profileImgUpdate" method="post" id="profileImgForm" enctype="multipart/form-data">
             <div class="profile-card-title">
+
                 <div class="profile-img">
-                    <img class="profileImg" src="" alt="왜안나옴" >
+
+                    <img class="profileImg"
+                         id="profileImgId"
+                         src=""
+                         alt="프로필 이미지" >
+
                 </div>
                 <div class="profile-card-name">${sessionScope.loginUser.nickName}</div>
                 <input type="hidden" value="${sessionScope.loginUser.userNo}" name="userNo">
@@ -345,7 +351,6 @@
             reader.onload = function(){
                 //result 꺼내서 src 속성에 담아주기
                 $('.profileImg').attr('src', reader.result);
-                console.log("URL:"+reader.result);
             };
         });
 
@@ -353,11 +358,22 @@
         $.ajax({
             type: "GET",
             url: "mypage.me/${sessionScope.loginUser.userNo}/displyProfileImg",
-            dataType: "json",
+            dataType:"json",
             success: function(data){
-                photo_path = data;
-                $(".profileImg").attr("src", photo_path);
-                console.log("프로필 이미지 불러오기 성공");
+
+                if(data.change == "default"){ // 프로필 이미지정보가 default 일 때 기본 이미지로 대체
+                   // 프로필 default 이미지 src 주소
+                    let defaultPath = "${pageContext.request.contextPath}/profileImg/${sessionScope.loginUser.userNo}/"+ data.changeName;
+                    $("#profileImgId").attr("src", defaultPath);
+
+                } else {  // 프로필 DB 이미지로 대체
+                    // 프로필 이미지 src 주소를 담을 변수
+                    let profileImgPath = "${pageContext.request.contextPath}" + data.pimgPath + data.changeName;
+                    console.log("프로필 이미지 src경로 : " + profileImgPath);
+
+                    $("#profileImgId").attr("src",  profileImgPath);
+                }
+
             },
             error: function(){
                 console.log("프로필 이미지 불러오기 실패");

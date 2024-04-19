@@ -127,4 +127,12 @@
                      #{imgSize})
     </insert>
 
+    <!-- 프로필 이미지 수정용 -->
+
+    <!-- 프로필 이미지 출력용 -->
+    <select id="displayProfileImg"  parameterType="member" resultMap="profileImgResultMap">
+        SELECT * FROM PROFILEIMG
+          WHERE USER_NO = #{userNo}
+    </select>
+
 </mapper>

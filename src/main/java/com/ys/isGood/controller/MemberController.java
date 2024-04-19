@@ -1,14 +1,18 @@
 package com.ys.isGood.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Controller
@@ -17,6 +21,8 @@ public class MemberController {
 
     @Autowired
     private MemberServiceImpl memberService;
+    @Value("${requestDisplayProfileImg.path}")
+    private String profileImgPath;
 
     // 회원가입 페이지로 이동
     @RequestMapping("/enrollForm.me")
@@ -93,16 +99,37 @@ public class MemberController {
     // 마이페이지 프로필 이미지 불러오기
     @GetMapping("mypage.me/{userNo}/displyProfileImg")
     @ResponseBody
-    public ProfileImg displayProfileImg(@PathVariable String userNo){
+    public String displayProfileImg(@PathVariable String userNo) throws IOException {
 
-        // 프로필 이미지 불러오기 단계에서 작업 중단
+        // 1. 프로필 이미지정보를 DB에서 불러오기
         ProfileImg profileImg = memberService.displayProfileImg(userNo);
 
-        log.info("프로필 이미지 정보 : " + profileImg);
+        // 2. VO 클래스로 부터 경로, 파일명을 받기
+        // @pimgPath : 파일 경로
+        // @changeName : 파일명.확장자
+        // 등록된 이미지가 없을 경우 기본 프로필 이미지 출력
+        profileImgPath = profileImgPath.replace("*", "");
+        profileImgPath = profileImgPath.replace("/", File.separator);
+        String pimgPath = profileImgPath + "default" + File.separator;
+        String changeName = "default.jpg";
 
-        return profileImg;
+        // 등록된 이미지가 있을 경우 DB 이미지 정보로 변경
+        if(profileImg != null) {
+            pimgPath =  profileImgPath + userNo + File.separator;
+            changeName = profileImg.getChangeName();
+        }
+
+        // 3. 프론트로 전달할 파일 객체 생성
+        ProfileImg displayProfileImg = new ProfileImg();
+        displayProfileImg.setPimgPath(pimgPath);
+        displayProfileImg.setChangeName(changeName);
+
+        // 4. json 형태로 변환하여 전달
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(displayProfileImg);
+
+        return jsonStr;
     }
-
 
     // 마이페이지 - 구독 게임 리스트 조회용 메소드
     @GetMapping("/subList.me/{userNo}")
