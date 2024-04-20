@@ -38,4 +38,14 @@ public class MemberDao {
     public ProfileImg displayProfileImg(String userNo, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("memberMapper.displayProfileImg", userNo);
     }
+
+    // 마이페이지 프로필 이미지 등록여부 확인용 메소드
+    public ProfileImg checkProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.checkProfileImg", profileImg);
+    }
+
+    // 마이페이지 프로필 이미지 업데이트 메소드
+    public int updateProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("memberMapper.updateProfileImg", profileImg);
+    }
 }

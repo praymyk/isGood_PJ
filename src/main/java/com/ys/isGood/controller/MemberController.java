@@ -23,6 +23,8 @@ public class MemberController {
     private MemberServiceImpl memberService;
     @Value("${requestDisplayProfileImg.path}")
     private String profileImgPath;
+    @Autowired
+    private UploadController uploadController;
 
     // 회원가입 페이지로 이동
     @RequestMapping("/enrollForm.me")
@@ -107,9 +109,10 @@ public class MemberController {
         // 2. VO 클래스로 부터 경로, 파일명을 받기
         // @pimgPath : 파일 경로
         // @changeName : 파일명.확장자
-        // 등록된 이미지가 없을 경우 기본 프로필 이미지 출력
         profileImgPath = profileImgPath.replace("*", "");
         profileImgPath = profileImgPath.replace("/", File.separator);
+
+        // 등록된 이미지가 없을 경우 기본 프로필 이미지 출력
         String pimgPath = profileImgPath + "default" + File.separator;
         String changeName = "default.jpg";
 
@@ -117,6 +120,7 @@ public class MemberController {
         if(profileImg != null) {
             pimgPath =  profileImgPath + userNo + File.separator;
             changeName = profileImg.getChangeName();
+            log.info("사진 등록 후 이미지 이름 :" + changeName);
         }
 
         // 3. 프론트로 전달할 파일 객체 생성
@@ -127,6 +131,8 @@ public class MemberController {
         // 4. json 형태로 변환하여 전달
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(displayProfileImg);
+
+        log.info("프로필 이미지 정보 : " + jsonStr);
 
         return jsonStr;
     }
@@ -157,7 +163,7 @@ public class MemberController {
             int result = memberService.memberSubListSave(subscribe);
         }
 
-        return "Ajax 테스트";
+        return "순서변경 성공";
     }
 
 }

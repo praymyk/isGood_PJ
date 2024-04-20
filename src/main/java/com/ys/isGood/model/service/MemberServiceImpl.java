@@ -58,5 +58,17 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.displayProfileImg(userNo, sqlSession);
     }
 
+    // 마이페이지 프로필 이미지 등록여부 확인용 메소드
+    @Override
+    public ProfileImg checkProfileImg(ProfileImg profileImg) {
+        return memberDao.checkProfileImg(profileImg, sqlSession);
+    }
+
+    // 마이페이지 프로필 이미지 업데이트 메소드
+    @Override
+    public int updateProfileImg(ProfileImg profileImg) {
+        return memberDao.updateProfileImg(profileImg, sqlSession);
+    }
+
 
 }

@@ -234,7 +234,7 @@
     <div class="profile-card-wrapper">
         <h2>내 계정</h2>
         <div class="profile-card">
-            <form action="profileImgUpdate" method="post" id="profileImgForm" enctype="multipart/form-data">
+            <form action="" method="post" id="profileImgForm" enctype="multipart/form-data">
             <div class="profile-card-title">
 
                 <div class="profile-img">
@@ -248,38 +248,38 @@
                 <div class="profile-card-name">${sessionScope.loginUser.nickName}</div>
                 <input type="hidden" value="${sessionScope.loginUser.userNo}" name="userNo">
                 <input type="hidden" value="${sessionScope.loginUser.originName}" name="originName">
-                <input type="hidden" value="" name="changeName">
+                <input type="hidden" id="changeName" value="" name="changeName">
                 <input type="file" id="pImgFileUp" accept = "image/gif, image/png, image/jpeg"
                        name="uploadFile" style="display: none;">
-                <button id="pImgBtn" type="submit">프로필 사진 저장</button>
+                <button id="pImgBtn" type="button">프로필 사진 저장</button>
             </div>
             </form>
             <div class="profile-card-content">
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">별명</div>
-                        <input value="${sessionScope.loginUser.nickName}">
+                        <input name="nickName" value="${sessionScope.loginUser.nickName}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">이메일</div>
-                        <input value="${sessionScope.loginUser.email}">
+                        <input name="email" value="${sessionScope.loginUser.email}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">연락처</div>
-                        <input value="${sessionScope.loginUser.phone}">
+                        <input name="phone" value="${sessionScope.loginUser.phone}">
                     </div>
                     <button>수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">성별</div>
-                        <input value="${sessionScope.loginUser.gender}">
+                        <input name="gender" value="${sessionScope.loginUser.gender}">
                     </div>
                     <button>수정</button>
                 </div>
@@ -325,10 +325,46 @@
 <script>
     $(function(){
 
+        // # 마이페이 수정 성공/실패 메시지
+        let msg = "${msg}";
+        if(msg != ""){
+            window.alert(msg);
+        }
+
         // # 프로필 이미지 변경 이벤트
         //   1. 프로필 이미지 클릭 시 input file 업로드 창 띄우기
         $(".profile-img").click(function(){
             $("#pImgFileUp").click();
+        });
+
+        $("#pImgBtn").click(function(){
+
+            var formData = new FormData();
+            var fileInput = document.getElementById('pImgFileUp');
+            var file = fileInput.files[0];
+
+            // 다른 input 요소의 값을 FormData에 추가
+            formData.append('userNo', "${sessionScope.loginUser.userNo}");
+            formData.append('originName', "${sessionScope.loginUser.originName}");
+            formData.append('changeName', $("#changeName").val());
+
+            formData.append('uploadFile', file);
+            // ajax 통신으로 프로필 이미지 변경 요청
+            $.ajax({
+                type: "POST",
+                url: "profileImgUpdate",
+                data: formData,
+                dataType:'json',
+                contentType:false,
+                processData:false,
+                success: function(data){
+                    console.log("data:"+data);
+                    console.log("프로필 이미지 변경 성공");
+                },
+                error: function(){
+                    console.log("프로필 이미지 변경 실패");
+                }
+            });
         });
 
         // 2. 이미지 업로드한경우 프로필 이미지 미리보기
@@ -368,7 +404,10 @@
 
                 } else {  // 프로필 DB 이미지로 대체
                     // 프로필 이미지 src 주소를 담을 변수
-                    let profileImgPath = "${pageContext.request.contextPath}" + data.pimgPath + data.changeName;
+                    let fileName = encodeURIComponent(data.changeName);
+                    let profileImgPath = "${pageContext.request.contextPath}" + data.pimgPath + fileName;
+                    // 프로필 이미지 파일명 인코딩 처리
+                    // 파일명에 특수문자가 포함되면 html에서 인식하지 못하는 경우가 발생
                     console.log("프로필 이미지 src경로 : " + profileImgPath);
 
                     $("#profileImgId").attr("src",  profileImgPath);

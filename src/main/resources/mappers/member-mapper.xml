@@ -115,6 +115,13 @@
          WHERE USER_NO = #{userNo} AND GAME_NO = #{gameNo}
     </update>
 
+    <!-- 프로필 이미지 등록여부 확인용 -->
+    <select id="checkProfileImg" parameterType="profileImg" resultMap="profileImgResultMap">
+        SELECT *
+          FROM PROFILEIMG
+         WHERE USER_NO = #{userNo}
+    </select>
+
     <!-- 프로필 이미지 등록용 -->
     <insert id="insertProfileImg" parameterType="profileImg">
         INSERT INTO PROFILEIMG
@@ -128,6 +135,15 @@
     </insert>
 
     <!-- 프로필 이미지 수정용 -->
+    <update id="updateProfileImg" parameterType="profileImg">
+        UPDATE PROFILEIMG
+           SET PIMG_PATH = #{pimgPath},
+               ORIGIN_NAME = #{originName},
+               CHANGE_NAME = #{changeName},
+               IMG_TYPE = #{imgType},
+               IMG_SIZE = #{imgSize}
+         WHERE USER_NO = #{userNo}
+    </update>
 
     <!-- 프로필 이미지 출력용 -->
     <select id="displayProfileImg"  parameterType="member" resultMap="profileImgResultMap">

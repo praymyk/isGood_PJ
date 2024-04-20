@@ -204,7 +204,7 @@
 <div class="navbar-wrapper">
     <nav class="navbar-body">
 
-        <a class="nav-logo" href="">
+        <a class="nav-logo" href="${pageContext.request.contextPath}">
             <img src="" alt="">
         </a>
 

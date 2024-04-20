@@ -21,9 +21,15 @@ public interface MemberService {
     // 구독 게임 리스트 순번 저장용 메소드
     int memberSubListSave(Subscribe subscribe);
 
-    // 마이페이지 프로필 이미지 업데이트용 메소드
+    // 마이페이지 프로필 이미지 등록용 메소드
     int insertProfileImg(ProfileImg profileImg);
 
     // 마이페이지 프로필 이미지 출력용 메소드
     ProfileImg displayProfileImg(String userNo);
+
+    // 마이페이지 프로필 이미지 등록여부 확인용 메소드
+    ProfileImg checkProfileImg(ProfileImg profileImg);
+
+    //마이페이지 프로필 이미지 업데이트 메소드
+    int updateProfileImg(ProfileImg profileImg);
 }
