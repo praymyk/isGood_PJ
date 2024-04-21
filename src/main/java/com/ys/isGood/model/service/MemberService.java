@@ -30,6 +30,12 @@ public interface MemberService {
     // 마이페이지 프로필 이미지 등록여부 확인용 메소드
     ProfileImg checkProfileImg(ProfileImg profileImg);
 
-    //마이페이지 프로필 이미지 업데이트 메소드
+    // 마이페이지 프로필 이미지 업데이트 메소드
     int updateProfileImg(ProfileImg profileImg);
+
+    // 마이페이지 프로필 정보 수정용 메소드
+    int updateNickName(Member member);
+
+    // 마이페이지 프로필 정보 수정 후 업데이트 된 정보 조회용 메소드
+    LoginMember updatedMember(String userNo);
 }

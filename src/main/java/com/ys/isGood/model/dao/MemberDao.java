@@ -48,4 +48,14 @@ public class MemberDao {
     public int updateProfileImg(ProfileImg profileImg, SqlSessionTemplate sqlSession) {
         return sqlSession.update("memberMapper.updateProfileImg", profileImg);
     }
+
+    // 마이페이지 프로필 닉네임 수정용 메소드
+    public int updateNickName(Member member, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("memberMapper.updateNickName", member);
+    }
+
+    // 마이페이지 프로필 정보 수정 후 업데이트 된 정보 조회용 메소드
+    public LoginMember updatedMember(String userNo, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.updatedMember", userNo);
+    }
 }

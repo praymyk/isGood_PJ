@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Slf4j
@@ -30,15 +30,16 @@ public class UploadController {
     // 마이페이지 프로필 이미지 저장용 메소드 (작성중)
     @PostMapping("/profileImgUpdate")
     @ResponseBody
-    public String insertProfileImg(@RequestParam("uploadFile") MultipartFile uploadFile,
-                                   ProfileImg profileImg,
-                                   Model model){
+    public HashMap<String, String> insertProfileImg(@RequestParam("uploadFile") MultipartFile uploadFile,
+                                    ProfileImg profileImg){
+
+        HashMap<String, String> msg = new HashMap<>();
 
         // 1. 파일 확장자 체크(이미지 파일 여부 확인)
         if(uploadFile.getContentType().startsWith("image") == false){
             log.info("이미지 파일이 아닙니다.");
-            model.addAttribute("msg", "이미지 파일만 업로드 가능합니다.");
-            return "member/myPage";
+            msg.put("msg", "이미지 파일이 아닙니다.");
+            return msg;
         }
 
         // @param originalName : 업로드한 파일의 원래 이름
@@ -75,17 +76,17 @@ public class UploadController {
         if(exist != null){ // 프로필 이미지 존재할경우 1. DB update 2. 서버에 저장된 기존 file 삭제
 
             // DB 업데이트 (기존 이미지 update 후 결과 메시지 반납)
-            model.addAttribute("msg", updateProfileImg(profileImg));
+            msg.put("msg", updateProfileImg(profileImg));
             // 서버에 저장된 기존 file 삭제
             deleteProfileImg(exist);
 
         } else {    // 프로필 이미지가 존재하지 않을경우
 
             // 6-2. DB에 등록 프로필 정보 insert
-            model.addAttribute("msg", insertProfileImg(profileImg));// 이미지가 존재하지 않을 경우 DB Insert
+            msg.put("msg", insertProfileImg(profileImg));// 이미지가 존재하지 않을 경우 DB Insert
         }
 
-        return "member/myPage";
+        return msg;
     }
 
     // 이미지 저장 시 폴더 생성용(userNo명칭) 메소드
@@ -122,7 +123,7 @@ public class UploadController {
         int result = memberService.insertProfileImg(profileImg);
 
         if(result > 0){
-            msg = "프로필 이미지 업데이트 성공";
+            msg = "프로필 이미지 등록 성공";
         } else {
             msg = "프로필 이미지 업데이트 실패";
         }

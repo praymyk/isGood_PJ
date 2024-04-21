@@ -260,28 +260,28 @@
                         <div class="profile-list-title">별명</div>
                         <input name="nickName" value="${sessionScope.loginUser.nickName}">
                     </div>
-                    <button>수정</button>
+                    <button class="profileUpBtn" id="nickBtn">수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">이메일</div>
                         <input name="email" value="${sessionScope.loginUser.email}">
                     </div>
-                    <button>수정</button>
+                    <button class="profileUpBtn" id="emailBtn">수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">연락처</div>
                         <input name="phone" value="${sessionScope.loginUser.phone}">
                     </div>
-                    <button>수정</button>
+                    <button class="profileUpBtn" id="phoneBtn">수정</button>
                 </div>
                 <div class="profile-list">
                     <div>
                         <div class="profile-list-title">성별</div>
                         <input name="gender" value="${sessionScope.loginUser.gender}">
                     </div>
-                    <button>수정</button>
+                    <button class="profileUpBtn" id="genderBtn">수정</button>
                 </div>
             </div>
         </div>
@@ -324,13 +324,6 @@
 <!-- 프로필 이미지 변경 스크립트 -->
 <script>
     $(function(){
-
-        // # 마이페이 수정 성공/실패 메시지
-        let msg = "${msg}";
-        if(msg != ""){
-            window.alert(msg);
-        }
-
         // # 프로필 이미지 변경 이벤트
         //   1. 프로필 이미지 클릭 시 input file 업로드 창 띄우기
         $(".profile-img").click(function(){
@@ -349,7 +342,8 @@
             formData.append('changeName', $("#changeName").val());
 
             formData.append('uploadFile', file);
-            // ajax 통신으로 프로필 이미지 변경 요청
+
+            // ajax 통신으로 프로필 이미지 변경 처리
             $.ajax({
                 type: "POST",
                 url: "profileImgUpdate",
@@ -358,8 +352,8 @@
                 contentType:false,
                 processData:false,
                 success: function(data){
-                    console.log("data:"+data);
-                    console.log("프로필 이미지 변경 성공");
+                    window.alert(data.msg);
+                    console.log("이미지 등록 내용:" + JSON.stringify(data));
                 },
                 error: function(){
                     console.log("프로필 이미지 변경 실패");
@@ -404,11 +398,10 @@
 
                 } else {  // 프로필 DB 이미지로 대체
                     // 프로필 이미지 src 주소를 담을 변수
+                    // 파일명에 특수문자가 포함되면 html에서 인식하지 못하는 경우가 발생
+                    // 프로필 이미지 파일명 Uri 인코딩 처리가 필요함
                     let fileName = encodeURIComponent(data.changeName);
                     let profileImgPath = "${pageContext.request.contextPath}" + data.pimgPath + fileName;
-                    // 프로필 이미지 파일명 인코딩 처리
-                    // 파일명에 특수문자가 포함되면 html에서 인식하지 못하는 경우가 발생
-                    console.log("프로필 이미지 src경로 : " + profileImgPath);
 
                     $("#profileImgId").attr("src",  profileImgPath);
                 }
@@ -419,10 +412,43 @@
             }
         });
 
+        $("#nickBtn").on("click", function(){
+            updateNickName();
+            // 화면 새로고침
+            location.reload();
+        });
+
     });
 </script>
 
+<!-- 회원 프로필(별명, 이메일, 연락처, 성별) 수정 스크립트 -->
+<script>
 
+    function updateNickName(){
+        $.ajax({
+
+            type: "POST",
+            url: "updateNickName",
+            dataType: "json",
+            data: {
+                userNo: "${sessionScope.loginUser.userNo}",
+                nickName: $("input[name=nickName]").val()
+            },
+            success: function(data){
+                window.alert(data.msg);
+                console.log("별명 수정 내용 : " + JSON.stringify(data));
+            },
+            error: function(){
+                console.log("프로필 수정 실패");
+            }
+
+        });
+
+    }
+
+
+
+</script>
 <!-- 구독 게임 리스트 ajax 통신으로 불러오기 -->
 <script>
     /*

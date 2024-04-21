@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Controller
 @Slf4j
@@ -135,6 +136,29 @@ public class MemberController {
         log.info("프로필 이미지 정보 : " + jsonStr);
 
         return jsonStr;
+    }
+
+    // 마이페이지 프로필 정보(닉네임) 수정용 메소드
+    @PostMapping("/updateNickName")
+    @ResponseBody
+    public HashMap<String, String> updateNickName(Member member, HttpSession session){
+
+            HashMap<String, String> msg = new HashMap<>();
+            log.info("프로필 수정 정보 : " + member);
+
+            int result = memberService.updateNickName(member);
+
+            if(result > 0){
+                msg.put("msg", "사용자 닉네임 수정 완료");
+                // 회원정보 수정 후 업데이트 된 맴버 정보를 DB로부터 다시 받아 세션에 저장
+                LoginMember updatedMember = memberService.updatedMember(member.getUserNo());
+                session.setAttribute("loginUser", updatedMember);
+
+            } else {
+                msg.put("msg", "사용자 닉네임 수정 실패");
+            }
+
+            return msg;
     }
 
     // 마이페이지 - 구독 게임 리스트 조회용 메소드

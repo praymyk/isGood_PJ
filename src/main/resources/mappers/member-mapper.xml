@@ -151,4 +151,19 @@
           WHERE USER_NO = #{userNo}
     </select>
 
+    <!-- 회원 정보 수정 -->
+    <update id="updateNickName" parameterType="member">
+        UPDATE MEMBER
+           SET NICKNAME = #{nickName}
+        WHERE USER_NO = #{userNo}
+    </update>
+
+    <!-- 수정된 회원 정보 조회-->
+    <select id="updatedMember" parameterType="string" resultMap="loginMemberResultMap">
+        SELECT *
+        FROM MEMBER
+                 LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+        WHERE USER_NO = #{userNo}
+    </select>
+
 </mapper>

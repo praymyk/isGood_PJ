@@ -70,5 +70,16 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.updateProfileImg(profileImg, sqlSession);
     }
 
+    // 마이페이지 프로필 정보 수정용 메소드
+    @Override
+    public int updateNickName(Member member) {
+        return memberDao.updateNickName(member, sqlSession);
+    }
+
+    @Override
+    public LoginMember updatedMember(String userNo) {
+        return memberDao.updatedMember(userNo, sqlSession);
+    }
+
 
 }
