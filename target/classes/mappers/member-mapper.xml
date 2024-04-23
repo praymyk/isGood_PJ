@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberMapper">
+
+    <!-- 회원 정보 VO -->
+    <resultMap type="member" id="memberResultMap">
+        <id column="USER_NO" property="userNo" />
+        <result column="EMAIL" property="email" />
+        <result column="USER_PWD" property="userPwd"/>
+        <result column="NICKNAME" property="nickName"/>
+        <result column="BIRTHDAY" property="birthday"/>
+        <result column="GENDER" property="gender"/>
+        <result column="PHONE" property="phone" />
+        <result column="ENROLL_DATE" property="enrollDate" />
+        <result column="MODIFY_DATE" property="modifyDate" />
+        <result column="STATUS" property="status" />
+    </resultMap>
+    <!-- 로그인한 회원정 VO(프로필 이미지 포함) -->
+    <resultMap type="loginMember" id="loginMemberResultMap">
+        <id column="USER_NO" property="userNo" />
+        <result column="EMAIL" property="email" />
+        <result column="USER_PWD" property="userPwd"/>
+        <result column="NICKNAME" property="nickName"/>
+        <result column="BIRTHDAY" property="birthday"/>
+        <result column="GENDER" property="gender"/>
+        <result column="PHONE" property="phone" />
+        <result column="ENROLL_DATE" property="enrollDate" />
+        <result column="MODIFY_DATE" property="modifyDate" />
+        <result column="STATUS" property="status" />
+
+        <result column="PIMG_NO" property="pimgNo" />
+        <result column="PIMG_PATH" property="pimgPath" />
+        <result column="ORIGIN_NAME" property="originName" />
+        <result column="CHANGE_NAME" property="changeName" />
+        <result column="IMG_TYPE" property="imgType" />
+        <result column="IMG_SIZE" property="imgSize" />
+    </resultMap>
+
+    <!-- 구독 게임 VO -->
+    <resultMap type="subscribe" id="subscribeResltMap">
+        <result column="USER_NO" property="userNo" />
+        <result column="GAME_NO" property="gameNo" />
+        <result column="SUB_NO" property="subNo"/>
+    </resultMap>
+
+    <!--구독 게임 리스트 조회 시 GameTable과 조인 내용-->
+    <resultMap type="subscribeList" id="subScribeListResultMap" >
+        <result column="User_no" property="userNo" />
+        <result column="GAME_NO" property="gameNo" />
+        <result column="SUB_NO" property="subNo"/>
+        <result column="GAME_Title" property="gameTitle"/>
+        <result column="GAME_CONTENT" property="gameContent"/>
+        <result column="GAME_PRICE" property="gamePrice"/>
+        <result column="GAME_SALE" property="gameSale"/>
+        <result column="GAME_TAG" property="gameTag"/>
+        <result column="GAME_ENROLL_DATE" property="gameEnrollDate"/>
+        <result column="GAME_MODIFY_DATE" property="gameModifyDate"/>
+        <result column="GAME_STATUS" property="gameStatus"/>
+    </resultMap>
+
+    <!-- 프로필 이미지 VO -->
+    <resultMap type="profileImg" id="profileImgResultMap">
+        <result column="PIMG_NO" property="pimgNo" />
+        <result column="PIMG_PATH" property="pimgPath" />
+        <result column="ORIGIN_NAME" property="originName" />
+        <result column="CHANGE_NAME" property="changeName" />
+        <result column="USER_NO" property="userNo" />
+        <result column="IMG_TYPE" property="imgType" />
+        <result column="IMG_SIZE" property="imgSize" />
+    </resultMap>
+
+    <!--회원가입-->
+    <select parameterType="member" id="memberEnrollEnd">
+        INSERT INTO MEMBER(
+                            USER_NO,
+                            EMAIL,
+                            USER_PWD,
+                            NICKNAME,
+                            BIRTHDAY,
+                            GENDER,
+                            PHONE
+                            )
+                    VALUES(
+                            UNO_SEQ.NEXTVAL,
+                            #{email},
+                            #{userPwd},
+                            #{nickName},
+                            #{birthday},
+                            #{gender},
+                            #{phone}
+                            )
+    </select>
+    <!--로그인-->
+    <select id="memberLogin" parameterType="member" resultMap="loginMemberResultMap">
+        SELECT *
+          FROM MEMBER
+          LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+          WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
+    </select>
+    <!--구독 게임 리스트-->
+    <select id="memberSubList" parameterType="member" resultMap="subScribeListResultMap">
+        SELECT * FROM SUBSCRIBE
+          INNER JOIN GAMES ON SUBSCRIBE.GAME_NO = GAMES.GAME_NO
+                WHERE USER_NO = #{userNo}
+             ORDER BY SUB_NO ASC
+    </select>
+
+    <!-- 구독게임 리스트 순번 저장 -->
+    <update id="memberSubListUpdate" parameterType="subscribe">
+        UPDATE SUBSCRIBE
+           SET SUB_NO = #{subNoUp}
+         WHERE USER_NO = #{userNo} AND GAME_NO = #{gameNo}
+    </update>
+
+    <!-- 프로필 이미지 등록여부 확인용 -->
+    <select id="checkProfileImg" parameterType="profileImg" resultMap="profileImgResultMap">
+        SELECT *
+          FROM PROFILEIMG
+         WHERE USER_NO = #{userNo}
+    </select>
+
+    <!-- 프로필 이미지 등록용 -->
+    <insert id="insertProfileImg" parameterType="profileImg">
+        INSERT INTO PROFILEIMG
+             VALUES (PIMG_SEQ.NEXTVAL,
+                     #{userNo},
+                     #{pimgPath},
+                     #{originName},
+                     #{changeName},
+                     #{imgType},
+                     #{imgSize})
+    </insert>
+
+    <!-- 프로필 이미지 수정용 -->
+    <update id="updateProfileImg" parameterType="profileImg">
+        UPDATE PROFILEIMG
+           SET PIMG_PATH = #{pimgPath},
+               ORIGIN_NAME = #{originName},
+               CHANGE_NAME = #{changeName},
+               IMG_TYPE = #{imgType},
+               IMG_SIZE = #{imgSize}
+         WHERE USER_NO = #{userNo}
+    </update>
+
+    <!-- 프로필 이미지 출력용 -->
+    <select id="displayProfileImg"  parameterType="member" resultMap="profileImgResultMap">
+        SELECT * FROM PROFILEIMG
+          WHERE USER_NO = #{userNo}
+    </select>
+
+    <!-- 회원 정보 수정 -->
+    <update id="updateNickName" parameterType="member">
+        UPDATE MEMBER
+           SET NICKNAME = #{nickName}
+        WHERE USER_NO = #{userNo}
+    </update>
+
+    <!-- 수정된 회원 정보 조회-->
+    <select id="updatedMember" parameterType="string" resultMap="loginMemberResultMap">
+        SELECT *
+        FROM MEMBER
+                 LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+        WHERE USER_NO = #{userNo}
+    </select>
+
+</mapper>

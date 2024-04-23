@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL" />
+    </settings>
+
+    <!--mapper에서 매칭할 VO 별칭-->
+    <typeAliases>
+        <typeAlias type="com.ys.isGood.model.vo.Member" alias="member"/>
+        <typeAlias type="com.ys.isGood.model.vo.LoginMember" alias="loginMember"/>
+        <typeAlias type="com.ys.isGood.model.vo.Subscribe" alias="subscribe"/>
+        <typeAlias type="com.ys.isGood.model.vo.SubscribeList" alias="subscribeList"/>
+        <typeAlias type="com.ys.isGood.model.vo.ProfileImg" alias="profileImg"/>
+
+    </typeAliases>
+
+    <!--매퍼 경로 등록-->
+    <mappers>
+        <mapper resource="mappers/member-Mapper.xml"/>
+    </mappers>
+
+
+
+</configuration>
