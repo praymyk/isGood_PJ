@@ -14,6 +14,10 @@ public class MemberDao {
         return sqlSession.insert("memberMapper.memberEnrollEnd", member);
     }
 
+    // 이메일 중복 검사용 메소드
+    public int memberEmailCheck(Member member, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.memberEmailCheck", member);
+    }
     // 로그인 처리 메소드
     public LoginMember memberLogin(Member member, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("memberMapper.memberLogin", member);
@@ -54,8 +58,19 @@ public class MemberDao {
         return sqlSession.update("memberMapper.updateNickName", member);
     }
 
+    // 마이페이지 프로필 연락처 수정용 메소드
+    public int updatePhone(Member member, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("memberMapper.updatePhone", member);
+    }
+
     // 마이페이지 프로필 정보 수정 후 업데이트 된 정보 조회용 메소드
     public LoginMember updatedMember(String userNo, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("memberMapper.updatedMember", userNo);
     }
+
+    // 계정 정지용 메소드
+    public int stopUserId(Member member, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("memberMapper.stopUserId", member);
+    }
+
 }

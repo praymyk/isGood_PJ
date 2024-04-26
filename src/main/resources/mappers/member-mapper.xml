@@ -73,7 +73,7 @@
     </resultMap>
 
     <!--회원가입-->
-    <select parameterType="member" id="memberEnrollEnd">
+    <insert parameterType="member" id="memberEnrollEnd">
         INSERT INTO MEMBER(
                             USER_NO,
                             EMAIL,
@@ -92,13 +92,22 @@
                             #{gender},
                             #{phone}
                             )
+    </insert>
+
+    <!--회원가입시 이메일 중복 검사-->
+    <select id="memberEmailCheck" parameterType="member" resultType="int">
+        SELECT COUNT(*)
+          FROM MEMBER
+         WHERE EMAIL = #{email}
     </select>
+
     <!--로그인-->
     <select id="memberLogin" parameterType="member" resultMap="loginMemberResultMap">
         SELECT *
           FROM MEMBER
           LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
-          WHERE EMAIL = #{email} AND USER_PWD = #{userPwd}
+          WHERE EMAIL = #{email}
+            AND STATUS = 'Y'
     </select>
     <!--구독 게임 리스트-->
     <select id="memberSubList" parameterType="member" resultMap="subScribeListResultMap">
@@ -151,10 +160,17 @@
           WHERE USER_NO = #{userNo}
     </select>
 
-    <!-- 회원 정보 수정 -->
+    <!-- 회원 정보 수정(닉네임) -->
     <update id="updateNickName" parameterType="member">
         UPDATE MEMBER
            SET NICKNAME = #{nickName}
+        WHERE USER_NO = #{userNo}
+    </update>
+
+    <!-- 회원 정보 수정(연락처) -->
+    <update id="updatePhone" parameterType="member">
+        UPDATE MEMBER
+           SET PHONE = #{phone}
         WHERE USER_NO = #{userNo}
     </update>
 
@@ -165,5 +181,12 @@
                  LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
         WHERE USER_NO = #{userNo}
     </select>
+
+    <!-- 계정 정지용 메소드 -->
+    <update id="stopUserId" parameterType="member">
+        UPDATE MEMBER
+           SET STATUS = 'N'
+        WHERE USER_NO = #{userNo}
+    </update>
 
 </mapper>

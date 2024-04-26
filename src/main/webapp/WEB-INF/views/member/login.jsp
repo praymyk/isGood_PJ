@@ -66,6 +66,11 @@
         border-radius: 90%;
         background-color: gray;
         margin-bottom: 30px;
+        overflow: hidden;
+    }
+    .login-logo img{
+        width: 100%;
+        height: 100%;
     }
 
     .login-label{
@@ -85,6 +90,18 @@
         flex-direction: column;
         margin : 20px 20px 30px 20px;
         width: 90%;
+    }
+    .login-id-wraper{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .login-id-wraper input{
+        margin-left: auto;
+    }
+    .login-id-wraper span{
+        font-size: 12px;
     }
 
     .login-form-group label{
@@ -137,6 +154,9 @@
         font-size: 15px;
         color: white;
     }
+    .login-form-group2 button:hover{
+        cursor: pointer;
+    }
 
     /* sns 로그인 박스 스타일 */
     .line-box{
@@ -172,6 +192,16 @@
 
 </style>
 <body>
+<!-- 로그인 실패시 메시지 -->
+<script>
+   window.onload = function (){
+        var msg = "${msg}";
+
+        if(msg != ""){
+            alert(msg);
+        }
+    };
+</script>
 
 <div class="login-wrraper">
 
@@ -180,7 +210,7 @@
         <div class="login-box">
             <div class="login-logo-box">
                 <div class="login-logo">
-                    <img src="${pageContext.request.contextPath}/resources/icons/logo.png" alt="logo" width="50" height="50">
+                    <a href="${pageContext.request.contextPath}"><img src="${pageContext.request.contextPath}/resources/icons/logo.png" alt="logo" width="50" height="50"></a>
                 </div>
                 <div class="login-label"> YSJOY </div>
                 <div class="login-sub-label"> 로그인 </div>
@@ -189,11 +219,16 @@
             <form class="login-form" action="login.me" method="post">
                 <div class="login-form">
                     <div class="login-form-group">
-                        <label for="login-id">아이디</label>
+                        <div class="login-id-wraper">
+                            <label for="login-id">아이디</label>
+                            <input type="checkbox" name="loginType" value="normal">
+                            <span> 이메일 저장 </span>
+                        </div>
                         <input type="email" name="email" class="login-email">
-                        <label for="login-id">비밀번호</label>
+                        <label for="login-pass">비밀번호</label>
                         <input type="password" name="userPwd" class="login-pass">
                     </div>
+
 
                     <div class="login-form-group2">
                         <a href="enrollForm.me"><span>계정 만들기</span></a>
@@ -233,6 +268,7 @@
     </div>
 
 </div>
+
 
 </body>
 </html>

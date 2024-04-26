@@ -1,15 +1,19 @@
 package com.ys.isGood.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ys.isGood.config.AuthConfig;
 import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +31,10 @@ public class MemberController {
     @Autowired
     private UploadController uploadController;
 
+    // 비밀번호 암호화를 위한 객체
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // 회원가입 페이지로 이동
     @RequestMapping("/enrollForm.me")
     public String memberEnroll(){
@@ -36,21 +44,43 @@ public class MemberController {
     // 회원가입 처리 메소드
     // @param member : 회원가입 정보를 담은 객체
     @PostMapping("/enroll.me" )
-    public String memberEnrollEnd(Member member, Model model){
+    public String memberEnrollEnd(Member member, RedirectAttributes redirectAttributes){
 
-        log.info("회원가입 정보 : " + member);
+        // 비밀번호 암호화
+        String encPwd = passwordEncoder.encode(member.getUserPwd());
+        log.info("암호화된 비밀번호 : " + encPwd);
+
+        member.setUserPwd(encPwd);
+        log.info("암호화된 회원정보 : " + member);
 
         int result = memberService.memberEnrollEnd(member);
 
-        log.info("회원 가입 결과 : " + result);
 
         if(result > 0) {
-            model.addAttribute("msg", "회원가입 성공");
+            redirectAttributes.addFlashAttribute("msg", "회원가입 성공");
         } else {
-            model.addAttribute("msg", "회원가입 실패");
+            redirectAttributes.addFlashAttribute("msg", "회원가입 실패");
         }
 
         return "redirect:/";
+    }
+
+    // 회원가입 이메일 중복 체크 메소드
+    @PostMapping("/emailCheck.me")
+    @ResponseBody
+    public HashMap<String, String> memberEmailCheck(Member member){
+        HashMap<String, String> isDuplicate = new HashMap<>();
+
+        log.info("이메일 중복 체크 : " + member);
+        int result = memberService.memberEmailCheck(member);
+        log.info("중복체크 결과 : " + result);
+        if(result == 0){
+            isDuplicate.put("check", "YYYY");
+            return isDuplicate;
+        } else {
+            isDuplicate.put("check", "NNNN");
+            return isDuplicate;
+        }
     }
 
     // 로그인 페이지로 이동
@@ -62,28 +92,44 @@ public class MemberController {
     // 로그인 처리 메소드
     // @param member : 로그인 정보를 담은 객체
     @PostMapping("/login.me")
-    public String memberLogin(Member member, HttpSession session){
+    public String memberLogin(Member member, HttpSession session, Model model){
 
+        LoginMember loginUser = memberService.memberLogin(member);
+        // 1. 로그인 이메일 주소가 존재하지 않는 경우
+        if(loginUser == null){
+            model.addAttribute("msg", "이메일 혹은 비밀번호를 다시 확인해주세요.");
+            return "member/login";
+        }
+        // 2. 비밀번호 일치 확인
+        if(passwordEncoder.matches(member.getUserPwd(),loginUser.getUserPwd())){
+            session.setAttribute("loginUser", loginUser);
+            return "redirect:/";
+        }
+        // 3. 비밀번호 불일치
+        model.addAttribute("msg", "이메일 혹은 비밀번호를 다시 확인해주세요.");
+        return "member/login";
 
-        //테스트용 맴버 생성
-
-        Member testMember = new Member("2",
-                "test@naver.com",
-                "1234",
-                "testNickName",
-                "testBirthday",
-                "testGender",
-                "testPhone",
-                "testEnrollDate",
-                "testModifyDate",
-                "testStatus");
-
-        // 매개변수 수정 필요
-        LoginMember loginUser = memberService.memberLogin(testMember);
-        log.info("로그인 정보(테스트용 맴버를 로그인 메서드에서 생성중): " + loginUser);
-        session.setAttribute("loginUser", loginUser);
-
-        return "redirect:/";
+//        //테스트용 맴버 생성
+//        Member testMember = new Member("2",
+//                "test@naver.com",
+//                "1234",
+//                "testNickName",
+//                "testBirthday",
+//                "testGender",
+//                "testPhone",
+//                "testEnrollDate",
+//                "testModifyDate",
+//                "testStatus");
+//
+//
+//        /*
+//        *  로그인 기능 정상 구현시 매개변수 testMember 를 member로 변경!!
+//        */
+//        LoginMember loginUser = memberService.memberLogin(testMember);
+//        log.info("로그인 정보(테스트용 맴버를 로그인 메서드에서 생성중): " + loginUser);
+//        session.setAttribute("loginUser", loginUser);
+//
+//        return "redirect:/";
     }
 
     // 로그아웃 처리 메소드
@@ -121,7 +167,7 @@ public class MemberController {
         if(profileImg != null) {
             pimgPath =  profileImgPath + userNo + File.separator;
             changeName = profileImg.getChangeName();
-            log.info("사진 등록 후 이미지 이름 :" + changeName);
+
         }
 
         // 3. 프론트로 전달할 파일 객체 생성
@@ -132,8 +178,6 @@ public class MemberController {
         // 4. json 형태로 변환하여 전달
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(displayProfileImg);
-
-        log.info("프로필 이미지 정보 : " + jsonStr);
 
         return jsonStr;
     }
@@ -157,8 +201,51 @@ public class MemberController {
             } else {
                 msg.put("msg", "사용자 닉네임 수정 실패");
             }
-
             return msg;
+    }
+
+    // 마이페이지 연락처 정보 수정용 메소드
+    @PostMapping("/updatePhone")
+    @ResponseBody
+    public HashMap<String, String> updatePhone(Member member, HttpSession session){
+
+        HashMap<String, String> msg = new HashMap<>();
+
+        int result = memberService.updatePhone(member);
+
+        log.info("연락처 수정 정보 : " + member);
+
+        if(result > 0){
+            msg.put("msg", "사용자 연락처 수정 완료");
+            // 회원정보 수정 후 업데이트 된 맴버 정보를 DB로부터 다시 받아 세션에 저장
+            LoginMember updatedMember = memberService.updatedMember(member.getUserNo());
+            session.setAttribute("loginUser", updatedMember);
+            log.info("업데이트 된 맴버 정보 : " + updatedMember);
+
+        } else {
+            msg.put("msg", "사용자 닉네임 수정 실패");
+        }
+        return msg;
+    }
+
+    // 계정 정지용 메소드
+    @PostMapping("/stopUserId")
+    @ResponseBody
+    public HashMap<String, String> stopUserId(Member member, HttpSession session){
+
+        HashMap<String, String> msg = new HashMap<>();
+
+        int result = memberService.stopUserId(member);
+
+        if(result > 0){
+            msg.put("msg", "사용자 계정 정지 완료");
+            // 로그아웃 처리
+            session.invalidate();
+
+        } else {
+            msg.put("msg", "사용자 계정 정지 실패");
+        }
+        return msg;
     }
 
     // 마이페이지 - 구독 게임 리스트 조회용 메소드

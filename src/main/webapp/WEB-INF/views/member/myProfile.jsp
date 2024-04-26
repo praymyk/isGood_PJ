@@ -139,6 +139,8 @@
         height: 35px;
     }
 
+    .profileUpBtn{}
+
     /*
         구독 게임 관리 테이블 스타일
     */
@@ -257,6 +259,19 @@
             <div class="profile-card-content">
                 <div class="profile-list">
                     <div>
+                        <div class="profile-list-title">이메일</div>
+                        <input name="email" value="${sessionScope.loginUser.email}">
+                    </div>
+                </div>
+                <div class="profile-list">
+                    <div>
+                        <div class="profile-list-title">성별</div>
+                        <input name="gender" value="${sessionScope.loginUser.gender}">
+                    </div>
+                </div>
+
+                <div class="profile-list">
+                    <div>
                         <div class="profile-list-title">별명</div>
                         <input name="nickName" value="${sessionScope.loginUser.nickName}">
                     </div>
@@ -264,24 +279,10 @@
                 </div>
                 <div class="profile-list">
                     <div>
-                        <div class="profile-list-title">이메일</div>
-                        <input name="email" value="${sessionScope.loginUser.email}">
-                    </div>
-                    <button class="profileUpBtn" id="emailBtn">수정</button>
-                </div>
-                <div class="profile-list">
-                    <div>
                         <div class="profile-list-title">연락처</div>
                         <input name="phone" value="${sessionScope.loginUser.phone}">
                     </div>
                     <button class="profileUpBtn" id="phoneBtn">수정</button>
-                </div>
-                <div class="profile-list">
-                    <div>
-                        <div class="profile-list-title">성별</div>
-                        <input name="gender" value="${sessionScope.loginUser.gender}">
-                    </div>
-                    <button class="profileUpBtn" id="genderBtn">수정</button>
                 </div>
             </div>
         </div>
@@ -412,19 +413,29 @@
             }
         });
 
+        // 닉네임 변경 버튼 이벤트
         $("#nickBtn").on("click", function(){
             updateNickName();
-            // 화면 새로고침
-            location.reload();
+        });
+
+        //  연락처 변경 버튼 이벤트
+        $("#phoneBtn").on("click", function(){
+            updatePhone();
+        });
+
+        // 계정 정지 버튼 이벤트
+        $(".account-stop-btn").on("click", function(){
+            stopUserId();
         });
 
     });
 </script>
 
-<!-- 회원 프로필(별명, 이메일, 연락처, 성별) 수정 스크립트 -->
+<!-- 회원 프로필(별명, 이메일) 수정 스크립트 -->
 <script>
 
-    function updateNickName(){
+    // 닉네임 변경 ajax 통신
+    function updateNickName(  ){
         $.ajax({
 
             type: "POST",
@@ -435,15 +446,57 @@
                 nickName: $("input[name=nickName]").val()
             },
             success: function(data){
-                window.alert(data.msg);
                 console.log("별명 수정 내용 : " + JSON.stringify(data));
+                window.alert(data.msg);
+                location.reload();
             },
-            error: function(){
+            error: function() {
                 console.log("프로필 수정 실패");
             }
-
         });
+    }
 
+    // 연락처 변경 ajax 통신
+    function updatePhone(){
+        $.ajax({
+
+            type: "POST",
+            url: "updatePhone",
+            dataType: "json",
+            data: {
+                userNo: "${sessionScope.loginUser.userNo}",
+                phone: $("input[name=phone]").val()
+            },
+            success: function(data){
+                console.log("연락처 수정 내용 : " + JSON.stringify(data));
+                window.alert(data.msg);
+                location.reload();
+            },
+            error: function(){
+                console.log("연락처 수정 실패");
+            }
+        });
+    }
+
+    // 계정 정지용 ajax 통신
+    function stopUserId(){
+        $.ajax({
+
+            type: "POST",
+            url: "stopUserId",
+            dataType: "json",
+            data: {
+                userNo: "${sessionScope.loginUser.userNo}"
+            },
+            success: function(data){
+                console.log("계정 정지 내용 : " + JSON.stringify(data));
+                window.alert(data.msg);
+                location.reload();
+            },
+            error: function(){
+                console.log("계정 정지 실패");
+            }
+        });
     }
 
 

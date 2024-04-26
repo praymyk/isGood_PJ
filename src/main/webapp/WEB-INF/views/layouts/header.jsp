@@ -242,6 +242,20 @@
     </nav>
 </div>
 
+<!-- 경고 메시지 출력용 스크립트 -->
+<!-- 회원가입 메시지 출력 -->
+<script>
+    var msg = "${msg}";
+
+    window.onload = function() {
+
+        if (msg != "" && msg != null) {
+            alert(msg);
+        }
+    };
+
+</script>
+
 <script>
     // @ 로그인 한 경우 로그인 메뉴바 변경
     if("${sessionScope.loginUser.userNo}" != ""){

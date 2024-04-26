@@ -28,10 +28,10 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.memberLogin(member, sqlSession);
     }
 
-    // 아이디 중복 체크 메소드
+    // 이메일 중복 검사용 메소드
     @Override
-    public String memberIdCheck(String email) {
-        return "";
+    public int memberEmailCheck(Member member) {
+        return memberDao.memberEmailCheck(member, sqlSession);
     }
 
     // 구독 게임 리스트 조회용 메소드
@@ -76,10 +76,22 @@ public class MemberServiceImpl implements MemberService {
         return memberDao.updateNickName(member, sqlSession);
     }
 
+    // 마이페이지 연락처 정보 수정용 메소드
+    @Override
+    public int updatePhone(Member member) {
+        return memberDao.updatePhone(member, sqlSession);
+    }
+
+    // 마이페이지 프로필 정보 수정 후 업데이트 된 정보 조회용 메소드
     @Override
     public LoginMember updatedMember(String userNo) {
         return memberDao.updatedMember(userNo, sqlSession);
     }
 
+    // 계정 정지용 메소드
+    @Override
+    public int stopUserId(Member member) {
+        return memberDao.stopUserId(member, sqlSession);
+    }
 
 }

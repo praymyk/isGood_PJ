@@ -100,6 +100,10 @@
         border: 1px solid gray;
         position: relative;
     }
+    #submit-btn-wrap{
+        border: 0px;
+    }
+
 
     .form-group>div{
         float: left;
@@ -207,8 +211,11 @@
         font-size: 20px;
         color: white;
         border: none;
-        border-radius: 5px;
         background-color: rgb(153, 44, 144);
+    }
+    .submit-btn button:hover{
+        cursor: pointer;
+        background-color: rgb(238, 49, 221);
     }
 
     /*테두리 */
@@ -274,15 +281,15 @@
                 <div class="signup-email-domain">
                     <select class="signup-select" name="email_domain" id="email_domain" disabled>
                         <option value="">선택해주세요</option>
-                        <option value="@naver.com">naver.com</option>
-                        <option value="@gmail.com">gmail.com</option>
-                        <option value="@daum.net">daum.net</option>
-                        <option value="@nate.com">nate.com</option>
-                        <option value="@hotmail.com">hotmail.com</option>
-                        <option value="@yahoo.com">yahoo.com</option>
-                        <option value="self">직접입력</option>
+                        <option value="naver.com">naver.com</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="daum.net">daum.net</option>
+                        <option value="nate.com">nate.com</option>
+                        <option value="hotmail.com">hotmail.com</option>
+                        <option value="yahoo.com">yahoo.com</option>
+                        <option value="">직접입력</option>
                     </select>
-                    <input class="domain-input" type="text" placeholder="클릭 후 직접입력">
+                    <input class="domain-input" type="text" id="self_input" placeholder="클릭 후 직접입력">
                 </div>
             </div>
 
@@ -302,23 +309,23 @@
                 });
 
                 // 2. 이메일, 도메인 변경시 실시간으로 합치기 (직접 입력 상황 제외)
-                //    뒤로가기로 도메인이 직접 입력 상태라면 emain_id 입력 시 실시간으로 합치기
+                //    페이지 뒤로가기로 도메인이 직접 입력 상태라면 emain_id 입력 시 실시간으로 합치기
                 $("#email_id").on("change", ()=>{
-                    if($("#email_domain").val() != "self"){
-                        $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                    if($("#email_domain").val() != ""){
+                        $("#real_email").val($("#email_id").val() +"@"+ $("#email_domain").val());
                     } else {
-                        $("#real_email").val($("#email_id").val()+"@"+$(".domain-input").val());
+                        $("#real_email").val($("#email_id").val() +"@"+ $(".domain-input").val());
                     }
                 });
                 $("#email_domain").on("change", ()=>{
-                    if($("#email_domain").val() != "self"){
-                        $("#real_email").val($("#email_id").val() + $("#email_domain").val());
+                    if($("#email_domain").val() != ""){
+                        $("#real_email").val($("#email_id").val() +"@"+ $("#email_domain").val());
                     }
                 });
 
                 // 3. 직접 입력 선택 > inputBox 보이기
                 $("#email_domain").on("change", function(){
-                    if($("#email_domain").val() == "self"){
+                    if($("#email_domain").val() == ""){
                         $(".domain-input").show();
                         $("#email_domain").hide();
                     }
@@ -326,7 +333,7 @@
 
                 // 4. 직접 입력 후 합치기
                 $(".domain-input").on("change", function(){
-                    $("#real_email").val($("#email_id").val()+"@"+$(".domain-input").val());
+                    $("#real_email").val($("#email_id").val() +"@"+ $(".domain-input").val());
                 });
 
 
@@ -429,8 +436,8 @@
                 유효성 검사 2
             </div>
 
-            <div class="form-group submit-btn">
-                <button type="submit">가입하기</button>
+            <div class="form-group submit-btn" id="submit-btn-wrap">
+                <button id="submitbtn" type="button">가입하기</button>
             </div>
         </div>
     </form>
@@ -447,26 +454,7 @@
     * @ phone : 휴대전화번호 입력란
     * @ check : 유효성 검사 결과 메시지 출력란
     * @ check2 : 유효성 검사 결과 메시지 출력란2
-    *
-    *  유효성 검사 통과 여부 확인용 변수
-    * @ idResult : 이메일 유효성 검사 결과
-    * @ passResult : 비밀번호 유효성 검사 결과
-    * @ passChkResult : 비밀번호 확인 유효성 검사 결과
-    * @ nameResult : 이름 유효성 검사 결과
-    * @ birthResult : 생년월일 유효성 검사 결과
-    * @ phoneResult : 휴대전화번호 유효성 검사 결과
-    *
-    *  유효성 검사 메시지 저장용 변수
-    * @ checkMsg : 유효성 검사 결과 메시지
-    * @ checkMsg2 : 유효성 검사 결과 메시지2
-    * @ passMsg : 비밀번호 유효성 검사 결과 메시지
-    * @ passChkMsg : 비밀번호 확인 유효성 검사 결과 메시지
-    *
-    * @ nameMsg :  이름 유효성 검사 결과 메시지
-    * @ birthMsg : 생년월일 유효성 검사 결과 메시지
-    * @ phoneMsg : 휴대전화번호 유효성 검사 결과 메시지
-    * */
-
+    */
     const email_id = $("#email-wrap");
     const pass = $("#pass-wrap");
     const passChk = $("#passchk-wrap");
@@ -477,14 +465,15 @@
     const check = $(".check");
     const check2 = $(".check2");
 
-    var idResult = false;
-    var passResult = false;
-    var passChkResult = false;
+    // 유효성 검사 통과 여부 확인용 변수
+    // @ checkResult : (이메일, 이메일 중복, 비밀번호, 비밀번호확인, 닉네임, 생년월일, 휴대전화번호) 유효성 검사 통과 여부
+    //   0 : 미통과, 1 : 통과
+    var checkResult = [0, 0, 0, 0, 0, 0, 0];
 
-    // checkMsg 에 유효성 검사 최종 결과 메시지 저장
-    // 0 : 이메일, 1 : 비밀번호, 2 : 비밀번호 확인, 3 : 이름, 4 : 생년월일, 5 : 휴대전화번호
-    var checkMsg = "";
-    var passMsg ="";
+    // checkMsg 에 유효성 검사 최종 결과 메시지 저장용 변수
+    var emailChkMsg = "";
+    var emailChkMsg2 = "";
+    var passMsg = "";
     var passChkMsg = "";
     var nameMsg = "";
     var birthMsg = "";
@@ -509,7 +498,83 @@
 
         // 유효성 검사  - 이메일
         // DB 연동 후 AJAX를 이용해 중복체크를 진행할 수 있음
+        // @param real_email : 이메일 아이디 + 도메인 + 직접 입력 도메인 합친 값
 
+        var real_email;
+        // 이메일 입력 시 실시간으로 합치기
+        $("#email_id").on("keyup", function(){
+            // 도메인 주소 선택, 입력시 이벤트 추가해야
+            real_email = $("#email_id").val() +"@"+ $("#email_domain").val() + $("#self_input").val();
+            checkEmail(real_email);
+            console.log("real_email: " + real_email);
+
+            // 도메인 주소를 포함한 상태에서 중복 검사 진행
+            if($("#email_domain").val() != "" || $("#self_input").val() != ""){
+                duplicateCheck(real_email);
+            }
+
+        });
+        // 도메인 선택 시 실시간으로 합치기
+        $("#email_domain").on("change", function(){
+            real_email = $("#email_id").val() +"@"+ $("#email_domain").val() + $("#self_input").val();
+            duplicateCheck(real_email);
+            checkEmail(real_email);
+        });
+        // 도메인 직접 입력 실시간으로 합치기
+        $("#self_input").on("keyup", function(){
+            real_email = $("#email_id").val() +"@"+ $("#email_domain").val() + $("#self_input").val();
+            duplicateCheck(real_email);
+            checkEmail(real_email);
+        });
+
+        // 유효성 검사 - 이메일(이메일 형식)
+        function checkEmail(email){
+            var regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if(regExp.test(email)){
+                idResult = true;
+                email_id.removeClass("wrong").addClass("focus");
+                emailChkMsg = "";
+                check.css("display", "none");
+                checkResult[0] =  1;
+            } else {
+                idResult = false;
+                email_id.removeClass("focus").addClass("wrong");
+                emailChkMsg = "<li>올바른 이메일 형식으로 입력해주세요.</li>";
+                checkResult[0] = 0;
+            }
+            updateCheckMsg();
+            submitCheck()
+        }
+        // 중검 검사 - 이메일 중복 여부
+        function duplicateCheck(email){
+            // AJAX로 중복체크 진행
+            $.ajax({
+                url: "emailCheck.me",
+                type: "post",
+                data: {email: real_email},
+                dataType: "json",
+                success: function(data){
+                    if(data.check == "NNNN"){
+                        emailChkMsg2 = "<li>이미 사용중인 이메일입니다.</li>";
+                        email_id.removeClass("focus").addClass("wrong");
+                        checkResult[1] = 0;
+                        updateCheckMsg();
+                        submitCheck();
+                    } else {
+                        email_id.removeClass("wrong").addClass("focus");
+                        emailChkMsg2 = "";
+                        checkResult[1] = 1;
+                        updateCheckMsg();
+                        submitCheck();
+                    }
+                },
+                error: function(){
+                    console.log("중복 체크 실패");
+                }
+            });
+
+        }
 
         // 유효성 검사  - 비밀번호(8~16자리, 영문, 숫자, 특수문자)
         $("#password").on("keyup", function(){
@@ -521,16 +586,20 @@
                 pass.removeClass("wrong").addClass("focus");
                 passMsg = "";
                 check.css("display", "none");
+                checkResult[2] = 1;
             } else if(pw == ""){
                 passResult = false;
                 pass.removeClass("focus").addClass("wrong");
-                passMsg = "<li>비밀번호는 반드시 입력해야 합니다.</li>";
+                passMsg = "<li>반드시 입력해주세요.</li>";
+                checkResult[2] = 0;
             } else {
                 passResult = false;
                 pass.removeClass("focus").addClass("wrong");
-                passMsg = "<li>비밀번호는 8~16자리의 영문, 숫자, 특수문자 조합이어야 합니다.</li>";
+                passMsg = "<li>비밀번호는 영문, 숫자, 특수문자 8~16 자리로 작성해주세요.</li>";
+                checkResult[2] = 0;
             }
             updateCheckMsg();
+            submitCheck();
         });
 
         // 유효성 검사  - 비밀번호 확인
@@ -543,16 +612,20 @@
                 passChk.removeClass("wrong").addClass("focus");
                 passChkMsg = "";
                 check.css("display", "none");
+                checkResult[3] = 1;
             } else if(pwChk == ""){
                 passChkResult = false;
                 passChk.removeClass("focus").addClass("wrong");
                 passChkMsg = "<li>비밀번호 확인은 반드시 입력해야합니다.</li>";
+                checkResult[3] = 0;
             } else {
                 passChkResult = false;
                 passChk.removeClass("focus").addClass("wrong");
                 passChkMsg = "<li>비밀번호가 일치하지 않습니다.</li>";
+                checkResult[3] = 0;
             }
             updateCheckMsg();
+            submitCheck();
         });
 
         // 유효성 검사  - 이름(한글, 영문, 2~10자리)
@@ -565,16 +638,20 @@
                 username.removeClass("wrong").addClass("focus");
                 nameMsg = "";
                 check2.css("display", "none");
+                checkResult[4] = 1;
             } else if(name == ""){
                 passResult = false;
                 username.removeClass("focus").addClass("wrong");
                 nameMsg = "<li>닉네임은 반드시 입력해야 합니다.</li>";
+                checkResult[4] = 0;
             } else {
                 passResult = false;
                 username.removeClass("focus").addClass("wrong");
                 nameMsg = "<li>닉네임은 한글, 영문 2~10자리로 입력해야 합니다.</li>";
+                checkResult[4] = 0;
             }
             updateCheckMsg2();
+            submitCheck();
         });
 
         // 유효성 검사  - 생년월일(8자리, 숫자)
@@ -588,16 +665,20 @@
                     birthday.removeClass("wrong").addClass("focus");
                     birthMsg = "";
                     check2.css("display", "none");
+                    checkResult[5] = 1;
                 } else if(birth == ""){
                     passResult = false;
                     birthday.removeClass("focus").addClass("wrong");
                     birthMsg = "<li>생년월일은 반드시 입력해야 합니다.</li>";
+                    checkResult[5] = 0;
                 } else {
                     passResult = false;
                     birthday.removeClass("focus").addClass("wrong");
                     birthMsg = "<li>생년월일은 8자리의 숫자로 입력해야 합니다.</li>";
+                    checkResult[5] = 0;
                 }
                 updateCheckMsg2();
+                submitCheck();
             });
         });
 
@@ -611,22 +692,26 @@
                 phone.removeClass("wrong").addClass("focus");
                 phoneMsg = "";
                 check2.css("display", "none");
+                checkResult[6] = 1;
             } else if(phoneNum == ""){
                 passResult = false;
                 phone.removeClass("focus").addClass("wrong");
                 phoneMsg = "<li>휴대전화번호는 반드시 입력해야 합니다.</li>";
+                checkResult[6] = 0;
             } else {
                 passResult = false;
                 phone.removeClass("focus").addClass("wrong");
                 phoneMsg = "<li>휴대전화번호는 10~11자리의 숫자로 입력해야 합니다.</li>";
+                checkResult[6] = 0;
             }
             updateCheckMsg2();
+            submitCheck();
         });
 
 
         // 유효성 검사 결과(이메일/비밀번호) 메시지 출력용 함수
         function updateCheckMsg(){
-            var checkMsg = passMsg + passChkMsg;
+            var checkMsg = emailChkMsg + emailChkMsg2 + passMsg + passChkMsg;
             if (checkMsg != "") {
                 check.html("<ul>" + checkMsg + "</ul>").css("display", "block");
             } else {
@@ -644,6 +729,27 @@
             }
         };
 
+        // 가입버튼 클릭 이벤트
+        var result = 1;
+        function submitCheck(){
+            console.log("checkResult: " + checkResult);
+            for(var i = 0; i < checkResult.length; i++){
+                result = result * checkResult[i];
+            };
+
+            if(result != 1){
+                $("#submitbtn").attr("type", "button");
+            } else {
+                $("#submitbtn").attr("type", "submit");
+            }
+        };
+
+        // submitCheck() 함수 안에 onclick 이벤트 추가하면 해당 함수를 호출할 때마다 이벤트 핸들러가 중첩되는 문제 발생
+        $("#submitbtn").on("click", function(){
+            if(result != 1) {
+                alert("입력란을 확인해주세요.");
+            }
+        });
     });
 
 </script>

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// 프로필 이미지 upload 경로 설정용 config
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

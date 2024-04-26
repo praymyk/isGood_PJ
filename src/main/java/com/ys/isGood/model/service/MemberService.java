@@ -12,8 +12,8 @@ public interface MemberService {
     // 로그인 처리 메소드
     LoginMember memberLogin(Member member);
 
-    // 아이디 중복 체크 메소드
-    String memberIdCheck(String email);
+    // 이메일 중복 체크 메소드
+    int memberEmailCheck(Member member);
 
     // 구독 게임 리스트 조회용 메소드
     ArrayList<SubscribeList> memberSubList(String userNo);
@@ -36,6 +36,14 @@ public interface MemberService {
     // 마이페이지 프로필 정보 수정용 메소드
     int updateNickName(Member member);
 
+    // 마이페이지 연락처 정보 수정용 메소드
+    int updatePhone(Member member);
+
     // 마이페이지 프로필 정보 수정 후 업데이트 된 정보 조회용 메소드
     LoginMember updatedMember(String userNo);
+
+    // 계정 정지용 메소드
+    int stopUserId(Member member);
+
+
 }
