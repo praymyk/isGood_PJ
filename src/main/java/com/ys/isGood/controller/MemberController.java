@@ -1,9 +1,11 @@
 package com.ys.isGood.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.jconsole.JConsoleContext;
 import com.ys.isGood.config.AuthConfig;
 import com.ys.isGood.model.service.MemberServiceImpl;
 import com.ys.isGood.model.vo.*;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +94,10 @@ public class MemberController {
     // 로그인 처리 메소드
     // @param member : 로그인 정보를 담은 객체
     @PostMapping("/login.me")
-    public String memberLogin(Member member, HttpSession session, Model model){
+    public String memberLogin(Member member,
+                              @RequestParam(value = "rememberId", required = false) String rememberId,
+                              HttpSession session,
+                              Model model){
 
         LoginMember loginUser = memberService.memberLogin(member);
         // 1. 로그인 이메일 주소가 존재하지 않는 경우

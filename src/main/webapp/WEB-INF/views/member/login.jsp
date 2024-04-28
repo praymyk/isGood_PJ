@@ -89,7 +89,7 @@
         display: flex;
         flex-direction: column;
         margin : 20px 20px 30px 20px;
-        width: 90%;
+        min-width: 350px;
     }
     .login-id-wraper{
         display: flex;
@@ -221,7 +221,7 @@
                     <div class="login-form-group">
                         <div class="login-id-wraper">
                             <label for="login-id">아이디</label>
-                            <input type="checkbox" name="loginType" value="normal">
+                            <input type="checkbox" id="rememberId" name="rememberId" value="saveId">
                             <span> 이메일 저장 </span>
                         </div>
                         <input type="email" name="email" class="login-email">
@@ -268,6 +268,69 @@
     </div>
 
 </div>
+
+<!-- 로그인 이메일 기억하기 용 스크립트 -->
+<script>
+
+    window.onload = function(){
+        // 1. 쿠키에 아이디가 존재할 경우 input에 불러오기
+        console.log("쿠키 불러오기" + getCookie("savedEmail"));
+        var savedEmail = getCookie("savedEmail");
+
+        // 2. 쿠키에 아디가 존재할 경우 아이디 저장 체크박스 체크
+        // *JavaScript에서는 falsy 값인 null, undefined, 빈 문자열(""), 숫자 0, false, NaN을 조건문에서 false로 간주
+        if(savedEmail){
+            document.getElementById("rememberId").checked = true;
+        } else {
+            document.getElementById("rememberId").checked = false;
+        }
+
+        // @param checkId : 아이디 저장 체크박스
+        var checkId = document.getElementById("rememberId");
+
+        // 3. 아이디 저장하기 체크박스 이벤트1 (체크 시 입력되어 있는 아이디 쿠키에 저장)
+        checkId.onchange = function(){
+            if(checkId.checked){
+                // @param loginedEmail : 로그인한 이메일 값
+                var loginedEmail = document.getElementsByClassName("login-email")[0].value;
+                setCookie("savedEmail", loginedEmail, 30); // 30일 동안 쿠키 저장
+            }else{ // 체크 해제 시 쿠키 삭제
+                deleteCookie("savedEmail");
+            }
+        }
+
+        // 4. 아이디 저장하기 체크박스 이벤트2 (체크를 먼저하고 아이디를 입력할 경우)
+        // @param inputEmail : 이메일 입력 input
+        var inputEmail = document.getElementsByClassName("login-email")[0];
+
+        inputEmail.addEventListener("keyup", function(e){
+            if(checkId.checked){
+                var loginedEmail = document.getElementsByClassName("login-email")[0].value;
+                setCookie("savedEmail", loginedEmail, 30);
+            }
+        });
+
+    }
+
+    // 쿠키 저장 함수 셋팅
+    var setCookie = function(name, value, exp){
+        var date = new Date();
+        date.setTime(date.getTime() + exp*24*60*60*1000);
+        document.cookie = name + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
+    }
+
+    // 쿠키 가져오기 함수 셋팅
+    var getCookie = function(name){
+        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value? value[2] : null;
+    }
+
+    // 쿠키 삭제 함수 셋팅
+    var deleteCookie = function(name){
+        document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:00 GMT; path=/;";
+    }
+
+</script>
 
 
 </body>
