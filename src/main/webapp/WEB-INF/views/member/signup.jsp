@@ -498,15 +498,14 @@
 
         // 유효성 검사  - 이메일
         // DB 연동 후 AJAX를 이용해 중복체크를 진행할 수 있음
-        // @param real_email : 이메일 아이디 + 도메인 + 직접 입력 도메인 합친 값
 
+        // @param real_email : 이메일 아이디 + 도메인 + 직접 입력 도메인 합친 값
         var real_email;
-        // 이메일 입력 시 실시간으로 합치기
+        // 이메일 입력 시 실시간으로 아이디 + 도메인 주소 합치기
         $("#email_id").on("keyup", function(){
-            // 도메인 주소 선택, 입력시 이벤트 추가해야
+            // 도메인 주소 선택, 입력 시 이메일 아이디 + 도메인 주소 값 합치기
             real_email = $("#email_id").val() +"@"+ $("#email_domain").val() + $("#self_input").val();
             checkEmail(real_email);
-            console.log("real_email: " + real_email);
 
             // 도메인 주소를 포함한 상태에서 중복 검사 진행
             if($("#email_domain").val() != "" || $("#self_input").val() != ""){
@@ -547,7 +546,7 @@
             submitCheck()
         }
         // 중검 검사 - 이메일 중복 여부
-        function duplicateCheck(email){
+        function duplicateCheck(){
             // AJAX로 중복체크 진행
             $.ajax({
                 url: "emailCheck.me",
@@ -561,7 +560,8 @@
                         checkResult[1] = 0;
                         updateCheckMsg();
                         submitCheck();
-                    } else {
+                        // 이메일 중복이 되지 않은 상태일 뿐만 아니라 이메일 형식도 맞을 때
+                    } else if(data.check == "YYYY" && idResult == true){
                         email_id.removeClass("wrong").addClass("focus");
                         emailChkMsg2 = "";
                         checkResult[1] = 1;
@@ -731,10 +731,11 @@
 
         // 가입버튼 클릭 이벤트
         var result = 1;
+
         function submitCheck(){
-            console.log("checkResult: " + checkResult);
+            result = 1;
             for(var i = 0; i < checkResult.length; i++){
-                result = result * checkResult[i];
+                result *= checkResult[i];
             };
 
             if(result != 1){
