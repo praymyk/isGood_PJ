@@ -1,6 +1,6 @@
-package com.ys.isGood.model.dao;
+package com.ys.isGood.model.dao.member;
 
-import com.ys.isGood.model.vo.*;
+import com.ys.isGood.model.vo.member.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 

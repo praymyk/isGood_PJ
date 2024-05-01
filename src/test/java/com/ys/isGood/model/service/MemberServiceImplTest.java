@@ -1,6 +1,7 @@
 package com.ys.isGood.model.service;
 
-import com.ys.isGood.model.vo.Member;
+import com.ys.isGood.model.service.member.MemberServiceImpl;
+import com.ys.isGood.model.vo.member.Member;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

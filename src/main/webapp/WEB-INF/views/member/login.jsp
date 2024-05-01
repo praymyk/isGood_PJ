@@ -190,19 +190,56 @@
         margin : 5px;
     }
 
+    /* sns 로그인 버튼 스타일 */
+    .naver-login{
+        border-radius: 12px;
+        background-color: #00C73C;
+        height: 60px;
+        width: 250px;
+        margin: 5px;
+    }
+    .kakao-login{
+        border-radius: 12px;
+        background-color:  #FEE500;
+        height: 60px;
+        width: 250px;
+        margin: 5px;
+    }
+    .google-login{
+        border-radius: 12px;
+        background-color: white;
+        height: 60px;
+        width: 250px;
+        margin: 5px;
+    }
+    .sns-login-box a{
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+    }
+
+    .sns-login-box img{
+        width: 50px;
+        height: 50px;
+        margin-left: 10px;
+    }
+    .sns-login-box span{
+        display: flex;
+        margin: auto;
+        align-items: center;
+    }
+    #kako-span{
+        color: black;
+    }
+    #naver-span{
+        color: white;
+    }
+    #google-span{
+        color: black;
+    }
+
 </style>
 <body>
-<!-- 로그인 실패시 메시지 -->
-<script>
-   window.onload = function (){
-        var msg = "${msg}";
-
-        if(msg != ""){
-            alert(msg);
-        }
-    };
-</script>
-
 <div class="login-wrraper">
 
     <div class="login-case">
@@ -254,15 +291,9 @@
         </div>
 
         <div class="sns-login-box">
-            <a href="">
-                <span>구글</span>
-            </a>
-            <a href="">
-                <span>카카오</span>
-            </a>
-            <a href="">
-                <span>네이버</span>
-            </a>
+            <a href="" class="google-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_google_login.png"><span id="google-span">구글 로그인</span></a>
+            <a href="javascript:void(0);" onclick="kakaoLogin()" class="kakao-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_kakao_login.png"><span id="kako-span">카카오 로그인</span></a>
+            <a href="" class="naver-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_naver_login.png"><span id="naver-span">네이버로 로그인</span></a>
         </div>
 
     </div>
@@ -273,6 +304,12 @@
 <script>
 
     window.onload = function(){
+        var msg = "${msg}";
+
+        if(msg != ""){
+            alert(msg);
+        }
+
         // 1. 쿠키에 아이디가 존재할 경우 input에 불러오기
         console.log("쿠키 불러오기" + getCookie("savedEmail"));
         var savedEmail = getCookie("savedEmail");
@@ -329,6 +366,30 @@
     var deleteCookie = function(name){
         document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:00 GMT; path=/;";
     }
+
+</script>
+
+<!-- SNS 로그인 함수 -->
+<script>
+
+
+    function kakaoLogin(){
+        /* @param rest_api_key : 카카오 로그인 Rest API Key
+           @param redirect_uri : 카카오 로그인 후 리다이렉트 될 주소
+           @param kakaoURL : 카카오 로그인 URL
+         */
+        const rest_api_key = 'b625b2518b06664256b701e5bb1d0707';
+        const redirect_uri = 'http://localhost:8081/isGood/kakaoLogin.me';
+
+        //  jsp 엔진을 거치면 'page, request, session, context '에서 "rest_api_key"라는 이름표가 붙은 값을 찾음
+        //  해당 영역에는 존재하지 않으므로 그냥 'rest_api_key 값을 찾지 못함
+        const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${'${rest_api_key}'}&redirect_uri=${'${redirect_uri}'}&response_type=code`;
+
+        window.location.href = kakaoURL;
+
+    }
+
+
 
 </script>
 

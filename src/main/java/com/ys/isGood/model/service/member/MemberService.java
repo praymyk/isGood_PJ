@@ -1,6 +1,6 @@
-package com.ys.isGood.model.service;
+package com.ys.isGood.model.service.member;
 
-import com.ys.isGood.model.vo.*;
+import com.ys.isGood.model.vo.member.*;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.ys.isGood.model.vo;
+package com.ys.isGood.model.vo.member;
 
 import lombok.*;
 

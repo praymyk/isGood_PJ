@@ -1,4 +1,4 @@
-package com.ys.isGood.model.vo;
+package com.ys.isGood.model.vo.member;
 
 import lombok.*;
 
@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class LoginMember {
+
     private String userNo;      //    USER_NO	NUMBER
     private String email;       //    EMAIL	VARCHAR2(30 BYTE)
     private String userPwd;     //    USER_PWD	VARCHAR2(30 BYTE)
@@ -26,4 +27,5 @@ public class LoginMember {
     private String changeName;   //    CHANGE_NAME	VARCHAR2(100 BYTE)
     private String imgType;      //    IMG_TYPE	VARCHAR2(4 BYTE)
     private int imgSize;          //    IMG_SIZE	NUMBER
+    
 }

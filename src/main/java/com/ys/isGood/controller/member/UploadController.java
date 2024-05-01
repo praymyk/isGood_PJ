@@ -1,7 +1,7 @@
-package com.ys.isGood.controller;
+package com.ys.isGood.controller.member;
 
-import com.ys.isGood.model.service.MemberServiceImpl;
-import com.ys.isGood.model.vo.ProfileImg;
+import com.ys.isGood.model.service.member.MemberServiceImpl;
+import com.ys.isGood.model.vo.member.ProfileImg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

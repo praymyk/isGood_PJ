@@ -1,7 +1,7 @@
-package com.ys.isGood.model.service;
+package com.ys.isGood.model.service.member;
 
-import com.ys.isGood.model.dao.MemberDao;
-import com.ys.isGood.model.vo.*;
+import com.ys.isGood.model.dao.member.MemberDao;
+import com.ys.isGood.model.vo.member.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
