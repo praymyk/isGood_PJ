@@ -18,4 +18,8 @@ public class Member {
     private String enrollDate;  //    ENROLL_DATE	DATE
     private String modifyDate;  //    MODIFY_DATE	DATE
     private String status;      //    STATUS	CHAR(1 BYTE)
+
+    public Member(String userNo) {
+        this.userNo = userNo;
+    }
 }

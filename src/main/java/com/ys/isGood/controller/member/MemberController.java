@@ -48,12 +48,8 @@ public class MemberController {
     // 비밀번호 암호화를 위한 객체
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    // 카카오 로그인 기능 구현을 위한 변수
-    @Value("${KAKAO-REDIRECT-URI}")
-    private String kakaoRedirectUri;
-    @Value("${KAKAO-RESTAPI-KEY}")
-    private String kakaoRestApiKey;
+    @Autowired
+    private SnsLoginController snsLoginController;
 
     // 회원가입 페이지로 이동
     @RequestMapping("/enrollForm.me")
@@ -64,20 +60,48 @@ public class MemberController {
     // 회원가입 처리 메소드
     // @param member : 회원가입 정보를 담은 객체
     @PostMapping("/enroll.me" )
-    public String memberEnrollEnd(Member member, RedirectAttributes redirectAttributes){
+    public String memberEnrollEnd(Member member, @RequestParam("snsProfile") String snsProfile, RedirectAttributes redirectAttributes){
 
         // 비밀번호 암호화
         String encPwd = passwordEncoder.encode(member.getUserPwd());
-        log.info("암호화된 비밀번호 : " + encPwd);
-
         member.setUserPwd(encPwd);
-        log.info("암호화된 회원정보 : " + member);
 
+        // 회원가입 정보 DB 저장
         int result = memberService.memberEnrollEnd(member);
 
-
+        // 회원 가입 DB 저장 성공 여부에 따른 처리
+        // 회원가입 성공시 메세지 전달 + sns 회원가입 시 연동 정보 등록
         if(result > 0) {
             redirectAttributes.addFlashAttribute("msg", "회원가입 성공");
+
+            // SNS 로그인 회원가입시 연동계정 정보 DB 저장
+            if(snsProfile != null && !snsProfile.equals("")){
+                // 가입된 로그인 정보를 연동을 위해 다시 불러옴
+                LoginMember enrolledMember = memberService.memberLogin(member);
+
+                // json 형태의 문자열 snsProfile 을 객체로 변환
+                // 문자열 -> json 객체 변환에 필요한 ObjectMapper 객체 생성
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                try {
+                    //JsonNode 객체가 생성되고 문자열이 JsonNode 객체로 변환
+                    JsonNode node = objectMapper.readTree(snsProfile);
+                    // JsonNode 객체로부터 필요한 정보 추출 -> snsProfile 객체에 저장
+                    KakaoProfile kakaoProfile = new KakaoProfile();
+                    kakaoProfile.setSnsId(Long.valueOf(node.get("snsId").asText()));
+                    kakaoProfile.setType(node.get("snsType").asText());
+                    kakaoProfile.setEmail(node.get("snsEmail").asText());
+                    kakaoProfile.setNickName(node.get("snsNickName").asText());
+                    kakaoProfile.setUserNo(enrolledMember.getUserNo());
+
+                    log.info("SNS 회원가입 정보 : " + kakaoProfile);
+
+                    int resultSns = memberService.snsEnroll(kakaoProfile);
+
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         } else {
             redirectAttributes.addFlashAttribute("msg", "회원가입 실패");
         }
@@ -155,97 +179,10 @@ public class MemberController {
 //        return "redirect:/";
     }
 
-    // 카카오 로그인 처리 메소드 ( 토큰 요청 )
-    // API key 값을 감추기 위해 javaScript에서 처리하지 않고 java에서 처리
-    @GetMapping("/kakaoLogin.me")
-    public String kakaoCallbackToken(@RequestParam("code") String code) throws JsonProcessingException {
-
-        // 카카오로그인 API에 인증 코드 받고 토큰 요청
-        // POST 방식으로 코드 전달 후 토큰을 받아옴
-
-        // 1. HTTPHEADER 생성
-        HttpHeaders headers = new HttpHeaders();
-        // 카카오 api 요구 조건에 따라 content-type 설정
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        // 2. HTTPBODY 설정 (key=value 형태로 전달)
-        // 카카오 api 요구 조건에 따라 body 설정
-        // grant_type(authorization_code로 고정), client_id(앱 REST API 키), redirect_uri(인가 코드가 리다이렉트된 URI), grant_type(code)
-        // Spring Framework의 클래스인 MultiValueMap을 사용하여 key=value 형태로 전달
-        // 순서가 유지되는 특징의 Map
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", kakaoRestApiKey);
-        body.add("redirect_uri", kakaoRedirectUri);
-        body.add("code", code);
-
-        // 3. HTTP 요청 보내기
-        // HTTP 요청을 보내기 위한 요청 바디(body)와 헤더(headers)를 설정하는 객체
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
-
-        // HTTP 요청을 보내고 응답을 받기 위한 객체 Spring에서 제공하는 HTTP 클라이언트
-        RestTemplate rt = new RestTemplate();
-
-        // ResponseEntity: HTTP 응답 내용을 담을 객체
-        // exchange() 메서드를 사용하여 HTTP 요청을 보내기
-        ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",  // 요청할 URL
-                HttpMethod.POST,  // HTTP 메서드: POST
-                kakaoTokenRequest,  // 요청 바디와 헤더가 담긴 HttpEntity 객체
-                String.class);  // 응답의 타입: 문자열(String)
-
-        // 4. 응답( JSON ) 데이터 받기
-        // 받은 응답 데이터를 문자열로 저장
-        String responseBody = response.getBody();
-
-        // 받은 응답 데이터를 JSON 형태로 파싱하기 위해 ObjectMapper 객체를 생성
-        // ObjectMapper는 JSON 데이터를 자바 객체로 변환하거나, 자바 객체를 JSON 형태로 변환하는 데 사용
-        ObjectMapper objectMapper = new ObjectMapper();
-        //readTree() 메서드를 사용하여 JSON 형식의 문자열을 JsonNode 객체로 변환
-        //JsonNode는 JSON 데이터의 노드를 나타내며, 이를 통해 데이터에 접근할 수 있다.
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-
-        String token = jsonNode.get("access_token").asText();
-
-        return null;
-    }
-
-    // 카카오 로그인 처리 메소드 ( 토큰 정보를 이용하여 사용자 정보 요청 )
-    public KakaoProfile getKakaoProfile(String token) throws JsonProcessingException {
-
-        // 1. HTTPHEADER 생성
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        // 2. HTTPBODDY 설정 ( 넘길 정보가 없으므로 생략 )
-        // 3. HTTP 요청 보내기
-        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class
-        );
-
-        // 4. 응답( JSON ) 데이터 받기
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-
-        // 받은 응답 데이터를 VO 객체로 변환
-        Long id = jsonNode.get("id").asLong();
-        String email = jsonNode.get("kakao_account").get("email").asText();
-        String nickname = jsonNode.get("properties")
-                .get("nickname").asText();
-
-        return jsonNode;
-    }
 
     // 로그아웃 처리 메소드
     @GetMapping("/logout.me")
-    public String memberLogout(HttpSession session){
+    public String memberLogout(HttpSession session) throws JsonProcessingException {
         session.invalidate();
         return "redirect:/";
     }

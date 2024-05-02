@@ -1,24 +1,26 @@
 package com.ys.isGood.model.vo.sns;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.web.PortResolverImpl;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class KakaoProfile {
 
-    private String profile_nickname;
-    private String profile_image;
-    private String account_email;
-    private String name;
-    private String gender;
-    private String birthyear;
-    private String phone_number;
-    private String CI;
+    private Long snsId;
+    private String userNo;
+    private String type;
+    private String email;
+    private String nickName;
 
-
+    public KakaoProfile(Long snsId, String email, String nickname) {
+        this.snsId = snsId;
+        this.email = email;
+        this.nickName = nickname;
+    }
 }
+
+

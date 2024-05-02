@@ -436,12 +436,41 @@
                 유효성 검사 2
             </div>
 
+            <input type="hidden" value="" name="snsProfile">
+
             <div class="form-group submit-btn" id="submit-btn-wrap">
                 <button id="submitbtn" type="button">가입하기</button>
             </div>
         </div>
     </form>
 </div>
+<!-- SNS 로그인으로 회원가입 안내를 받은 경우 -->
+<script>
+    $(function(){
+        // sns 계정으로 로그인하고 회원가입 안내를 받은 경우
+        if("${msg}" != "" && "${msg}" != null){
+            window.alert("${msg}");
+
+            // SessionScope에 저장딘 SNS 계정 정보를 json 형태로 변환
+            var snsProfile = {
+                snsId: "${sessionScope.kakaoProfile.snsId}",
+                snsType: "${sessionScope.kakaoProfile.type}",
+                snsEmail: "${sessionScope.kakaoProfile.email}",
+                snsNickName: "${sessionScope.kakaoProfile.nickName}"
+            };
+
+            var jsonString = JSON.stringify(snsProfile);
+            console.log("회원가입에 필요한 정보 : " + jsonString);
+            document.getElementsByName("snsProfile")[0].value = jsonString;
+        }
+
+
+
+
+    });
+
+
+</script>
 
 <script>
     /*
@@ -784,10 +813,11 @@
                 $(this).siblings().children('input').attr("type", "password");
             }
         });
-
     });
 
 </script>
+
+
 
 </body>
 </html>

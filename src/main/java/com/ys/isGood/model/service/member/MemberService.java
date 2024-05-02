@@ -1,6 +1,7 @@
 package com.ys.isGood.model.service.member;
 
 import com.ys.isGood.model.vo.member.*;
+import com.ys.isGood.model.vo.sns.KakaoProfile;
 
 import java.util.ArrayList;
 
@@ -45,5 +46,12 @@ public interface MemberService {
     // 계정 정지용 메소드
     int stopUserId(Member member);
 
+    // sns 연동게정 확인용 메소드
+    KakaoProfile checkSnsProfile(String snsEmail);
 
+    // sns 연동 정보 추가용 메소드
+    int snsEnroll(KakaoProfile kakaoProfile);
+
+    // sns 연동 로그인 용 메소드
+    LoginMember memberSnsLogin(KakaoProfile loadKakaoProfile);
 }

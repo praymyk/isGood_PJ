@@ -2,6 +2,7 @@ package com.ys.isGood.model.service.member;
 
 import com.ys.isGood.model.dao.member.MemberDao;
 import com.ys.isGood.model.vo.member.*;
+import com.ys.isGood.model.vo.sns.KakaoProfile;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,24 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int stopUserId(Member member) {
         return memberDao.stopUserId(member, sqlSession);
+    }
+
+    // SNS 연동계정 확인용 메소드
+    @Override
+    public KakaoProfile checkSnsProfile(String snsEmail) {
+        return memberDao.checkSnsProfile(snsEmail, sqlSession);
+    }
+
+    // SNS 연동 추가용 메소드
+    @Override
+    public int snsEnroll(KakaoProfile kakaoProfile) {
+        return memberDao.snsEnroll(kakaoProfile, sqlSession);
+    }
+
+    // SNS 연동 로그인용 메소드
+    @Override
+    public LoginMember memberSnsLogin(KakaoProfile loadKakaoProfile) {
+        return memberDao.memberSnsLogin(loadKakaoProfile, sqlSession);
     }
 
 }

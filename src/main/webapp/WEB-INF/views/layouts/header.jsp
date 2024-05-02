@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--Spring 커스텀 properties 파일 불러오기 위한 태그리브 선언--%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <style>
 
@@ -261,10 +263,19 @@
     if("${sessionScope.loginUser.userNo}" != ""){
         document.querySelector('.navbar-menu-right').innerHTML
             = '<li><a href="mypage.me">마이페이지</a></li>' +
-            '<li><a href="logout.me">로그아웃</a></li>';
+            '<li id="logOut">로그아웃</li>';
     }
 
+    // 로그아웃 버튼 클릭시 카카오 로그아웃 처리
+    document.getElementById('logOut').addEventListener('click', function() {
+        // 카카오 로그아웃
+        <spring:eval expression="@environment.getProperty('KAKAO-RESTAPI-KEY')" var="kakaoRestApi" />
+        <spring:eval expression="@environment.getProperty('KAKAO-LOGOUT-REDIRECT-URI')" var="kakaoLogoutRedirectUri" />
+        location.href = `https://kauth.kakao.com/oauth/logout?client_id=${kakaoRestApi}&logout_redirect_uri=${kakaoLogoutRedirectUri}`;
+    });
+
 </script>
+
 
 <script>
     // @ 드롭다운 메뉴 스크립트  (1 ~ 4)
