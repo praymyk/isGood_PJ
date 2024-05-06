@@ -453,10 +453,10 @@
 
             // SessionScope에 저장딘 SNS 계정 정보를 json 형태로 변환
             var snsProfile = {
-                snsId: "${sessionScope.kakaoProfile.snsId}",
-                snsType: "${sessionScope.kakaoProfile.type}",
-                snsEmail: "${sessionScope.kakaoProfile.email}",
-                snsNickName: "${sessionScope.kakaoProfile.nickName}"
+                snsId: "${sessionScope.snsProfile.snsId}",
+                snsType: "${sessionScope.snsProfile.type}",
+                snsEmail: "${sessionScope.snsProfile.email}",
+                snsNickName: "${sessionScope.snsProfile.nickName}"
             };
 
             var jsonString = JSON.stringify(snsProfile);

@@ -3,8 +3,10 @@ package com.ys.isGood.model.service.member;
 import com.ys.isGood.model.dao.member.MemberDao;
 import com.ys.isGood.model.vo.member.*;
 import com.ys.isGood.model.vo.sns.KakaoProfile;
+import com.ys.isGood.model.vo.sns.SnsProfile;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -97,20 +99,20 @@ public class MemberServiceImpl implements MemberService {
 
     // SNS 연동계정 확인용 메소드
     @Override
-    public KakaoProfile checkSnsProfile(String snsEmail) {
+    public SnsProfile checkSnsProfile(String snsEmail) {
         return memberDao.checkSnsProfile(snsEmail, sqlSession);
     }
 
     // SNS 연동 추가용 메소드
     @Override
-    public int snsEnroll(KakaoProfile kakaoProfile) {
-        return memberDao.snsEnroll(kakaoProfile, sqlSession);
+    public int snsEnroll(SnsProfile snsProfile) {
+        return memberDao.snsEnroll(snsProfile, sqlSession);
     }
 
     // SNS 연동 로그인용 메소드
     @Override
-    public LoginMember memberSnsLogin(KakaoProfile loadKakaoProfile) {
-        return memberDao.memberSnsLogin(loadKakaoProfile, sqlSession);
+    public LoginMember memberSnsLogin(SnsProfile loadSnsProfile) {
+        return memberDao.memberSnsLogin(loadSnsProfile, sqlSession);
     }
 
 }

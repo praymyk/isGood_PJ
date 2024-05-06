@@ -2,6 +2,7 @@ package com.ys.isGood.model.dao.member;
 
 import com.ys.isGood.model.vo.member.*;
 import com.ys.isGood.model.vo.sns.KakaoProfile;
+import com.ys.isGood.model.vo.sns.SnsProfile;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -75,17 +76,17 @@ public class MemberDao {
     }
 
     // SNS 연동계정 확인용 메소드
-    public KakaoProfile checkSnsProfile(String snsEmail, SqlSessionTemplate sqlSession) {
+    public SnsProfile checkSnsProfile(String snsEmail, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("memberMapper.checkSnsProfile", snsEmail);
     }
 
     // SNS 연동 정보 추가용 메소드
-    public int snsEnroll(KakaoProfile kakaoProfile, SqlSessionTemplate sqlSession) {
-        return sqlSession.insert("memberMapper.snsEnroll", kakaoProfile);
+    public int snsEnroll(SnsProfile snsProfile, SqlSessionTemplate sqlSession) {
+        return sqlSession.insert("memberMapper.snsEnroll", snsProfile);
     }
 
     // SNS 연동 로그인용 메소드
-    public LoginMember memberSnsLogin(KakaoProfile loadKakaoProfile, SqlSessionTemplate sqlSession) {
-        return sqlSession.selectOne("memberMapper.memberSnsLogin", loadKakaoProfile);
+    public LoginMember memberSnsLogin(SnsProfile loadSnsProfile, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.memberSnsLogin", loadSnsProfile);
     }
 }

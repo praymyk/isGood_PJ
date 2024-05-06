@@ -2,6 +2,8 @@ package com.ys.isGood.model.service.member;
 
 import com.ys.isGood.model.vo.member.*;
 import com.ys.isGood.model.vo.sns.KakaoProfile;
+import com.ys.isGood.model.vo.sns.SnsProfile;
+import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 
@@ -47,11 +49,11 @@ public interface MemberService {
     int stopUserId(Member member);
 
     // sns 연동게정 확인용 메소드
-    KakaoProfile checkSnsProfile(String snsEmail);
+    SnsProfile checkSnsProfile(String snsEmail);
 
     // sns 연동 정보 추가용 메소드
-    int snsEnroll(KakaoProfile kakaoProfile);
+    int snsEnroll(SnsProfile snsProfile);
 
     // sns 연동 로그인 용 메소드
-    LoginMember memberSnsLogin(KakaoProfile loadKakaoProfile);
+    LoginMember memberSnsLogin(SnsProfile loadSnsProfile);
 }

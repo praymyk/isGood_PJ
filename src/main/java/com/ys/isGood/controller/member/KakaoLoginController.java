@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ys.isGood.model.service.member.MemberService;
 import com.ys.isGood.model.vo.member.LoginMember;
-import com.ys.isGood.model.vo.member.Member;
 import com.ys.isGood.model.vo.sns.KakaoProfile;
+import com.ys.isGood.model.vo.sns.SnsProfile;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:application-API-KEY.properties")
 })
-public class SnsLoginController {
+public class KakaoLoginController {
 
     // 카카오 로그인 기능 구현을 위한 변수
     @Value("${KAKAO-REDIRECT-URI}")
@@ -46,9 +46,8 @@ public class SnsLoginController {
 
 
     // 카카오 로그인 처리 메소드 ( 토큰 요청 )
-    // API key 값을 감추기 위해 javaScript에서 처리하지 않고 java에서 처리
     @GetMapping("/kakaoLogin.me")
-    public String kakaoCallbackToken(@RequestParam("code") String code,
+    public String kakaoLogin(@RequestParam("code") String code,
                                      HttpSession session,
                                      Model model) throws JsonProcessingException {
 
@@ -111,8 +110,8 @@ public class SnsLoginController {
             // 5-2. 카카오 계정으로 회원가입이 되어있지 않은 경우(result에 회원 번호 정보가 없을 때) 회원가입 페이지로 이동
             //     SNS 계정으로 로그인 시도를 한 경우 SNS 계정 연동 가입이 됨 (kaoProfile DB 데이터가 존재하면 연동 계정)
 
-            // @paran kaoProfile : sns 계정 정보
-            session.setAttribute("kakaoProfile", kakaoProfile);
+            // @paran kaoProfile : 회원 가입 시 sns 계정아 연동되도록 sns계정 정보 세션에 저장
+            session.setAttribute("snsProfile", kakaoProfile);
 
             model.addAttribute("msg", "연동된 계정 정보가 없습니다. 회원가입을 부탁드립니다.");
             return "member/signup";
@@ -151,7 +150,7 @@ public class SnsLoginController {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         // 받은 응답 데이터를 VO 객체로 변환
-        Long id = jsonNode.get("id").asLong();
+        String id = jsonNode.get("id").asText();
         // 카카오 애플리케이션 설정에서 이메일 정보를 동의 받지 않았을 경우 null 반환 ( 카카오 애플리케이션 설정에서 동의 받도록 해야함 )
         String email = jsonNode.get("kakao_account").get("email").asText();
         String nickname = jsonNode.get("properties")
@@ -167,7 +166,7 @@ public class SnsLoginController {
 
         // 1. 카카오 계정 정보 확인
         // DB에서 카카오 계정 정보 확인 ( 이메일로 확인 )
-        KakaoProfile loadKakaoProfile = memberService.checkSnsProfile(kakaoProfile.getEmail());
+        SnsProfile loadKakaoProfile = memberService.checkSnsProfile(kakaoProfile.getEmail());
 
         // 2. 연동 계정 정보가 존재하지 않을 경우 회원 가입 유도 -> 회원가입 페이지에 넘길 회원 정보 가공
         if(loadKakaoProfile == null){
@@ -212,4 +211,5 @@ public class SnsLoginController {
 
         Long id = jsonNode.get("id").asLong();
     }
+
 }

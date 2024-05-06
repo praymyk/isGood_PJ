@@ -73,7 +73,7 @@
     </resultMap>
 
     <!-- 카카오 SNS 계정 VO -->
-    <resultMap type="kakaoProfile" id="kakaoProfileResultMap">
+    <resultMap type="snsProfile" id="snsProfileResultMap">
         <result column="SNS_ID" property="snsId"/>
         <result column="USER_NO" property="userNo"/>
         <result column="SNS_TYPE" property="type"/>
@@ -208,14 +208,14 @@
     </update>
 
     <!-- SNS 연동계정 확인용 쿼리 -->
-    <select id="checkSnsProfile" parameterType="string" resultMap="kakaoProfileResultMap">
+    <select id="checkSnsProfile" parameterType="string" resultMap="snsProfileResultMap">
         SELECT *
           FROM SNSACCOUNT
          WHERE SNS_EMAIL = #{email}
     </select>
 
     <!-- SNS 연동계정 등록용 쿼리 -->
-    <insert id="snsEnroll" parameterType="kakaoProfile">
+    <insert id="snsEnroll" parameterType="snsProfile">
         INSERT INTO SNSACCOUNT
              VALUES (#{snsId},
                      #{userNo},

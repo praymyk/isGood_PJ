@@ -6,24 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ys.isGood.model.service.member.MemberServiceImpl;
 import com.ys.isGood.model.vo.member.*;
 import com.ys.isGood.model.vo.sns.KakaoProfile;
+import com.ys.isGood.model.vo.sns.SnsProfile;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
@@ -49,7 +42,7 @@ public class MemberController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private SnsLoginController snsLoginController;
+    private KakaoLoginController kakaoLoginController;
 
     // 회원가입 페이지로 이동
     @RequestMapping("/enrollForm.me")
@@ -87,8 +80,8 @@ public class MemberController {
                     //JsonNode 객체가 생성되고 문자열이 JsonNode 객체로 변환
                     JsonNode node = objectMapper.readTree(snsProfile);
                     // JsonNode 객체로부터 필요한 정보 추출 -> snsProfile 객체에 저장
-                    KakaoProfile kakaoProfile = new KakaoProfile();
-                    kakaoProfile.setSnsId(Long.valueOf(node.get("snsId").asText()));
+                    SnsProfile kakaoProfile = new SnsProfile();
+                    kakaoProfile.setSnsId((node.get("snsId").asText()));
                     kakaoProfile.setType(node.get("snsType").asText());
                     kakaoProfile.setEmail(node.get("snsEmail").asText());
                     kakaoProfile.setNickName(node.get("snsNickName").asText());
