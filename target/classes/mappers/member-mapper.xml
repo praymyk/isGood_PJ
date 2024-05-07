@@ -37,6 +37,8 @@
         <result column="CHANGE_NAME" property="changeName" />
         <result column="IMG_TYPE" property="imgType" />
         <result column="IMG_SIZE" property="imgSize" />
+
+        <result column="SNS_TYPE" property="snsType"/>
     </resultMap>
 
     <!-- 구독 게임 VO -->
@@ -115,6 +117,7 @@
         SELECT *
           FROM MEMBER
           LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+          LEFT OUTER JOIN SNSACCOUNT USING (USER_NO)
           WHERE EMAIL = #{email}
             AND STATUS = 'Y'
     </select>
@@ -123,6 +126,7 @@
         SELECT *
           FROM MEMBER
           LEFT OUTER JOIN PROFILEIMG USING (USER_NO)
+          LEFT OUTER JOIN SNSACCOUNT USING (USER_NO)
           WHERE USER_NO = #{userNo}
             AND STATUS = 'Y'
     </select>
@@ -212,6 +216,7 @@
         SELECT *
           FROM SNSACCOUNT
          WHERE SNS_EMAIL = #{email}
+           AND SNS_TYPE = #{type}
     </select>
 
     <!-- SNS 연동계정 등록용 쿼리 -->

@@ -27,5 +27,8 @@ public class LoginMember {
     private String changeName;   //    CHANGE_NAME	VARCHAR2(100 BYTE)
     private String imgType;      //    IMG_TYPE	VARCHAR2(4 BYTE)
     private int imgSize;          //    IMG_SIZE	NUMBER
+
+    // sns 로그인 정보 추가 필드
+    private String snsType;
     
 }

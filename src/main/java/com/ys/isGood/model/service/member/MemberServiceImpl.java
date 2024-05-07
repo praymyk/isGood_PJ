@@ -99,8 +99,8 @@ public class MemberServiceImpl implements MemberService {
 
     // SNS 연동계정 확인용 메소드
     @Override
-    public SnsProfile checkSnsProfile(String snsEmail) {
-        return memberDao.checkSnsProfile(snsEmail, sqlSession);
+    public SnsProfile checkSnsProfile(SnsProfile snsProfile) {
+        return memberDao.checkSnsProfile(snsProfile, sqlSession);
     }
 
     // SNS 연동 추가용 메소드

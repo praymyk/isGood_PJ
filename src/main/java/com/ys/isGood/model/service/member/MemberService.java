@@ -49,7 +49,7 @@ public interface MemberService {
     int stopUserId(Member member);
 
     // sns 연동게정 확인용 메소드
-    SnsProfile checkSnsProfile(String snsEmail);
+    SnsProfile checkSnsProfile(SnsProfile snsProfile);
 
     // sns 연동 정보 추가용 메소드
     int snsEnroll(SnsProfile snsProfile);

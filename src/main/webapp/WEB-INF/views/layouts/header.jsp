@@ -266,12 +266,28 @@
             '<li id="logOut">로그아웃</li>';
     }
 
-    // 로그아웃 버튼 클릭시 카카오 로그아웃 처리
+    // 로그아웃 버튼 클릭시 일반 로그아웃 & sns 로그아웃 처리
     document.getElementById('logOut').addEventListener('click', function() {
+        // 일반계정 로그아웃
+        if("${sessionScope.loginUser.snsType}" == ""){
+            location.href = "logout.me";
+        }
+
         // 카카오 로그아웃
-        <spring:eval expression="@environment.getProperty('KAKAO-RESTAPI-KEY')" var="kakaoRestApi" />
-        <spring:eval expression="@environment.getProperty('KAKAO-LOGOUT-REDIRECT-URI')" var="kakaoLogoutRedirectUri" />
-        location.href = `https://kauth.kakao.com/oauth/logout?client_id=${kakaoRestApi}&logout_redirect_uri=${kakaoLogoutRedirectUri}`;
+        // Spring Framework의 spring:eval 태그를 사용하여 속성 값을 가져옴
+        // 속성 값은 properties 파일에 저장되어 있음
+        if("${sessionScope.loginUser.snsType}" == "kakao"){
+            <spring:eval expression="@environment.getProperty('KAKAO-RESTAPI-KEY')" var="kakaoRestApi" />
+            <spring:eval expression="@environment.getProperty('KAKAO-LOGOUT-REDIRECT-URI')" var="kakaoLogoutRedirectUri" />
+            location.href = `https://kauth.kakao.com/oauth/logout?client_id=${kakaoRestApi}&logout_redirect_uri=${kakaoLogoutRedirectUri}`;
+        }
+
+        // 네이버 로그아웃
+        if("${sessionScope.loginUser.snsType}" == "naver"){
+            // 네이버는 별도 로그아웃 api를 제공하지 않으므로 일반 로그아웃과 동일 처리
+            location.href = "logout.me";
+        }
+
     });
 
 </script>

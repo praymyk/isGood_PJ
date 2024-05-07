@@ -60,6 +60,7 @@ public class NaverLoginController {
 
         // 2. 토큰 값으로 sns 계정 불러오기
         SnsProfile snsProfile = getNaverProfile(token);
+        snsProfile.setType("naver");
 
         // 3. sns 계정과 연동된 회원이 존재하는지 확인
         // 3-1. sns 계정으로 회원가입이 되어있는 경우 로그인 처리
@@ -72,7 +73,7 @@ public class NaverLoginController {
             // @paran snsProfile : 회원 가입 시 sns 계정아 연동되도록 sns계정 정보 세션에 저장
             session.setAttribute("snsProfile", snsProfile);
 
-            model.addAttribute("msg", "연동된 계정 정보가 없습니다. 회원가입을 부탁드립니다.");
+            model.addAttribute("msg",  "연동된 계정 정보가 없습니다. 회원가입을 부탁드립니다.");
             return "member/signup";
         } else {
             // 5-3 userNo가 null이 아닌 경우 연동된 계정으로 로그인 진행
@@ -131,7 +132,9 @@ public class NaverLoginController {
         return responseBody.getAccessToken();
     }
 
-    // 계정 정보 불러오기
+    /*
+    계정 정보 불러오기
+    */
     public SnsProfile getNaverProfile(String token) throws JsonProcessingException {
         String requestProfileUrl = "https://openapi.naver.com/v1/nid/me";
 
@@ -174,8 +177,8 @@ public class NaverLoginController {
     public LoginMember checkSnsProfile(SnsProfile snsProfile) {
 
         // 1. 연동 계정 정보 확인
-        // DB에서 카카오 계정 정보 확인 ( 이메일로 확인 )
-        SnsProfile loadSnsProfile = memberService.checkSnsProfile(snsProfile.getEmail());
+        // DB에서 카카오 계정 정보 확인 ( 이메일  + SNSTYPE 으로 확인 )
+        SnsProfile loadSnsProfile = memberService.checkSnsProfile(snsProfile);
 
         // 2. 연동 계정 정보가 존재하지 않을 경우 null 반환
         if(loadSnsProfile == null){

@@ -76,8 +76,8 @@ public class MemberDao {
     }
 
     // SNS 연동계정 확인용 메소드
-    public SnsProfile checkSnsProfile(String snsEmail, SqlSessionTemplate sqlSession) {
-        return sqlSession.selectOne("memberMapper.checkSnsProfile", snsEmail);
+    public SnsProfile checkSnsProfile(SnsProfile snsProfile, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("memberMapper.checkSnsProfile", snsProfile);
     }
 
     // SNS 연동 정보 추가용 메소드

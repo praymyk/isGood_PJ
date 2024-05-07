@@ -99,7 +99,7 @@ public class KakaoLoginController {
         String token = jsonNode.get("access_token").asText();
 
         // 토큰 번호로 카카오계정 정보 불러오기
-        KakaoProfile kakaoProfile = getKakaoProfile(token);
+        SnsProfile kakaoProfile = getKakaoProfile(token);
         kakaoProfile.setType("kakao");
 
         // 5. 카카오 계정으로 연동한 회원이 존재하는지 확인
@@ -126,7 +126,7 @@ public class KakaoLoginController {
     }
 
     // 카카오 로그인 요청 메소드 ( 토큰 정보를 이용하여 사용자 정보 요청 )
-    public KakaoProfile getKakaoProfile(String token) throws JsonProcessingException {
+    public SnsProfile getKakaoProfile(String token) throws JsonProcessingException {
 
         // 1. HTTPHEADER 생성
         HttpHeaders headers = new HttpHeaders();
@@ -156,17 +156,17 @@ public class KakaoLoginController {
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
 
-        KakaoProfile kakaoProfile = new KakaoProfile(id, email, nickname);
+        SnsProfile kakaoProfile = new SnsProfile(id, email, nickname);
 
         return kakaoProfile;
     }
 
     // 카카오 연동 계정 확인 및 로그인/회원가입 처리 메소드
-    public LoginMember checkSnsProfile(KakaoProfile kakaoProfile) {
+    public LoginMember checkSnsProfile(SnsProfile kakaoProfile) {
 
         // 1. 카카오 계정 정보 확인
         // DB에서 카카오 계정 정보 확인 ( 이메일로 확인 )
-        SnsProfile loadKakaoProfile = memberService.checkSnsProfile(kakaoProfile.getEmail());
+        SnsProfile loadKakaoProfile = memberService.checkSnsProfile(kakaoProfile);
 
         // 2. 연동 계정 정보가 존재하지 않을 경우 회원 가입 유도 -> 회원가입 페이지에 넘길 회원 정보 가공
         if(loadKakaoProfile == null){

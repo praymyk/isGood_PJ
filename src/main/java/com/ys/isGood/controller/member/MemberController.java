@@ -91,6 +91,10 @@ public class MemberController {
 
                     int resultSns = memberService.snsEnroll(kakaoProfile);
 
+                    if(resultSns>0){
+                        log.info("SNS 회원가입 정보 DB 저장 성공");
+                    }
+
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
@@ -149,27 +153,6 @@ public class MemberController {
         model.addAttribute("msg", "이메일 혹은 비밀번호를 다시 확인해주세요.");
         return "member/login";
 
-//        //테스트용 맴버 생성
-//        Member testMember = new Member("2",
-//                "test@naver.com",
-//                "1234",
-//                "testNickName",
-//                "testBirthday",
-//                "testGender",
-//                "testPhone",
-//                "testEnrollDate",
-//                "testModifyDate",
-//                "testStatus");
-//
-//
-//        /*
-//        *  로그인 기능 정상 구현시 매개변수 testMember 를 member로 변경!!
-//        */
-//        LoginMember loginUser = memberService.memberLogin(testMember);
-//        log.info("로그인 정보(테스트용 맴버를 로그인 메서드에서 생성중): " + loginUser);
-//        session.setAttribute("loginUser", loginUser);
-//
-//        return "redirect:/";
     }
 
 
