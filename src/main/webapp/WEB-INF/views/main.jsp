@@ -132,12 +132,18 @@
         align-items: center;
     }
 
+    .swiper-slide a {
+        width: 100%;
+        height: 100%;
+    }
+
     .swiper-slide img {
-        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+
+
 
 </style>
 
@@ -219,7 +225,7 @@
         <!-- Slider main container -->
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">Slide 1</div>
+                <div class="swiper-slide"><a href="b/loa"><img src="${pageContext.request.contextPath}/resources/games/lostark/banner.jpg"></a></div>
                 <div class="swiper-slide">Slide 2</div>
                 <div class="swiper-slide">Slide 3</div>
                 <div class="swiper-slide">Slide 4</div>

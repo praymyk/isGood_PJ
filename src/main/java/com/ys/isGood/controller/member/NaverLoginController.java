@@ -88,7 +88,7 @@ public class NaverLoginController {
     /*
     토큰 요청 메소드
     */
-    String getTokens(String code) {
+    public String getTokens(String code) {
 
         String requestTokenUrl = "https://nid.naver.com/oauth2.0/token";
 

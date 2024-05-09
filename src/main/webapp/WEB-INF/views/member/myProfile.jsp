@@ -296,9 +296,11 @@
             <h5> 구독 게임 순서를 변경하거나, 구독을 취소할 수 있습니다.</h5>
             <div class="subscribe-table">
                 <div class="table-header">
+
                     <div class="table-num">공백</div>
                     <div class="table-title">게임 이름</div>
                     <div class="table-cancle">구독 취소</div>
+
                 </div>
                 <div class="table-body" draggable="true">
                    <div> 구독 게임이 존재하지 않습니다. </div>
@@ -523,6 +525,11 @@
             url: "subList.me/${sessionScope.loginUser.userNo}",
             dataType: "json",
             success: function(data){
+                if(data.length == 0){
+                    subList = '<div class="table-body" draggable="true">' +
+                                    '<div> 구독 게임이 존재하지 않습니다. </div>' +
+                                '</div>';
+                }
 
                 $.each(data, function (i) {
                     subList += '<div class="table-body" draggable="true">' +

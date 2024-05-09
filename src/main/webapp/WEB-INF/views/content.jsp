@@ -247,9 +247,7 @@
             markers[i].setMap(null);
         }
     }
-
-
-
 </script>
+
 </body>
 </html>

@@ -207,7 +207,7 @@
     <nav class="navbar-body">
 
         <a class="nav-logo" href="${pageContext.request.contextPath}">
-            <img src="" alt="">
+            <img src="${pageContext.request.contextPath}/resources/icons/logo.png" alt="">
         </a>
 
         <ul class="navbar-menu-left">
@@ -288,6 +288,11 @@
             location.href = "logout.me";
         }
 
+        // 구글 로그아웃
+        if("${sessionScope.loginUser.snsType}" == "google"){
+            // 구글은 별도 로그아웃 api를 제공하지 않으므로 일반 로그아웃과 동일 처리
+            location.href = "logout.me";
+        }
     });
 
 </script>

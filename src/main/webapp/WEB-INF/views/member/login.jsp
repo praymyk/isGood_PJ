@@ -291,7 +291,7 @@
         </div>
 
         <div class="sns-login-box">
-            <a href="" class="google-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_google_login.png"><span id="google-span">구글 로그인</span></a>
+            <a href="googleLogin.me" class="google-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_google_login.png"><span id="google-span">구글 로그인</span></a>
             <a href="javascript:void(0);" onclick="kakaoLogin()" class="kakao-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_kakao_login.png"><span id="kako-span">카카오 로그인</span></a>
             <a href="javascript:void(0);" onclick="naverLogin()" class="naver-login"><img src="${pageContext.request.contextPath}/resources/icons/btnG_naver_login.png"><span id="naver-span">네이버로 로그인</span></a>
         </div>
@@ -403,11 +403,7 @@
         window.location.href = naverURL;
     }
 
-
-
-
 </script>
-
 
 </body>
 </html>
