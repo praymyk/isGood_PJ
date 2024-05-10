@@ -16,12 +16,13 @@
         <typeAlias type="com.ys.isGood.model.vo.member.SubscribeList" alias="subscribeList"/>
         <typeAlias type="com.ys.isGood.model.vo.member.ProfileImg" alias="profileImg"/>
         <typeAlias type="com.ys.isGood.model.vo.sns.SnsProfile" alias="snsProfile"/>
-
+        <typeAlias type="com.ys.isGood.model.vo.board.Board" alias="board"/>
     </typeAliases>
 
     <!--매퍼 경로 등록-->
     <mappers>
-        <mapper resource="mappers/member-Mapper.xml"/>
+        <mapper resource="mappers/member-mapper.xml"/>
+        <mapper resource="mappers/board-mapper.xml"/>
     </mappers>
 
 

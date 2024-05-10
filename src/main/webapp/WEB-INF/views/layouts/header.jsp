@@ -238,8 +238,8 @@
         </ul>
 
         <ul class="navbar-menu-right">
-            <li><a href="loginForm.me">로그인</a></li>
-            <li><a href="enrollForm.me">회원가입</a></li>
+            <li><a href="${pageContext.request.contextPath}/loginForm.me">로그인</a></li>
+            <li><a href="${pageContext.request.contextPath}/enrollForm.me">회원가입</a></li>
         </ul>
     </nav>
 </div>
@@ -262,7 +262,7 @@
     // @ 로그인 한 경우 로그인 메뉴바 변경
     if("${sessionScope.loginUser.userNo}" != ""){
         document.querySelector('.navbar-menu-right').innerHTML
-            = '<li><a href="mypage.me">마이페이지</a></li>' +
+            = '<li><a href="${pageContext.request.contextPath}/mypage.me">마이페이지</a></li>' +
             '<li id="logOut">로그아웃</li>';
     }
 
@@ -270,7 +270,7 @@
     document.getElementById('logOut').addEventListener('click', function() {
         // 일반계정 로그아웃
         if("${sessionScope.loginUser.snsType}" == ""){
-            location.href = "logout.me";
+            location.href = "${pageContext.request.contextPath}/logout.me";
         }
 
         // 카카오 로그아웃
@@ -285,13 +285,13 @@
         // 네이버 로그아웃
         if("${sessionScope.loginUser.snsType}" == "naver"){
             // 네이버는 별도 로그아웃 api를 제공하지 않으므로 일반 로그아웃과 동일 처리
-            location.href = "logout.me";
+            location.href = "${pageContext.request.contextPath}/logout.me";
         }
 
         // 구글 로그아웃
         if("${sessionScope.loginUser.snsType}" == "google"){
             // 구글은 별도 로그아웃 api를 제공하지 않으므로 일반 로그아웃과 동일 처리
-            location.href = "logout.me";
+            location.href = "${pageContext.request.contextPath}/logout.me";
         }
     });
 

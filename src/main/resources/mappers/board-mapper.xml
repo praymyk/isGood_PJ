@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardMapper">
+
+    <!-- 게시판 리스트 VO -->
+    <resultMap type="board" id="boardResultMap">
+        <id column="BBS_NO" property="boardNo" />
+        <result column="GAME_CODE" property="gameCode" />
+        <result column="BBS_TITLE" property="boardTitle"/>
+        <result column="BBS_CONTENT" property="boardContent"/>
+        <result column="BBS_USER_NO" property="boardUserNo"/>
+        <result column="BBS_ENROLL_DATE" property="boardEnrollDate"/>
+        <result column="BBS_MODIFY_DATE" property="boardModifyDate" />
+        <result column="BBS_COUNT" property="boardCount" />
+        <result column="BBS_STATUS" property="boardStatus" />
+
+        <result column="NICKNAME" property="nickName" />
+    </resultMap>
+
+    <!-- 게시판 리스트 VO -->
+    <select id="selectBoardList" resultMap="boardResultMap" parameterType="string">
+        SELECT BOARD.*, MEMBER.NICKNAME
+        FROM BOARD
+        LEFT JOIN MEMBER ON BOARD.BBS_USER_NO = MEMBER.USER_NO
+        WHERE BOARD.GAME_CODE = #{gameCode}
+          AND BOARD.BBS_STATUS = 'Y'
+    </select>
+
+</mapper>
