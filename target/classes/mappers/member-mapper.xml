@@ -44,14 +44,14 @@
     <!-- 구독 게임 VO -->
     <resultMap type="subscribe" id="subscribeResltMap">
         <result column="USER_NO" property="userNo" />
-        <result column="GAME_NO" property="gameNo" />
+        <result column="GAME_CODE" property="gameCode" />
         <result column="SUB_NO" property="subNo"/>
     </resultMap>
 
     <!--구독 게임 리스트 조회 시 GameTable과 조인 내용-->
     <resultMap type="subscribeList" id="subScribeListResultMap" >
         <result column="User_no" property="userNo" />
-        <result column="GAME_NO" property="gameNo" />
+        <result column="GAME_CODE" property="gameCode" />
         <result column="SUB_NO" property="subNo"/>
         <result column="GAME_Title" property="gameTitle"/>
         <result column="GAME_CONTENT" property="gameContent"/>
@@ -134,7 +134,7 @@
     <!--구독 게임 리스트-->
     <select id="memberSubList" parameterType="member" resultMap="subScribeListResultMap">
         SELECT * FROM SUBSCRIBE
-          INNER JOIN GAMES ON SUBSCRIBE.GAME_NO = GAMES.GAME_NO
+          INNER JOIN GAMES USING (GAME_CODE)
                 WHERE USER_NO = #{userNo}
              ORDER BY SUB_NO ASC
     </select>
@@ -143,7 +143,7 @@
     <update id="memberSubListUpdate" parameterType="subscribe">
         UPDATE SUBSCRIBE
            SET SUB_NO = #{subNoUp}
-         WHERE USER_NO = #{userNo} AND GAME_NO = #{gameNo}
+         WHERE USER_NO = #{userNo} AND GAME_CODE = #{gameCode}
     </update>
 
     <!-- 프로필 이미지 등록여부 확인용 -->

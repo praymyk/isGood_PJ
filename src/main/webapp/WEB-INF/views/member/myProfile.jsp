@@ -536,7 +536,7 @@
                                     `<input type="hidden" value=${sessionScope.loginUser.userNo} name="userNo" class="userNo">` +
                                     '<input type="hidden" value= name="subNoUp" class="subNoUp">' +
                                     '<input type="hidden" value="'+data[i].subNo+'" name="subNo" class="subNo">' +
-                                    '<input type="hidden" value="'+data[i].gameNo+'" name="gameNo" class="gameNo">' +
+                                    '<input type="hidden" value="'+data[i].gameCode+'" name="gameCode" class="gameCode">' +
                                     '<div class="table-num">'+data[i].subNo+'</div>' +
                                     '<div class="table-title">'+data[i].gameTitle+'</div>' +
                                     '<div class="table-cancle cancle-btn">취소</div>' +
@@ -553,18 +553,18 @@
                     /*
                     * @param subNoUp : 화면에서의 리스트의 순서(고정값/저장할 값) (updateNumber() 함수에서 구하고 있음)
                     * @param subNo : DB에서 가져온 순서값
-                    * @param gameNo : 구독 게임의 번호(Games 테이블 tag값)
+                    * @param gameCode : 구독 게임의 번호(Games 테이블 tag값)
                     * @param userNo : 구독 게임을 구독한 유저의 번호
                     */
                     let subNoUp = [];
                     let subNo = [];
-                    let gameNo = [];
+                    let gameCode = [];
                     let userNo = [];
 
                     for(let j = 0; j < data.length; j++){
                         subNoUp[j] = $(".subNoUp").eq(j).val();
                         subNo[j] = $(".subNo").eq(j).val();
-                        gameNo[j] = $(".gameNo").eq(j).val();
+                        gameCode[j] = $(".gameCode").eq(j).val();
                         userNo[j] = $(".userNo").eq(j).val();
                     }
 
@@ -575,7 +575,7 @@
                         data: {
                             subNoUp: subNoUp,
                             subNo: subNo,
-                            gameNo: gameNo,
+                            gameCode: gameCode,
                             userNo: userNo
                         },
                         success: function(data){

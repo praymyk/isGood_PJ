@@ -20,7 +20,38 @@
         <result column="NICKNAME" property="nickName" />
     </resultMap>
 
-    <!-- 게시판 리스트 VO -->
+    <!-- 게임 정보 VO -->
+    <resultMap type="game" id="gameResultMap">
+        <id column="GAME_CODE" property="gameCode" />
+        <result column="GAME_TITLE" property="gameTitle"/>
+        <result column="GAME_CONTENT" property="gameContent"/>
+        <result column="GAME_PRICE" property="gamePrice"/>
+        <result column="GAME_SALE" property="gameSale"/>
+        <result column="GAME_TAG" property="gameTag" />
+        <result column="GAME_ENROLL_DATE" property="EnrollDate" />
+        <result column="GAME_MODIFY_DATE" property="ModifyDate" />
+        <result column="GAME_STATUS" property="Status" />
+
+        <result column="Enroll_Count" property="enrollCount" />
+    </resultMap>
+
+    <!-- 구독 정보 VO -->
+    <resultMap type="subscribe" id="subscribeResultMap">
+        <result column="USER_NO" property="userNo"/>
+        <result column="GAME_CODE" property="gameCode" />
+        <result column="SUB_NO" property="subNo"/>
+    </resultMap>
+
+
+
+    <!-- 게임정보 조회용 쿼리 -->
+    <select id="selectGame" resultMap="gameResultMap" parameterType="string">
+        SELECT GAMES.*, (SELECT COUNT(*) FROM SUBSCRIBE WHERE GAME_CODE = #{gameCode}) AS Enroll_Count
+        FROM GAMES
+        WHERE GAME_CODE = #{gameCode}
+    </select>
+
+    <!-- 게시판 리스트 조회용 쿼리 -->
     <select id="selectBoardList" resultMap="boardResultMap" parameterType="string">
         SELECT BOARD.*, MEMBER.NICKNAME
         FROM BOARD
@@ -28,5 +59,34 @@
         WHERE BOARD.GAME_CODE = #{gameCode}
           AND BOARD.BBS_STATUS = 'Y'
     </select>
+
+    <!-- 게시글 상세보기용 쿼리 -->
+    <select id="selectBoard" parameterType="string" resultMap="boardResultMap">
+        SELECT BOARD.*, MEMBER.NICKNAME
+        FROM BOARD
+        LEFT JOIN MEMBER ON BOARD.BBS_USER_NO = MEMBER.USER_NO
+        WHERE BBS_NO = #{boardNo}
+    </select>
+
+    <!-- 게임 구독여부 확인용 쿼리 -->
+    <select id="selectSubscribe" parameterType="subscribe" resultType="int">
+        SELECT COUNT(*)
+        FROM SUBSCRIBE
+        WHERE USER_NO = #{userNo}
+          AND GAME_CODE = #{gameCode}
+    </select>
+
+    <!-- 게임 구독용 쿼리 -->
+    <insert id="gameSubscribe" parameterType="subscribe">
+        INSERT INTO SUBSCRIBE (USER_NO, GAME_CODE, SUB_NO)
+        VALUES (SUBSCRIBE_SEQ.NEXTVAL, #{gameCode}, #{userNo},1)
+    </insert>
+
+    <!-- 게임 구독취소용 쿼리 -->
+    <delete id="gameUnSubscribe" parameterType="subscribe">
+        DELETE FROM SUBSCRIBE
+        WHERE USER_NO = #{userNo}
+          AND GAME_CODE = #{gameCode}
+    </delete>
 
 </mapper>

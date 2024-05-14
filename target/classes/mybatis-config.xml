@@ -17,6 +17,7 @@
         <typeAlias type="com.ys.isGood.model.vo.member.ProfileImg" alias="profileImg"/>
         <typeAlias type="com.ys.isGood.model.vo.sns.SnsProfile" alias="snsProfile"/>
         <typeAlias type="com.ys.isGood.model.vo.board.Board" alias="board"/>
+        <typeAlias type="com.ys.isGood.model.vo.board.Game" alias="game"/>
     </typeAliases>
 
     <!--매퍼 경로 등록-->

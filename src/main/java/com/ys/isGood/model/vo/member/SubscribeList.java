@@ -10,7 +10,7 @@ import lombok.*;
 public class SubscribeList {
 
     private String userNo;      //    USER_NO NUMBER,
-    private String gameNo;      //    GAME_NO NUMBER,
+    private String gameCode;      //    GAME_CODE VARCHAR2(100 BYTE),
     private int subNo;          //    SUB_NO NUMBER
 
     // Games 테이블에서 가져온 값

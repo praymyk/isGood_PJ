@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -98,6 +99,12 @@
         justify-content: center;
         border: 1px solid gray;
     }
+    .subscribe-btn:hover{
+        cursor: pointer;
+    }
+    .subscribe-btn-on:hover{
+        background-color: red;
+    }
 
     .write-btn{
         width: 60px;
@@ -141,6 +148,11 @@
     .board-content tbody{
         text-align: center;
     }
+    tbody tr:hover{
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.19);
+    }
+
     .bNum{
         width: 10%;
     }
@@ -223,17 +235,17 @@
 
             <div class="board-header-content">
                 <div class="board-title">
-                    <span>로스트아크 채널</span>
+                    <span>${game.gameTitle} 채널</span>
                     <div class="subscribe-btn">
-                        <span>구독</span>
+                        구독
                     </div>
                 </div>
                 <div class="board-title-content">
                     <div>
-                        <span>구독자 1000명 </span>
+                        <span>구독자 ${game.enrollCount}명 </span>
                     </div>
                     <div>
-                        <span>MMORPG</span>
+                        <span>${game.gameTag}</span>
                     </div>
                 </div>
             </div>
@@ -268,13 +280,15 @@
             </tr>
             </thead>
             <tbody class="board-tbody">
-            <tr>
-                <td>1</td>
-                <td class="bTitle">리그오브레전드</td>
-                <td>작성자1</td>
-                <td>2024-05-07</td>
-                <td>100</td>
-            </tr>
+            <c:forEach var="p" items="${boardList}">
+                <tr class="boardTr">
+                    <td>${p.boardNo}</td>
+                    <td class="bTitle">${p.boardTitle}</td>
+                    <td>${p.nickName}</td>
+                    <td>${p.boardEnrollDate}</td>
+                    <td>${p.boardCount}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
@@ -318,44 +332,54 @@
     </div>
 </div>
 
-<!-- 선택 게시판에 따라 다른 board 페이지를 ajax로 불러오기 -->
 <script>
-    $(function(){
-        var gameCode = "${gameCode}";
-
-        $.ajax({
-            url: "boardList/"+gameCode,
-            type: "GET",
-            success: function(data){
-                console.log(data);
-                // tbody 요소 선택
-                var tbody = document.querySelector(".board-tbody");
-                // 게시글 리스트 내용을 담을 변수
-                var boardList = "";
-
-                data.forEach(function(board){
-                    boardList += "<tr>";
-                    boardList += "<td>"+board.boardNo+"</td>";
-                    boardList += "<td class='bTitle'>"+board.boardTitle+"</td>";
-                    boardList += "<td>"+board.nickName+"</td>";
-                    boardList += "<td>"+board.boardEnrollDate+"</td>";
-                    boardList += "<td>"+board.boardCount+"</td>";
-                    boardList += "</tr>";
-                });
-
-                tbody.innerHTML = boardList;
-            },
-            error: function(){
-                console.log("error");
-            }
-
-        });
+    // 게시판 클릭시 해당 게시글 번호 추출 + 상세 페이지 이동
+    $(".boardTr").click(function(){
+        var boardNo = $(this).children().eq(0).text();
+        location.href = "${pageContext.request.contextPath}/b/${gameCode}/"+boardNo;
 
     });
 
+    // 구독 상태 확인용 AJAX
+    $.ajax({
+        type: "GET",
+        url: "${pageContext.request.contextPath}/subList.me/${sessionScope.loginUser.userNo}",
+        dataType: "json",
+        success: function(data){
+            console.log(data);
+            for(var i = 0; i < data.length; i++){
+                if(data[i].gameCode == "${game.gameCode}"){
+                    $(".subscribe-btn").addClass("subscribe-btn-on");
+                    (".subscribe-btn").text("구독 중");
+                }
+            }
+        },
+        error: function(){
+            console.log("error");
+        }
+    });
+
+    // 구독 버튼 클릭시 게임 구독
+    $(".subscribe-btn").click(function(){
+        console.log("구독");
+
+        $.ajax({
+            url : "${pageContext.request.contextPath}/game/subscribe",
+            type : "POST",
+            data : {
+                userNo : "${sessionScope.loginUser.userNo}",
+                gameCode : "${game.gameCode}"
+            },
+            success : function(data){
+                console.log(data);
+            },
+            error : function(){
+                console.log("error");
+            }
+        })
+
+    });
 </script>
-
-
-
 </body>
+
 </html>

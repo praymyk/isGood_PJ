@@ -2,6 +2,8 @@ package com.ys.isGood.model.service.board;
 
 import com.ys.isGood.model.dao.board.BoardDao;
 import com.ys.isGood.model.vo.board.Board;
+import com.ys.isGood.model.vo.board.Game;
+import com.ys.isGood.model.vo.member.Subscribe;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,39 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     SqlSessionTemplate sqlSession;
 
+    // 게임 정보 조회용 메서드
+    @Override
+    public Game selectGame(String gameCode) {
+        return boardDao.selectGame(gameCode, sqlSession);
+    }
+
+    // 게시글 리스트 조회용 메소드
     @Override
     public ArrayList<Board> boardList(String gameCode) {
         return boardDao.boardList(gameCode, sqlSession);
+    }
+
+    // 게시글 상세보기 용 메소드
+    @Override
+    public Board selectBoard(String boardNo) {
+        return boardDao.selectBoard(boardNo, sqlSession);
+    }
+
+    // 게임 구독용 메서드
+    @Override
+    public int gameSubscribe(Subscribe subscribe) {
+        return boardDao.gameSubscribe(subscribe, sqlSession);
+    }
+
+    // 게임 구독 취소용 메서드
+    @Override
+    public int gameUnSubscribe(Subscribe subscribe) {
+        return boardDao.gameUnSubscribe(subscribe, sqlSession);
+    }
+
+    // 선택 게임 구독상태 조회용 메서드
+    @Override
+    public int isSubscribe(Subscribe subscribe) {
+        return boardDao.isSubscribe(subscribe, sqlSession);
     }
 }

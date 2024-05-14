@@ -142,7 +142,7 @@
 
     <div class="content-box">
 
-        <jsp:include page="boardList.jsp"/>
+        <jsp:include page="boardViewList.jsp"/>
 
     </div>
 

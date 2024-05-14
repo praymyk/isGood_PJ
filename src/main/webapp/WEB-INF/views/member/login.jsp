@@ -314,10 +314,11 @@
         console.log("쿠키 불러오기" + getCookie("savedEmail"));
         var savedEmail = getCookie("savedEmail");
 
-        // 2. 쿠키에 아디가 존재할 경우 아이디 저장 체크박스 체크
+        // 2. 쿠키에 아디가 존재할 경우 아이디 저장 체크박스 체크 + 쿠키 저장 값 출력
         // *JavaScript에서는 falsy 값인 null, undefined, 빈 문자열(""), 숫자 0, false, NaN을 조건문에서 false로 간주
         if(savedEmail){
             document.getElementById("rememberId").checked = true;
+            document.getElementsByClassName("login-email")[0].value = savedEmail;
         } else {
             document.getElementById("rememberId").checked = false;
         }

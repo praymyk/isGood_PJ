@@ -1,3 +1,13 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Myks
+  Date: 2024-05-09
+  Time: 오후 10:31
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -159,6 +169,10 @@
         border-bottom: 1px solid gray;
         height: 40px;
     }
+    tbody tr:hover{
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.19);
+    }
 
     .board-search-wrapper{
         display: flex;
@@ -199,7 +213,6 @@
         padding: 5px 10px;
     }
 
-
     /* 게시글 조회 스타일 */
     .board-view-wrapper{
         margin-top: 20px;
@@ -213,7 +226,7 @@
         padding: 5px;
         font-size: 20px;
         font-weight: bold;
-        background-color: silver;
+        background-color: rgba(0, 0, 0, 0.09);
         color: white;
     }
 
@@ -236,23 +249,24 @@
         padding: 5px;
         font-size: 14px;
     }
-
+    .board-view-link a{
+        text-decoration: none;
+    }
     .board-view-content{
         padding: 10px;
     }
 
     .board-post-list{
         padding: 10px;
-    }   
-
+    }
     .board-post-title{
         border-bottom: 1px solid gray;
         border-top: 1px solid gray;
         padding: 5px;
         font-size: 18px;
         font-weight: bold;
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 30px;
+        margin-bottom: 10px;
     }
 
     .post-wrapper{
@@ -263,7 +277,7 @@
         display: flex;
         justify-content: left;
         border-bottom: 1px dotted gray;
-        background-color: silver;
+        background-color: rgba(0, 0, 0, 0.36);
         color: white;
     }
     .post-date{
@@ -285,17 +299,25 @@
     .board-post-up{
         border: 1px solid gray;
         border-radius: 3px;
+        margin-top: 20px;
     }
     .post-textarea{
+        display: flex;
+        flex-direction: column;
         border-top: 1px solid gray;
     }
+    .textarea-wrapper{
+        min-height: 100px;
+    }
 
-    .post-textarea textarea{
-        width: 100%;
-        height: auto;
-        border: none;
+    .textarea-wrapper textarea{
         padding: 10px;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
         resize: none;
+        background-color: rgb(31, 29, 31);
     }
 
     .post-btn-wrapper{
@@ -312,8 +334,6 @@
         color: white;
     }
 
-    
-
 </style>
 <body>
 <div class="board-wrapper">
@@ -329,17 +349,17 @@
 
             <div class="board-header-content">
                 <div class="board-title">
-                    <span>로스트아크 채널</span>
+                    <span>${game.gameTitle} 채널</span>
                     <div class="subscribe-btn">
                         <span>구독</span>
                     </div>
                 </div>
                 <div class="board-title-content">
                     <div>
-                        <span>구독자 1000명 </span>
+                        <span>구독자 ${game.enrollCount}명 </span>
                     </div>
                     <div>
-                        <span>MMORPG</span>
+                        <span>${game.gameTag}</span>
                     </div>
                 </div>
             </div>
@@ -351,28 +371,28 @@
     <div class="board-view-wrapper">
 
         <div class="board-view-title">
-            <span>게임 제목</span>
+            <span>${board.boardTitle}</span>
         </div>
         <div class="board-view-info">
             <div class="board-view-nick">
-                <span>작성자</span>
+                <span>${board.nickName}</span>
             </div>
             <div class="board-view-count">
-                <span>조회수 40</span>
+                <span>| 조회수 ${board.boardCount} |</span>
             </div>
             <div class="board-view-date">
-                <span>작성일 2024-05-10</span>
+                <span>| 작성일 ${board.boardEnrollDate} |</span>
             </div>
         </div>
         <div class="board-view-link">
             <span>링크</span>
         </div>
         <div class="board-view-content">
-            게시글 내용입니다.
+            ${board.boardContent}
         </div>
 
         <div class="board-post-title">
-            댓글 
+            댓글
         </div>
 
         <div class="board-post-list">
@@ -383,10 +403,10 @@
                     <span class="post-date">2024-05-08</span>
                 </div>
                 <div class="post-content">
-                입력 내용
+                    입력 내용
                 </div>
             </div>
-      
+
         </div>
 
         <div class="board-post-up">
@@ -394,7 +414,7 @@
                 댓글 작성 <spans>닉네임</spans>
             </div>
             <div class="post-textarea">
-                <textarea placeholder="※ 내용 입력란 입니다."></textarea>
+                <div class="textarea-wrapper"><textarea placeholder="※ 내용 입력란 입니다."></textarea></div>
                 <div class="post-btn-wrapper">
                     <button>등록</button>
                 </div>
@@ -431,13 +451,15 @@
             </tr>
             </thead>
             <tbody class="board-tbody">
-            <tr>
-                <td>1</td>
-                <td class="bTitle">리그오브레전드</td>
-                <td>작성자1</td>
-                <td>2024-05-07</td>
-                <td>100</td>
-            </tr>
+            <c:forEach var="p" items="${boardList}">
+                <tr class="boardTr">
+                    <td>${p.boardNo}</td>
+                    <td class="bTitle">${p.boardTitle}</td>
+                    <td>${p.nickName}</td>
+                    <td>${p.boardEnrollDate}</td>
+                    <td>${p.boardCount}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
@@ -481,26 +503,50 @@
     </div>
 </div>
 
+<!-- 게시판 리스트 클릭 이벤트 스크립트 -->
+<script>
+    // 현재 페이지의 링크 추출 + 링크 노출
+    $(function(){
+        var currentUrl = window.location.href;
+        var link = '<a href="' + currentUrl + '">' + currentUrl + '</a>';
+        $(".board-view-link > span").html(link);
+        console.log("링크 ㅈ라 나옴? " + currentUrl);
+    });
+
+    <!-- 게시판 호출용 게임 코드를 받아오기 -->
+    var gameCode = "${gameCode}";
+
+    // 게시글 상세 보기 스크립트 클릭 시 > 게시글 번호를 받아오기
+    // 게시판 클릭시 해당 게시글 번호 추출
+    $(".boardTr").click(function(){
+        var boardNo = $(this).children().eq(0).text();
+        console.log(boardNo);
+        location.href = "${pageContext.request.contextPath}/b/${gameCode}/"+boardNo;
+
+
+    });
+
+
+
+</script>
+
 <!--textarea 영역의 높이를 조절하는 스크립트-->
 <script>
     // 텍스트 영역 요소를 가져옴
     var textarea = document.querySelector(".post-textarea textarea");
-    
+
     // 텍스트 영역의 높이를 조절하는 함수
     function adjustHeight() {
         textarea.style.height = "auto"; // 높이를 자동으로 설정하여 내용에 맞게 조절
         textarea.style.height = textarea.scrollHeight + "px"; // 스크롤 높이를 텍스트 영역의 높이로 설정
     }
-    
+
     // 텍스트 영역의 내용이 변경될 때마다 높이를 조절하는 이벤트 리스너 추가
     textarea.addEventListener("input", adjustHeight);
-    
+
     // 초기에도 높이를 조절하기 위해 호출
     adjustHeight();
 </script>
-
-
-
 
 
 </body>

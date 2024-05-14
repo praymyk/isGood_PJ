@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 public class Subscribe {
     private String userNo;      //    USER_NO NUMBER,
-    private String gameNo;      //    GAME_NO NUMBER,
+    private String gameCode;      //    GAME_CODE VARCHA2,
     private int subNo;          //    SUB_NO NUMBER
 
     private int subNoUp;        //   SUB_NO_UP NUMBER (순번 번 변경시 jsp단에서 받은 sibNo 업데이트 값)

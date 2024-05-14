@@ -276,7 +276,6 @@ public class MemberController {
     @ResponseBody
     public ArrayList<SubscribeList> memberSubList(@PathVariable String userNo){
 
-        //log.info("구독 리스트(ajax) 출력 : " + test);
         return memberService.memberSubList(userNo);
     }
 
@@ -286,15 +285,21 @@ public class MemberController {
     public String memberSubListSave(@RequestParam(value="userNo[]") String[] userNo,
                                     @RequestParam(value="subNoUp[]")int[] subNoUp,
                                     @RequestParam(value="subNo[]")int[] subNo,
-                                    @RequestParam(value="gameNo[]")String[] gameNo
+                                    @RequestParam(value="gameCode[]")String[] gameCode
                                     ){
 
         // 변경된 순서 정보를 받아 순차적으로 업데이트
         for(int i = 0; i < userNo.length; i++){
 
-            Subscribe subscribe = new Subscribe(userNo[i], gameNo[i], subNo[i], subNoUp[i]);
+            Subscribe subscribe = new Subscribe(userNo[i], gameCode[i], subNo[i], subNoUp[i]);
 
             int result = memberService.memberSubListSave(subscribe);
+
+            if(result > 0){
+                log.info("구독 순서 변경 성공");
+            } else {
+                log.info("구독 순서 변경 실패");
+            }
         }
 
         return "순서변경 성공";
