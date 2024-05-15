@@ -15,6 +15,9 @@ public interface BoardService {
     // 게시판 리스트 조회용 메소드
     ArrayList<Board> boardList(String gameCode);
 
+    // 게시글 조회수 증가
+    int boardCount(String boardNo);
+
     // 게시판 상세보기용 메소드
     Board selectBoard(String boardNo);
 
@@ -26,4 +29,13 @@ public interface BoardService {
 
     // 게임 구독 취소용 메서드
     int gameUnSubscribe(Subscribe subscribe);
+
+    // 게시글 작성용 메서드
+    int boardWrite(Board board);
+    // 등록 게시글 번호 조회용 메서드
+    String selectBoardNum(Board board);
+
+    // 게시글 수정용 메서드
+    int boardModify(Board board);
+
 }

@@ -98,12 +98,33 @@
         align-items: center;
         justify-content: center;
         border: 1px solid gray;
+        font-weight: bold;
     }
     .subscribe-btn:hover{
         cursor: pointer;
     }
-    .subscribe-btn-on:hover{
+
+    .subscribe-btn-on{
+        width: 80px;
+        height: 100%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid green;
+        font-weight: bold;
+    }
+
+    .subscribe-btn-off{
+        width: 80px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background-color: red;
+        border: 1px solid red;
+    }
+    .subscribe-btn-off:hover{
+        cursor: pointer;
     }
 
     .write-btn{
@@ -113,6 +134,10 @@
         align-items: center;
         justify-content: center;
         border: 1px solid gray;
+    }
+
+    .write-btn:hover{
+        cursor: pointer;
     }
 
     .board-title-content {
@@ -239,6 +264,9 @@
                     <div class="subscribe-btn">
                         구독
                     </div>
+                    <div class="subscribe-btn-on">
+                        구독 중
+                    </div>
                 </div>
                 <div class="board-title-content">
                     <div>
@@ -340,45 +368,82 @@
 
     });
 
-    // 구독 상태 확인용 AJAX
-    $.ajax({
-        type: "GET",
-        url: "${pageContext.request.contextPath}/subList.me/${sessionScope.loginUser.userNo}",
-        dataType: "json",
-        success: function(data){
-            console.log(data);
-            for(var i = 0; i < data.length; i++){
-                if(data[i].gameCode == "${game.gameCode}"){
-                    $(".subscribe-btn").addClass("subscribe-btn-on");
-                    (".subscribe-btn").text("구독 중");
-                }
-            }
-        },
-        error: function(){
-            console.log("error");
-        }
+    $(function(){
+
+        subscribeCheck();
+
     });
 
-    // 구독 버튼 클릭시 게임 구독
-    $(".subscribe-btn").click(function(){
-        console.log("구독");
+    // 구독 상태 확인용 AJAX ( 구동 상태에 따라 구독 버튼 보이기 )
+    function subscribeCheck(){
+        $.ajax({
+            type: "GET",
+            url: "${pageContext.request.contextPath}/subList.me/${sessionScope.loginUser.userNo}",
+            dataType: "json",
+            success: function(data){
+
+                // @param x : 구독 여부 확인용 변수(반복문을 통해서 구독 여부 확인 하므로 구독체널이 있을경우 *0 / 없을경우 *1);
+                //            최종 값이 0 일경우 구독 상태 / 1 일경우 비구독 상태
+                var x = 1;
+                console.log(data);
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].gameCode == "${game.gameCode}"){
+                        console.log(data[i].gameCode);
+                        console.log("${game.gameCode}");
+
+                        // 1. 구독 중인 경우 (구독 중/구독 해제 버튼 보이기)
+                        x *= 0;
+                        $(".subscribe-btn").attr("style", "display: none");
+                        $(".subscribe-btn-on").attr("style", "display: flex");
+                        $(".subscribe-btn-on").hover(function(){
+                            $(".subscribe-btn-on").addClass("subscribe-btn-off")
+                            $(".subscribe-btn-on").html("구독 취소");
+                        },function(){
+                            $(".subscribe-btn-on").removeClass("subscribe-btn-off")
+                            $(".subscribe-btn-on").html("구독 중");
+                        });
+                    }
+                }
+
+                // 2. 비구독 상태 일 경우
+                if(x != 0){
+                    console.log("비구독 중");
+                    $(".subscribe-btn").attr("style", "display: flex");
+                    $(".subscribe-btn-on").attr("style", "display: none");
+                }
+            },
+            error: function(){
+                console.log("error");
+            }
+        });
+    }
+
+    // 구독 버튼 클릭 시 게임 구독
+    $(".subscribe-btn, .subscribe-btn-on").click(function(){
 
         $.ajax({
-            url : "${pageContext.request.contextPath}/game/subscribe",
+            url : "${pageContext.request.contextPath}/subscribe",
             type : "POST",
             data : {
                 userNo : "${sessionScope.loginUser.userNo}",
                 gameCode : "${game.gameCode}"
             },
             success : function(data){
-                console.log(data);
+                console.log('구독 처리 결과' + data);
+                subscribeCheck();
+                location.reload();
             },
             error : function(){
                 console.log("error");
             }
         })
-
     });
+
+    // 글쓰기 버튼 스크립트
+    $(".write-btn").click(function(){
+        location.href = "${pageContext.request.contextPath}/b/${game.gameCode}/write";
+    });
+
 </script>
 </body>
 

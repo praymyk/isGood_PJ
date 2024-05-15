@@ -176,10 +176,13 @@ public class MemberController {
 
         // 1. 프로필 이미지정보를 DB에서 불러오기
         ProfileImg profileImg = memberService.displayProfileImg(userNo);
+        log.info(profileImg.toString());
 
         // 2. VO 클래스로 부터 경로, 파일명을 받기
         // @pimgPath : 파일 경로
         // @changeName : 파일명.확장자
+        // profileImgPath : 프로퍼티 파일로부터 경로 받아오기(/profileImg/**)
+        //  File.separator : OS에 따른 파일 경로 구분자
         profileImgPath = profileImgPath.replace("*", "");
         profileImgPath = profileImgPath.replace("/", File.separator);
 
@@ -191,7 +194,7 @@ public class MemberController {
         if(profileImg != null) {
             pimgPath =  profileImgPath + userNo + File.separator;
             changeName = profileImg.getChangeName();
-
+            log.info("프로필 이미지 경로 : " + pimgPath);
         }
 
         // 3. 프론트로 전달할 파일 객체 생성

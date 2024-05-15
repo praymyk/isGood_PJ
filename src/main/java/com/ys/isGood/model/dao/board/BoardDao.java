@@ -25,18 +25,36 @@ public class BoardDao {
         return sqlSession.selectOne("boardMapper.selectGame", gameCode);
     }
 
-    // 게임 구독용 메소드
-    public int gameSubscribe(Subscribe subscribe, SqlSessionTemplate sqlSession) {
-        return sqlSession.insert("boardMapper.gameSubscribe", subscribe);
-    }
-
     // 선택 게임 구독 상태 조회용 메소드
     public int isSubscribe(Subscribe subscribe, SqlSessionTemplate sqlSession) {
         return sqlSession.selectOne("boardMapper.isSubscribe", subscribe);
     }
-
+    // 게임 구독용 메소드
+    public int gameSubscribe(Subscribe subscribe, SqlSessionTemplate sqlSession) {
+        return sqlSession.insert("boardMapper.gameSubscribe", subscribe);
+    }
     // 게임 구독 취소용 메소드
     public int gameUnSubscribe(Subscribe subscribe, SqlSessionTemplate sqlSession) {
         return sqlSession.delete("boardMapper.gameUnSubscribe", subscribe);
     }
+
+    // 게시글 작성용 메소드
+    public int boardWrite(Board board, SqlSessionTemplate sqlSession) {
+        return sqlSession.insert("boardMapper.boardWrite", board);
+    }
+    // 등록 게시글 번호 조회용 메소드
+    public String selectBoardNum(Board board, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("boardMapper.selectBoardNum", board);
+    }
+
+    // 게시글 수정용 메소드
+    public int boardModify(Board board, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("boardMapper.boardModify", board);
+    }
+
+    // 게시글 조회수 증가용 메소드
+    public int boardCount(String boardNo, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("boardMapper.updateBoardCount", boardNo);
+    }
+
 }

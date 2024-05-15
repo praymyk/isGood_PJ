@@ -372,7 +372,6 @@
 
         $("#pImgFileUp").change(function(){
             my_photo = this.files[0];
-            console.log("첨부된 파일 정보 : ", my_photo);
 
             // 이미지 미리보기 처리
             //FileReader 객체 생성
@@ -405,6 +404,8 @@
                     // 프로필 이미지 파일명 Uri 인코딩 처리가 필요함
                     let fileName = encodeURIComponent(data.changeName);
                     let profileImgPath = "${pageContext.request.contextPath}" + data.pimgPath + fileName;
+                    console.log(data.pimgPath);
+                    console.log("프로필 이미지 경로 : " + profileImgPath);
 
                     $("#profileImgId").attr("src",  profileImgPath);
                 }

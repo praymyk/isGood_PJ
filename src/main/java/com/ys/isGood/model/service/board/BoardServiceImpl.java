@@ -30,6 +30,12 @@ public class BoardServiceImpl implements BoardService {
         return boardDao.boardList(gameCode, sqlSession);
     }
 
+    // 게시글 조회수 증가용 메서드
+    @Override
+    public int boardCount(String boardNo) {
+        return boardDao.boardCount(boardNo, sqlSession);
+    }
+
     // 게시글 상세보기 용 메소드
     @Override
     public Board selectBoard(String boardNo) {
@@ -46,6 +52,23 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int gameUnSubscribe(Subscribe subscribe) {
         return boardDao.gameUnSubscribe(subscribe, sqlSession);
+    }
+
+    // 게시글 작성용 메서드
+    @Override
+    public int boardWrite(Board board) {
+        return boardDao.boardWrite(board, sqlSession);
+    }
+    // 등록 게시글 번호 조회용 메서드
+    @Override
+    public String selectBoardNum(Board board) {
+        return boardDao.selectBoardNum(board, sqlSession);
+    }
+
+    // 게시글 수정용 메서드
+    @Override
+    public int boardModify(Board board) {
+        return boardDao.boardModify(board, sqlSession);
     }
 
     // 선택 게임 구독상태 조회용 메서드
