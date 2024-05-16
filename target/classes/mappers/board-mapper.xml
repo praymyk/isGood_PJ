@@ -133,4 +133,11 @@
         WHERE BBS_NO = #{boardNo}
     </update>
 
+    <!-- 게시글 삭제용 쿼리 -->
+    <update id="boardDelete" parameterType="string">
+        UPDATE BOARD
+        SET BBS_STATUS = 'N'
+        WHERE BBS_NO = #{boardNo}
+    </update>
+
 </mapper>

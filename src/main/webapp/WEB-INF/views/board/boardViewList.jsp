@@ -260,7 +260,7 @@
         background-color: rgba(0, 0, 0, 0.09);
         color: white;
         display: flex;
-        justify-content: space-between;
+        justify-content: left;
     }
     .board-view-title button{
         width: 50px;
@@ -273,6 +273,10 @@
     .board-view-title button:hover{
         cursor: pointer;
         background-color: rgba(0, 0, 0, 1.09);
+    }
+    #modifyBtn{
+        margin-left: auto;
+        margin-right: 10px;
     }
 
     .board-view-info {
@@ -421,7 +425,8 @@
         <div class="board-view-title">
             <span>${board.boardTitle}</span>
             <c:if test="${sessionScope.loginUser.userNo == board.boardUserNo}">
-                <button>수정</button>
+                <button id="modifyBtn">수정</button>
+                <button id="deleteBtn">삭제</button>
             </c:if>
         </div>
         <div class="board-view-info">
@@ -677,9 +682,35 @@
     });
 
     // 수정 버튼 스크립트
-    $(".board-view-title > button").click(function(){
+    $("#modifyBtn").click(function(){
         location.href = "${pageContext.request.contextPath}/b/${game.gameCode}/${board.boardNo}/modify";
     });
+    // 삭제 버튼 스크립트
+    $("#deleteBtn").click(function(){
+        location.href = "${pageContext.request.contextPath}/b/${game.gameCode}/${board.boardNo}/delete";
+    });
+</script>
+
+<!-- 댓글 리스트 조회용 스크립트 -->
+<script>
+    $(function(){
+        $.ajax({
+            url : "${pageContext.request.contextPath}/b/${game.gameCode}/${board.boardNo}/commentList",
+            type : "GET",
+            data : {
+                boardNo : "${board.boardNo}"
+            },
+            success : function(data){
+                console.log("댓글리스트 받아오기 성공");
+                console.log(data);
+            },
+            error : function(){
+                console.log("error");
+            }
+        });
+    });
+
+
 </script>
 
 </body>

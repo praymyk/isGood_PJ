@@ -18,12 +18,14 @@
         <typeAlias type="com.ys.isGood.model.vo.sns.SnsProfile" alias="snsProfile"/>
         <typeAlias type="com.ys.isGood.model.vo.board.Board" alias="board"/>
         <typeAlias type="com.ys.isGood.model.vo.board.Game" alias="game"/>
+        <typeAlias type="com.ys.isGood.model.vo.comments.Comments" alias="comments"/>
     </typeAliases>
 
     <!--매퍼 경로 등록-->
     <mappers>
         <mapper resource="mappers/member-mapper.xml"/>
         <mapper resource="mappers/board-mapper.xml"/>
+        <mapper resource="mappers/comments-mapper.xml"/>
     </mappers>
 
 

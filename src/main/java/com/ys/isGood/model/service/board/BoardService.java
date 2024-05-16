@@ -38,4 +38,6 @@ public interface BoardService {
     // 게시글 수정용 메서드
     int boardModify(Board board);
 
+    // 게시글 삭제용 메서드
+    int boardDelete(String boardNo);
 }

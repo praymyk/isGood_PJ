@@ -57,4 +57,8 @@ public class BoardDao {
         return sqlSession.update("boardMapper.updateBoardCount", boardNo);
     }
 
+    // 게시글 삭제용 메서드
+    public int boardDelete(String boardNo, SqlSessionTemplate sqlSession) {
+        return sqlSession.update("boardMapper.boardDelete", boardNo);
+    }
 }

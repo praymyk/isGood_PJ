@@ -208,126 +208,155 @@
         </div>
 
     </form>
+</div>
 
-    <!-- summernote 등록 스크립트  -->
-    <script>
-        $(document).ready(function() {
+<!-- summernote 등록 스크립트  -->
+<script>
+    $(document).ready(function() {
 
-            var setting = {
-                placeholder: '내용을 작성해주세요.',
-                tabsize: 2,
-                height: 500,
-                minHeight : null,
-                maxHeight : null,
-                focus : true,
-                lang : 'ko-KR',
-                //콜백 함수
-                callbacks : {   //'onImageUpload'함수는 '이미지를 업로드했을 때' 동작하는 섬머노트 함수
-                                // 여러 개의 파일을 Drag And Drop 하거나, 파일 첨부에서 다중 선택 후 업로드할 때를 위해 for문으로 처리
-                    onImageUpload : function(files, editor, welEditable) {
-                        // 파일 업로드(다중업로드를 위해 반복문 사용)
-                        for (var i = files.length - 1; i >= 0; i--) {
-                            imageUploader(files[i],
-                                this);
-                        }
-                    }
-                }
-            };
-
-            $('#summernote').summernote(setting);
-
-            // ajax로 서버에서 파일 업로드를 진행하는 함수
-            function imageUploader(file, el) {
-                data = new FormData();
-                data.append("file", file);
-                $.ajax({
-                    data : data,
-                    type : "POST",
-                    url : "${pageContext.request.contextPath}/uploadSummernoteImageFile",
-                    contentType : false,
-                    enctype : 'multipart/form-data',
-                    processData : false,
-                    success : function(data) {
-                        //var imgData = JSON.parse(data);
-                        $(el).summernote('editor.insertImage', "${pageContext.request.contextPath}/"+data.url);
-                        console.log("데이터"+data);
-                        console.log("주소"+ data.url);
-                    }
-                });
-            }
-        });
-
-    </script>
-
-    <!-- 구독 버튼 스크립트 -->
-    <script>
-        $(function(){
-            subscribeCheck();
-        });
-
-        // 구독 상태 확인용 AJAX ( 구동 상태에 따라 구독 버튼 보이기 )
-        function subscribeCheck(){
-            $.ajax({
-                type: "GET",
-                url: "${pageContext.request.contextPath}/subList.me/${sessionScope.loginUser.userNo}",
-                dataType: "json",
-                success: function(data){
-
-                    // @param x : 구독 여부 확인용 변수(반복문을 통해서 구독 여부 확인 하므로 구독체널이 있을경우 *0 / 없을경우 *1);
-                    //            최종 값이 0 일경우 구독 상태 / 1 일경우 비구독 상태
-                    var x = 1;
-
-                    for(var i = 0; i < data.length; i++){
-                        if(data[i].gameCode == "${game.gameCode}"){
-                            // 1. 구독 중인 경우 (구독 중/구독 해제 버튼 보이기)
-                            x *= 0;
-                            $(".subscribe-btn").attr("style", "display: none");
-                            $(".subscribe-btn-on").attr("style", "display: flex");
-                            $(".subscribe-btn-on").hover(function(){
-                                $(".subscribe-btn-on").addClass("subscribe-btn-off")
-                                $(".subscribe-btn-on").html("구독 취소");
-                            },function(){
-                                $(".subscribe-btn-on").removeClass("subscribe-btn-off")
-                                $(".subscribe-btn-on").html("구독 중");
-                            });
-                        }
-                    }
-                    // 2. 비구독 상태 일 경우
-                    if(x != 0){
-                        console.log("비구독 중");
-                        $(".subscribe-btn").attr("style", "display: flex");
-                        $(".subscribe-btn-on").attr("style", "display: none");
+        var setting = {
+            placeholder: '내용을 작성해주세요.',
+            tabsize: 2,
+            height: 500,
+            minHeight : null,
+            maxHeight : null,
+            focus : true,
+            lang : 'ko-KR',
+            //콜백 함수
+            callbacks : {   //'onImageUpload'함수는 '이미지를 업로드했을 때' 동작하는 섬머노트 함수
+                // 여러 개의 파일을 Drag And Drop 하거나, 파일 첨부에서 다중 선택 후 업로드할 때를 위해 for문으로 처리
+                onImageUpload : function(files, editor, welEditable) {
+                    // 파일 업로드(다중업로드를 위해 반복문 사용)
+                    for (var i = files.length - 1; i >= 0; i--) {
+                        imageUploader(files[i],
+                            this);
                     }
                 },
-                error: function(){
-                    console.log("error");
+                onMediaDelete: function ($target, editor, $editable) {
+                    if (confirm('이미지를 삭제 하시겠습니까?')) {
+                        var deletedImageUrl = $target
+                            .attr('src')
+                            .split('/')
+                            .pop()
+
+                        console.log(deletedImageUrl);
+                        // ajax 함수 호출
+                        deleteSummernoteImageFile(deletedImageUrl);
+                    }
+                }
+            }
+        };
+
+        $('#summernote').summernote(setting);
+
+        // ajax로 서버에서 파일 업로드를 진행하는 함수
+        function imageUploader(file, el) {
+            data = new FormData();
+            data.append("file", file);
+            $.ajax({
+                data : data,
+                type : "POST",
+                url : "${pageContext.request.contextPath}/${sessionScope.loginUser.userNo}/uploadSummernoteImageFile",
+                contentType : false,
+                enctype : 'multipart/form-data',
+                processData : false,
+                success : function(data) {
+                    //var imgData = JSON.parse(data);
+                    $(el).summernote('editor.insertImage', "${pageContext.request.contextPath}/"+data.url);
+                    console.log("데이터"+data);
+                    console.log("주소"+ data.url);
                 }
             });
         }
 
-        // 구독 버튼 클릭 시 게임 구독
-        $(".subscribe-btn, .subscribe-btn-on").click(function(){
-
+        // ajax로 서버에서 파일 삭제를 진행하는 함수 ( 게시글 수정 용 > boardNo 추가 )
+        function deleteSummernoteImageFile(imageName) {
+            data = new FormData()
+            data.append('file', imageName)
+            data.append('userNo', '${sessionScope.loginUser.userNo}')
+            data.append('boardNo', '${board.boardNo}')
             $.ajax({
-                url : "${pageContext.request.contextPath}/subscribe",
-                type : "POST",
-                data : {
-                    userNo : "${sessionScope.loginUser.userNo}",
-                    gameCode : "${game.gameCode}"
-                },
-                success : function(data){
-                    console.log('구독 처리 결과' + data);
-                    subscribeCheck();
-                    location.reload();
-                },
-                error : function(){
-                    console.log("error");
-                }
+                data: data,
+                type: 'POST',
+                url: '${pageContext.request.contextPath}/modifySummernoteImageFile',
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
             })
-        });
-    </script>
+        }
 
-</div>
+    });
+
+</script>
+
+<!-- 구독 버튼 스크립트 -->
+<script>
+    $(function(){
+        subscribeCheck();
+    });
+
+    // 구독 상태 확인용 AJAX ( 구동 상태에 따라 구독 버튼 보이기 )
+    function subscribeCheck(){
+        $.ajax({
+            type: "GET",
+            url: "${pageContext.request.contextPath}/subList.me/${sessionScope.loginUser.userNo}",
+            dataType: "json",
+            success: function(data){
+
+                // @param x : 구독 여부 확인용 변수(반복문을 통해서 구독 여부 확인 하므로 구독체널이 있을경우 *0 / 없을경우 *1);
+                //            최종 값이 0 일경우 구독 상태 / 1 일경우 비구독 상태
+                var x = 1;
+
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].gameCode == "${game.gameCode}"){
+                        // 1. 구독 중인 경우 (구독 중/구독 해제 버튼 보이기)
+                        x *= 0;
+                        $(".subscribe-btn").attr("style", "display: none");
+                        $(".subscribe-btn-on").attr("style", "display: flex");
+                        $(".subscribe-btn-on").hover(function(){
+                            $(".subscribe-btn-on").addClass("subscribe-btn-off")
+                            $(".subscribe-btn-on").html("구독 취소");
+                        },function(){
+                            $(".subscribe-btn-on").removeClass("subscribe-btn-off")
+                            $(".subscribe-btn-on").html("구독 중");
+                        });
+                    }
+                }
+
+                // 2. 비구독 상태 일 경우
+                if(x != 0){
+                    console.log("비구독 중");
+                    $(".subscribe-btn").attr("style", "display: flex");
+                    $(".subscribe-btn-on").attr("style", "display: none");
+                }
+            },
+            error: function(){
+                console.log("error");
+            }
+        });
+    }
+
+    // 구독 버튼 클릭 시 게임 구독
+    $(".subscribe-btn, .subscribe-btn-on").click(function(){
+
+        $.ajax({
+            url : "${pageContext.request.contextPath}/subscribe",
+            type : "POST",
+            data : {
+                userNo : "${sessionScope.loginUser.userNo}",
+                gameCode : "${game.gameCode}"
+            },
+            success : function(data){
+                console.log('구독 처리 결과' + data);
+                subscribeCheck();
+                location.reload();
+            },
+            error : function(){
+                console.log("error");
+            }
+        })
+    });
+</script>
 
 
 </body>

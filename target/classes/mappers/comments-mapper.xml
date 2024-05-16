@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commentsMapper">
+    <!-- 댓글 리스트 VO -->
+    <resultMap type="comments" id="commentsResultMap">
+        <id column="CM_NO" property="commentNo" />
+        <result column="BBS_NO" property="boardNo" />
+        <result column="CM_CONTENT" property="commentContent"/>
+        <result column="USER_NO" property="commentWriter"/>
+        <result column="CM_ENROLL" property="commentEnrollDate"/>
+        <result column="CM_MODIFY" property="commentModifyDate"/>
+        <result column="CM_STATUS" property="commentStatus" />
+    </resultMap>
+
+    <!-- 게임정보 조회용 쿼리 -->
+    <select id="selectCommentList" resultMap="commentsResultMap" parameterType="string">
+        SELECT COMMENTS.*, MEMBER.NICKNAME
+        FROM COMMENTS
+        LEFT JOIN MEMBER ON COMMENTS.USER_NO = MEMBER.USER_NO
+        WHERE BBS_NO = #{boardNo}
+          AND CM_STATUS = 'Y'
+    </select>
+
+</mapper>

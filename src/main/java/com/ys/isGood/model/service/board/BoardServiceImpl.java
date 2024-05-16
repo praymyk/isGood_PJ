@@ -71,6 +71,12 @@ public class BoardServiceImpl implements BoardService {
         return boardDao.boardModify(board, sqlSession);
     }
 
+    // 게시글 삭제용 메소드
+    @Override
+    public int boardDelete(String boardNo) {
+        return boardDao.boardDelete(boardNo, sqlSession);
+    }
+
     // 선택 게임 구독상태 조회용 메서드
     @Override
     public int isSubscribe(Subscribe subscribe) {

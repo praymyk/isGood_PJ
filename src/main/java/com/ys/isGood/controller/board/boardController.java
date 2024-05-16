@@ -24,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -33,8 +37,12 @@ public class boardController {
 
     @Autowired
     BoardServiceImpl boardServiceImpl;
+    // 게시판 임시 이미지 저장 경로
     @Value("${boardImg.path}")
     private String boardImgPath;
+    // 게시판 이미지 저장 url
+    @Value("${boardImgUrl.path}")
+    private String boardImgUrl;
 
     /*
     게시판 페이지 이동용 메서드
@@ -138,12 +146,28 @@ public class boardController {
             model.addAttribute("msg", "게시글 작성 실패");
         }
 
-        // 임시저장 'boardImg/(temp)/userNO' 에서 파일들 복사 => 'boardImg/boardNo' 폴더로 이동
-        String path_folder1 = boardImgPath + "temp/" + board.getBoardUserNo() + "/";
-        String path_folder2 = boardImgPath + board_num + "/";
+        // 1. 게시글 작성 성공시 게시글 내용의 이미지 경로 변경 (임시 저장 경로 -> 게시글 번호 폴더)
+        String content = board.getBoardContent();
+        content = content.replace(boardImgUrl + "temp/" + board.getBoardUserNo(),boardImgUrl + board_num);
 
-        fileUpload(path_folder1, path_folder2);
+        // 2. 변경된 이미지 경로로 게시글 내용 수정 및 DB 등록
+        board.setBoardNo(board_num);
+        board.setBoardContent(content);
+        int result2 = boardServiceImpl.boardModify(board);
 
+        if(result2>0){
+            log.info("게시글 이미지 경로 수정 성공 : "+board);
+
+            // 임시저장 'boardImg/(temp)/userNO' 에서 파일들 복사 => 'boardImg/boardNo' 폴더로 이동
+            String path_folder1 = boardImgPath + "temp/" + board.getBoardUserNo() + "/";
+            String path_folder2 = boardImgPath + board_num + "/";
+            fileUpload(path_folder1, path_folder2);
+
+            // 3. 게시글 작성 성공시 임시 저장 이미지 폴더 삭제
+            deleteFolder(path_folder1);
+        } else {
+            log.info("게시글 이미지 경로 수정 실패 : "+board);
+        }
 
         return "redirect:/b/" + board.getGameCode();
     }
@@ -200,6 +224,70 @@ public class boardController {
         }
     }
 
+    // 게시글 작성중 summernote 첨부 이미지 삭제용 메소드
+    @RequestMapping(value = "/deleteSummernoteImageFile", produces = "application/json; charset=utf8")
+    @ResponseBody
+    public void deleteSummernoteImageFile(@RequestParam("file") String fileName,
+                                          @RequestParam("userNo") String userNo) {
+        // 폴더 위치
+        String filePath = boardImgPath+"temp/"+userNo+"/";
+        // 해당 파일 삭제
+        deleteFile(filePath, fileName);
+    }
+
+    // 게시글 수정중 summernote 첨부 이미지 삭제용 메소드
+    @RequestMapping(value = "/modifySummernoteImageFile", produces = "application/json; charset=utf8")
+    @ResponseBody
+    public void deleteSummernoteImageFile(@RequestParam("file") String fileName,
+                                          @RequestParam("userNo") String userNo,
+                                          @RequestParam("boardNo") String boardNo) {
+        // 폴더 위치 ( 수정 게시글은 임시저장 경로 + 작성후 경로 모두 삭제해줘야함 )
+        String filePath = boardImgPath+"temp/"+userNo+"/";
+        String filePath2 = boardImgPath+"/"+boardNo+"/";
+        // 해당 파일 삭제
+        deleteFile(filePath, fileName);
+        deleteFile(filePath2, fileName);
+    }
+
+    // 파일 하나 삭제
+    private void deleteFile(String filePath, String fileName) {
+        Path path = Paths.get(filePath, fileName);
+        try {
+            // Files.delete() 메소드를 사용하여 파일 삭제
+            Files.delete(path);
+        } catch (NoSuchFileException e) {
+            // 파일이 존재하지 않는 경우에 대한 예외 처리
+            System.out.println("파일이 존재하지 않습니다.");
+        } catch (IOException e) {
+            // 파일 삭제 중에 발생한 예외 처리
+            e.printStackTrace();
+        }
+    }
+    // 하위 폴더 삭제
+    private void deleteFolder(String path) {
+        // 주어진 경로에 있는 폴더와 파일을 재귀적으로 삭제하는 함수입니다.
+        File folder = new File(path);
+        try {
+            if (folder.exists()) {
+                File[] folder_list = folder.listFiles();
+                for (int i = 0; i < folder_list.length; i++) {
+                    if (folder_list[i].isFile())
+                        // 파일인 경우, 파일을 삭제합니다.
+                        folder_list[i].delete();
+                    else
+                        // 폴더인 경우, 재귀적으로 폴더 내부의 파일 및 폴더를 삭제합니다.
+                        deleteFolder(folder_list[i].getPath());
+                    // 파일이나 폴더를 삭제합니다.
+                    folder_list[i].delete();
+                }
+                // 폴더를 삭제합니다.
+                folder.delete();
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
+
     // 게시글 첨부 이미지 저장용 메소드
     @RequestMapping(value="{userNo}/uploadSummernoteImageFile", produces = "application/json; charset=utf8")
     @ResponseBody
@@ -217,18 +305,7 @@ public class boardController {
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));	//파일 확장자
         String savedFileName = UUID.randomUUID() + extension;	//저장될 파일 명
 
-        // 게시글 수정 시 기존 이미지 파일 삭제가 가능하도록 파일 정보 DB 저장
         File targetFile = new File(fileRoot + savedFileName);
-
-//        ImgFile imgFile = new ImgFile();
-//        imgFile.setGameCode(request.getParameter("gameCode"));
-//        imgFile.setImgPath(fileRoot);
-//        imgFile.setOriginName(originalFileName);
-//        imgFile.setChangeName(savedFileName);
-//        imgFile.setImgType(multipartFile.getContentType());
-//        imgFile.setImgSize(String.valueOf((int)multipartFile.getSize()));
-//
-//        log.info("이미지 파일 정보 : " + imgFile);
 
         try {
             InputStream fileStream = multipartFile.getInputStream();
@@ -265,22 +342,63 @@ public class boardController {
 
     // 게시글 수정용 메소드
     @PostMapping("/b/{gameCode}/{boardNo}/modify")
-    public String boardModify(Board board) {
-        // 1. 게시글 수정
+    public String boardModify(@PathVariable String boardNo,
+                              Board board,
+                              Model model) {
+
+        // 게시글 수정 내용 DB 등록
         int result = boardServiceImpl.boardModify(board);
-        
-        // 2. 이미지 변경시 기존 이미지 파일 삭제
-
-        // 여기하다 중단
-
 
         if(result>0){
-            log.info("게시글 수정 성공 : " +board);
+            log.info("게시글 수정 성공 : "+board);
+            model.addAttribute("msg", "게시글 수정 성공");
         } else {
-            log.info("게시글 수정 실패 : " +board);
+            log.info("게시글 수정 실패 : "+board);
+            model.addAttribute("msg", "게시글 수정 실패");
+        }
+
+        // 1. 게시글 수정 성공 시 게시글 내용의 이미지 경로 변경 (임시 저장 경로 -> 게시글 번호 폴더)
+        String content = board.getBoardContent();
+        content = content.replace(boardImgUrl + "temp/" + board.getBoardUserNo(),boardImgUrl + boardNo);
+
+        // 2. 변경된 이미지 경로로 게시글 내용 수정 및 DB 등록
+        board.setBoardContent(content);
+        int result2 = boardServiceImpl.boardModify(board);
+
+        if(result2>0){
+            log.info("게시글 이미지 경로 수정 성공 : "+board);
+
+            // 임시저장 'boardImg/(temp)/userNO' 에서 파일들 복사 => 'boardImg/boardNo' 폴더로 이동
+            String path_folder1 = boardImgPath + "temp/" + board.getBoardUserNo() + "/";
+            String path_folder2 = boardImgPath + boardNo + "/";
+            fileUpload(path_folder1, path_folder2);
+
+            // 3. 게시글 작성 성공시 임시 저장 이미지 폴더 삭제
+            deleteFolder(path_folder1);
+        } else {
+            log.info("게시글 이미지 경로 수정 실패 : "+board);
         }
 
         return "redirect:/b/" + board.getGameCode() + "/" + board.getBoardNo();
+    }
+
+    // 게시글 삭제용 메소드
+    @GetMapping("/b/{gameCode}/{boardNo}/delete")
+    public String boardDelete(@PathVariable String gameCode,
+                              @PathVariable String boardNo,
+                              Model model) {
+        // 게시글 삭제
+        int result = boardServiceImpl.boardDelete(boardNo);
+
+        if (result > 0) {
+            log.info("게시글 삭제 성공 : " + boardNo);
+            model.addAttribute("msg", "게시글 삭제 성공");
+        } else {
+            log.info("게시글 삭제 실패 : " + boardNo);
+            model.addAttribute("msg", "게시글 삭제 실패");
+        }
+
+        return "redirect:/b/" + gameCode;
     }
 
 }
