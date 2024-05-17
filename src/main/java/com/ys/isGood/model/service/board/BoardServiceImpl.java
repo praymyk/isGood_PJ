@@ -6,6 +6,7 @@ import com.ys.isGood.model.vo.board.Game;
 import com.ys.isGood.model.vo.member.Subscribe;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -81,5 +82,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int isSubscribe(Subscribe subscribe) {
         return boardDao.isSubscribe(subscribe, sqlSession);
+    }
+
+    // 게시글 리스트 조회용(페이징)
+    @Override
+    public Page<Board> newBoardList(String gameCode) {
+        return boardDao.newBoardList(gameCode, sqlSession);
     }
 }

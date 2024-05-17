@@ -156,6 +156,12 @@
 		<version>2.6</version>
 		</dependency>
 
+		<!-- 페이징처리 위해 spfint data Jpa 의존성 추가 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

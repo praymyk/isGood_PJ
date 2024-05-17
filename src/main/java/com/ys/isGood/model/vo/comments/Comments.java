@@ -15,4 +15,6 @@ public class Comments {
     private String commentEnrollDate;   //    CM_ENROLL	DATE
     private String commentModifyDate;   //    CM_MODIFY	DATE
     private String commentStatus;       //    CM_STATUS	CHAR(1 BYTE)
+
+    private String nickName;
 }

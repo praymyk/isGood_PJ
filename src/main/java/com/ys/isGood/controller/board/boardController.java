@@ -1,27 +1,25 @@
 package com.ys.isGood.controller.board;
 
 import com.google.gson.JsonObject;
-import com.ys.isGood.model.service.board.BoardService;
+import com.ys.isGood.model.dao.board.BoardDao;
 import com.ys.isGood.model.service.board.BoardServiceImpl;
 import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
-import com.ys.isGood.model.vo.board.ImgFile;
 import com.ys.isGood.model.vo.member.Subscribe;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import lombok.Getter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.conn.util.PublicSuffixList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import java.io.*;
 import java.nio.file.Files;
@@ -37,12 +35,16 @@ public class boardController {
 
     @Autowired
     BoardServiceImpl boardServiceImpl;
+    @Autowired
+    BoardRepository boardRepository;
     // 게시판 임시 이미지 저장 경로
     @Value("${boardImg.path}")
     private String boardImgPath;
     // 게시판 이미지 저장 url
     @Value("${boardImgUrl.path}")
     private String boardImgUrl;
+    @Autowired
+    private BoardDao boardDao;
 
     /*
     게시판 페이지 이동용 메서드
@@ -67,6 +69,18 @@ public class boardController {
 
         return mv;
     }
+
+    // 페이징 처리한 게시판 리스트 호출용 메소드
+    @GetMapping("/b/{gameCode}/list")
+    public ArrayList<Board>newBoardList(){
+
+        String gameCode="loa";
+        // 페이지 설정 (1페이지 10개)
+
+
+        return null;
+    }
+
 
     // 게시글 상세보기용 메소드
     @GetMapping("/b/{gameCode}/{boardNo}")

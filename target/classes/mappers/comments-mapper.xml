@@ -13,6 +13,8 @@
         <result column="CM_ENROLL" property="commentEnrollDate"/>
         <result column="CM_MODIFY" property="commentModifyDate"/>
         <result column="CM_STATUS" property="commentStatus" />
+
+        <result column="NICKNAME" property="nickName" />
     </resultMap>
 
     <!-- 게임정보 조회용 쿼리 -->
@@ -23,5 +25,31 @@
         WHERE BBS_NO = #{boardNo}
           AND CM_STATUS = 'Y'
     </select>
+
+    <!-- 댓글 등록용 쿼리 -->
+    <insert id="commentWrite" parameterType="comments">
+        INSERT INTO COMMENTS (CM_NO,
+                              BBS_NO,
+                              CM_CONTENT,
+                              USER_NO,
+                              CM_ENROLL,
+                              CM_MODIFY,
+                              CM_STATUS)
+        VALUES (CMO_SEQ.NEXTVAL,
+                #{boardNo},
+                #{commentContent},
+                #{commentWriter},
+                SYSDATE,
+                SYSDATE,
+                'Y')
+
+    </insert>
+
+    <!-- 댓글 삭제용 쿼리 -->
+    <update id="deletePost" parameterType="String">
+        UPDATE COMMENTS
+           SET CM_STATUS = 'N'
+        WHERE CM_NO = #{commentNo}
+    </update>
 
 </mapper>

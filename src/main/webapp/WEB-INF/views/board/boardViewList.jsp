@@ -315,11 +315,12 @@
         font-size: 18px;
         font-weight: bold;
         margin-top: 30px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
 
     .post-wrapper{
         border: 1px solid gray;
+        margin-bottom: 10px;
     }
 
     .post-title{
@@ -334,6 +335,14 @@
         padding: 10px;
         font-size: 14px;
     }
+    .post-delete{
+        padding: 10px;
+        font-size: 14px;
+    }
+    .post-delete:hover{
+        cursor: pointer;
+    }
+
     .post-writer{
         padding: 10px;
         font-size: 14px;
@@ -348,7 +357,7 @@
     .board-post-up{
         border: 1px solid gray;
         border-radius: 3px;
-        margin-top: 20px;
+        margin-top: 10px;
     }
     .post-textarea{
         display: flex;
@@ -399,9 +408,11 @@
             <div class="board-header-content">
                 <div class="board-title">
                     <span>${game.gameTitle} 채널</span>
+                    <c:if test="${not empty sessionScope.loginUser}">
                     <div class="subscribe-btn">
                         <span>구독</span>
                     </div>
+                    </c:if>
                     <div class="subscribe-btn-on">
                         구독 중
                     </div>
@@ -467,14 +478,23 @@
 
         <div class="board-post-up">
             <div class="post-writer">
-                댓글 작성 <spans>닉네임</spans>
+                댓글 작성<spans>${sessionScope.loginUser.nickName}</spans>
             </div>
+            <form action="${board.boardNo}/commentWrite" method="post">
             <div class="post-textarea">
-                <div class="textarea-wrapper"><textarea placeholder="※ 내용 입력란 입니다."></textarea></div>
+                <c:if test="${not empty sessionScope.loginUser}">
+                <input type="hidden" name="commentWriter" value="${sessionScope.loginUser.userNo}">
+                <div class="textarea-wrapper"><textarea name="commentContent" placeholder="※ 내용 입력란 입니다."></textarea></div>
                 <div class="post-btn-wrapper">
-                    <button>등록</button>
+                    <button type="submit">등록</button>
                 </div>
+                </c:if>
+
+                <c:if test="${empty sessionScope.loginUser}">
+                    <div class="textarea-wrapper"><textarea name="commentContent" disabled placeholder="※ 로그인 후 댓글을 작성할 수 있습니다."></textarea></div>
+                </c:if>
             </div>
+            </form>
         </div>
 
     </div>
@@ -694,6 +714,11 @@
 <!-- 댓글 리스트 조회용 스크립트 -->
 <script>
     $(function(){
+        commentList();
+    });
+
+    // 댓글 리스트 조회용 함수
+    function commentList(){
         $.ajax({
             url : "${pageContext.request.contextPath}/b/${game.gameCode}/${board.boardNo}/commentList",
             type : "GET",
@@ -701,14 +726,56 @@
                 boardNo : "${board.boardNo}"
             },
             success : function(data){
+                var comment = "";
                 console.log("댓글리스트 받아오기 성공");
                 console.log(data);
+                for(var i = 0; i < data.length; i++){
+                    comment += '<div class="post-wrapper">' +
+                        '<div class="post-title">'+
+                        '<span class="post-no" style="display: none;">' + data[i].commentNo + '</span>'+
+                        '<span class="post-writer">'+ data[i].nickName + '</span>'+
+                        '<span class="post-date" >' + data[i].commentEnrollDate + '</span>'
+
+                    if(data[i].commentWriter == "${sessionScope.loginUser.userNo}"){
+                        comment += '<span class="post-delete" onclick=deletePost("' + data[i].commentNo + '")>삭제</span>';
+                    }
+
+                    comment +=      '</div>'+
+                        '<div class="post-content">'+
+                        data[i].commentContent +
+                        '</div>'+
+                        '</div>';
+                }
+                $(".board-post-list").html(comment);
             },
             error : function(){
                 console.log("error");
             }
         });
-    });
+    }
+</script>
+
+<!-- 댓글 삭제 스크립트 -->
+<script>
+    function deletePost(commentNo){
+        console.log("잘클릭되나?" + commentNo)
+        console.log(commentNo);
+        $.ajax({
+            url : "deletePost",
+            type : "GET",
+            data : {
+                commentNo : commentNo
+            },
+            success : function(data){
+                alert(data);
+                // 댓글 삭제 후 댓글 리스트 조회 함수 호출
+                commentList();
+            },
+            error : function(){
+                console.log("error");
+            }
+        });
+    }
 
 
 </script>

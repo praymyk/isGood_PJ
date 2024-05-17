@@ -3,6 +3,7 @@ package com.ys.isGood.model.service.board;
 import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
 import com.ys.isGood.model.vo.member.Subscribe;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 
@@ -40,4 +41,7 @@ public interface BoardService {
 
     // 게시글 삭제용 메서드
     int boardDelete(String boardNo);
+
+    // 게시글 리스트 조회용(페이징) 메서드
+    Page<Board> newBoardList(String gameCode);
 }

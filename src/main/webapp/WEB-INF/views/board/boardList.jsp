@@ -261,9 +261,11 @@
             <div class="board-header-content">
                 <div class="board-title">
                     <span>${game.gameTitle} 채널</span>
-                    <div class="subscribe-btn">
-                        구독
-                    </div>
+                    <c:if test="${not empty sessionScope.loginUser}">
+                        <div class="subscribe-btn">
+                            <span>구독</span>
+                        </div>
+                    </c:if>
                     <div class="subscribe-btn-on">
                         구독 중
                     </div>

@@ -4,6 +4,7 @@ import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
 import com.ys.isGood.model.vo.member.Subscribe;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class BoardDao {
     // 게시판 리스트 조회용 메소드
     public ArrayList<Board> boardList(String gameCode, SqlSessionTemplate sqlSession) {
         return (ArrayList)sqlSession.selectList("boardMapper.selectBoardList", gameCode);   }
+    // 게시판 리스트 조회용(페이징) 메소드
+
 
     // 게시글 상세 보기용 메소드
     public Board selectBoard(String boardNo, SqlSessionTemplate sqlSession) {
@@ -60,5 +63,9 @@ public class BoardDao {
     // 게시글 삭제용 메서드
     public int boardDelete(String boardNo, SqlSessionTemplate sqlSession) {
         return sqlSession.update("boardMapper.boardDelete", boardNo);
+    }
+
+    public Page<Board> newBoardList(String gameCode, SqlSessionTemplate sqlSession) {
+        return null;
     }
 }
