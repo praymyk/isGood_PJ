@@ -1,5 +1,6 @@
 package com.ys.isGood.model.service.board;
 
+import com.ys.isGood.common.model.vo.PageInfo;
 import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
 import com.ys.isGood.model.vo.member.Subscribe;
@@ -12,9 +13,6 @@ public interface BoardService {
 
     // 게임 정보 조회용 메소드
     Game selectGame(String gameCode);
-
-    // 게시판 리스트 조회용 메소드
-    ArrayList<Board> boardList(String gameCode);
 
     // 게시글 조회수 증가
     int boardCount(String boardNo);
@@ -43,5 +41,8 @@ public interface BoardService {
     int boardDelete(String boardNo);
 
     // 게시글 리스트 조회용(페이징) 메서드
-    Page<Board> newBoardList(String gameCode);
+    ArrayList<Board> selectBoardList(PageInfo pi, String gameCode);
+
+    // 게시글 페이징 처리를 위한 게시글 수 조회용 메서드
+    int selectboardListCount(String gameCode);
 }

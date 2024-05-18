@@ -61,6 +61,14 @@
         ORDER BY BBS_NO DESC
     </select>
 
+    <!-- 게시글 페이징 처리를 위한 게시글 수 조회용 메소드-->
+    <select id="selectBoardListCount" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD
+        WHERE BOARD.GAME_CODE = #{gameCode}
+          AND BOARD.BBS_STATUS = 'Y'
+    </select>
+
     <!-- 게시글 조회수 증가용 쿼리 -->
     <update id="updateBoardCount" parameterType="string">
         UPDATE BOARD

@@ -1,8 +1,10 @@
 package com.ys.isGood.model.dao.board;
 
+import com.ys.isGood.common.model.vo.PageInfo;
 import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
 import com.ys.isGood.model.vo.member.Subscribe;
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
@@ -11,12 +13,6 @@ import java.util.ArrayList;
 
 @Repository
 public class BoardDao {
-
-    // 게시판 리스트 조회용 메소드
-    public ArrayList<Board> boardList(String gameCode, SqlSessionTemplate sqlSession) {
-        return (ArrayList)sqlSession.selectList("boardMapper.selectBoardList", gameCode);   }
-    // 게시판 리스트 조회용(페이징) 메소드
-
 
     // 게시글 상세 보기용 메소드
     public Board selectBoard(String boardNo, SqlSessionTemplate sqlSession) {
@@ -65,7 +61,20 @@ public class BoardDao {
         return sqlSession.update("boardMapper.boardDelete", boardNo);
     }
 
-    public Page<Board> newBoardList(String gameCode, SqlSessionTemplate sqlSession) {
-        return null;
+    // 게시글 리스트 조회용 메서드(페이징 처리)
+    public ArrayList<Board> selectBoardList(PageInfo pi, String gameCode, SqlSessionTemplate sqlSession) {
+
+        // 페이지당 표시할 글의 수와 가져올 글의 시작 위치(offset) 계산
+        int limit = pi.getBoardLimit();
+        int offset = (pi.getCurrentPage() - 1) * limit;
+
+        // RowBounds 객체를 생성하여 가져올 데이터의 범위 설정
+        RowBounds rowBounds = new RowBounds(offset, limit);
+        return (ArrayList)sqlSession.selectList("boardMapper.selectBoardList", gameCode, rowBounds);
+    }
+
+    // 게시글 페이징 처리를 위한 게시글 수 조회용 메서드
+    public int selectBoardListCount(String gameCode, SqlSessionTemplate sqlSession) {
+        return sqlSession.selectOne("boardMapper.selectBoardListCount", gameCode);
     }
 }

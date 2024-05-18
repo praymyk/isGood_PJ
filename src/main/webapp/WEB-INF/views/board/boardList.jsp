@@ -232,17 +232,27 @@
         justify-content: center;
     }
 
-    .pagingbar-wrapper li{
-        display: inline;
-        margin: 0px;
+    .pagingbar-wrapper ul {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
     }
 
-    .pagingbar-wrapper a{
+    .pagingbar-wrapper li{
+        margin: 0;
+    }
+
+    .page-link{
+        display: inline-block;
+        box-sizing: border-box;
         text-decoration: none;
         border: 1px solid gray;
         width: 30px;
         height: 30px;
-        padding: 5px 10px;
+        margin: 0px;
+        line-height: 30px; /* 수직 중앙 정렬을 위해 line-height 설정 */
+        text-align: center; /* 수평 중앙 정렬을 위해 text-align 설정 */
     }
 
 </style>
@@ -347,20 +357,46 @@
         </div>
     </div>
 
+    <!-- 페이징 바 -->
     <div class="pagingbar-wrapper">
         <nav>
             <ul>
-                <li><a href="">1</a></li>
-                <li><a href="">2</a></li>
-                <li><a href="">3</a></li>
-                <li><a href="">4</a></li>
+        <c:choose>
+            <c:when test="${ pi.currentPage eq 1 }">
+                <!-- 현재 페이지가 1번일 경우 이전 페이지 버튼 없음 -->
+            </c:when>
 
-                <li><a href="">></a></li>
-                <li><a href="">>></a></li>
+            <c:otherwise>
+                <li><a class="page-link" href="?p=${ pi.currentPage - 1 }"> < </a></li>
+            </c:otherwise>
+        </c:choose>
+
+        <c:forEach var="p" begin="${ pi.startPage }"
+                   end="${ pi.endPage }"
+                   step="1">
+
+            <li><a class="page-link" href="?p=${ p }" id="pageBtn-${ p }"> ${ p } </a></li>
+        </c:forEach>
+
+        <c:choose>
+            <c:when test="${ pi.currentPage ge pi.maxPage }">
+                <!-- 현재 페이지가 마지막 페이지일 경우 이후 페이지 버튼 없음-->
+            </c:when>
+            <c:otherwise>
+                <li><a class="page-link" href="?p=${ pi.currentPage + 1 }"> > </a></li>
+            </c:otherwise>
+        </c:choose>
             </ul>
         </nav>
     </div>
 </div>
+
+<!-- 페이징 처리 과련 스크립트 (현재 페이지 번호 강조 표시용) -->
+<script>
+    $(function(){
+        $("#pageBtn-${ requestScope.pi.currentPage }").attr("style","border: 1px solid green; color: white; font-weight: bold; position: relative;");
+    })
+</script>
 
 <script>
     // 게시판 클릭시 해당 게시글 번호 추출 + 상세 페이지 이동
@@ -448,5 +484,4 @@
 
 </script>
 </body>
-
 </html>

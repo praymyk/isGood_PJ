@@ -1,5 +1,6 @@
 package com.ys.isGood.model.service.board;
 
+import com.ys.isGood.common.model.vo.PageInfo;
 import com.ys.isGood.model.dao.board.BoardDao;
 import com.ys.isGood.model.vo.board.Board;
 import com.ys.isGood.model.vo.board.Game;
@@ -23,12 +24,6 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Game selectGame(String gameCode) {
         return boardDao.selectGame(gameCode, sqlSession);
-    }
-
-    // 게시글 리스트 조회용 메소드
-    @Override
-    public ArrayList<Board> boardList(String gameCode) {
-        return boardDao.boardList(gameCode, sqlSession);
     }
 
     // 게시글 조회수 증가용 메서드
@@ -86,7 +81,12 @@ public class BoardServiceImpl implements BoardService {
 
     // 게시글 리스트 조회용(페이징)
     @Override
-    public Page<Board> newBoardList(String gameCode) {
-        return boardDao.newBoardList(gameCode, sqlSession);
+    public ArrayList<Board> selectBoardList(PageInfo pi, String gameCode) {
+        return boardDao.selectBoardList(pi, gameCode, sqlSession);
+    }
+
+    // 게시글 페이징 처리를 위한 게시글 수 조회용 메서드
+    public int selectboardListCount(String gameCode) {
+        return boardDao.selectBoardListCount(gameCode, sqlSession);
     }
 }

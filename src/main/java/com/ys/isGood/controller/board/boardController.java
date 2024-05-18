@@ -1,6 +1,8 @@
 package com.ys.isGood.controller.board;
 
 import com.google.gson.JsonObject;
+import com.ys.isGood.common.model.vo.PageInfo;
+import com.ys.isGood.common.template.Pagination;
 import com.ys.isGood.model.dao.board.BoardDao;
 import com.ys.isGood.model.service.board.BoardServiceImpl;
 import com.ys.isGood.model.vo.board.Board;
@@ -35,58 +37,58 @@ public class boardController {
 
     @Autowired
     BoardServiceImpl boardServiceImpl;
-    @Autowired
-    BoardRepository boardRepository;
     // 게시판 임시 이미지 저장 경로
     @Value("${boardImg.path}")
     private String boardImgPath;
     // 게시판 이미지 저장 url
     @Value("${boardImgUrl.path}")
     private String boardImgUrl;
-    @Autowired
-    private BoardDao boardDao;
 
     /*
     게시판 페이지 이동용 메서드
     @param boardType : 게시판 타입 > 게시판 타입에 따라 게시판 리스트를 가져올 예정
     */
-    @GetMapping("/b/{gameCode}")
-    @ResponseBody
-    public ModelAndView boardList(@PathVariable String gameCode,
-                                    @RequestParam(value = "p", defaultValue = "1") int p,
-                                    ModelAndView mv) {
 
-        // 1. 게임 코드에 해당하는 게임 정보 가져오기
+    // 페이징 처리한 게시판 리스트 호출용 메소드
+    @GetMapping("/b/{gameCode}")
+    public ModelAndView boardServiceImpl( @PathVariable String gameCode,
+                                          @RequestParam(value = "p", defaultValue = "1") int currentPage,
+                                          ModelAndView mv){
+
+        // 게시글의 총 개수 구하기
+        int listCount = boardServiceImpl.selectboardListCount(gameCode);
+
+        // @param pageLimit 페이징바의 숫자 개수
+        // @param boardLimit 한 페이지에 보여질 게시글의 개수
+        int pageLimit = 10;
+        int boardLimit = 1;
+
+
+        // 1. 페이징바 설정에 따른 페이지 나눔 ( 현재 페이지 기준으로 List 뽑기 )
+        PageInfo pi = Pagination.getPageInfo(listCount,
+                currentPage, pageLimit, boardLimit);
+
+
+        // 2. 게임 코드에 해당하는 게임 정보 가져오기
         Game game = boardServiceImpl.selectGame(gameCode);
 
-        // 2. 게시판 리스트 가져오기
-        ArrayList<Board> boardList = boardServiceImpl.boardList(gameCode);
+        // 3. 게시판 리스트 가져오기
+        ArrayList<Board> boardList = boardServiceImpl.selectBoardList(pi, gameCode);
 
+        mv.addObject("pi", pi);
         mv.addObject("game", game);
         mv.addObject("boardList", boardList);
         mv.addObject("gameCode", gameCode);
         mv.setViewName("board/boardIndex");
-
+        log.info(String.valueOf(pi));
         return mv;
     }
-
-    // 페이징 처리한 게시판 리스트 호출용 메소드
-    @GetMapping("/b/{gameCode}/list")
-    public ArrayList<Board>newBoardList(){
-
-        String gameCode="loa";
-        // 페이지 설정 (1페이지 10개)
-
-
-        return null;
-    }
-
 
     // 게시글 상세보기용 메소드
     @GetMapping("/b/{gameCode}/{boardNo}")
     public ModelAndView boardDetail(@PathVariable String gameCode,
                               @PathVariable String boardNo,
-                              @RequestParam(value = "p", defaultValue = "1") int p,
+                              @RequestParam(value = "p", defaultValue = "1") int currentPage,
                               ModelAndView mv){
 
         // 1. 게임 코드에 해당하는 게임 정보 가져오기
@@ -99,15 +101,27 @@ public class boardController {
             log.info("조회수 증가 실패");
         }
         Board board = boardServiceImpl.selectBoard(boardNo);
-        // 3. 게시글 상세보기 페이지에서 보여줄 게시글 리스트 가져오기
-        ArrayList<Board> boardList = boardServiceImpl.boardList(gameCode);
+        // 3. 페이징바 설정에 따른 페이지 나눔 ( 현재 페이지 기준으로 List 뽑기 )
+        // @param listCount 총 게시글의 수
+        // @param pageLimit 페이징바의 숫자 개수
+        // @param boardLimit 한 페이지에 보여질 게시글의 개수
+        int listCount = boardServiceImpl.selectboardListCount(gameCode);
+        log.info("listCount" + listCount);
+        int pageLimit = 10;
+        int boardLimit = 1;
+        PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+
+        // 4. 게시글 상세보기 페이지에서 보여줄 게시글 리스트 가져오기( 현재페이지의 페이징 처리된 목록 )
+        ArrayList<Board> boardList = boardServiceImpl.selectBoardList(pi, gameCode);
 
         // ModelAndView 객체에 데이터 담고 상세보기 페이지로 이동
         mv.addObject("game", game);
         mv.addObject("board", board);
         mv.addObject("boardList", boardList);
         mv.addObject("gameCode", gameCode);
+        mv.addObject("pi", pi);
         mv.setViewName("board/boardViewIndex");
+
 
         return mv;
     }
